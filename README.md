@@ -1,4 +1,4 @@
-WP Local Dev Environment
+Airplane Mode
 ========================
 
 ## About
