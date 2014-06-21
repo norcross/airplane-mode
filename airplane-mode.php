@@ -71,6 +71,9 @@ class Airplane_Mode_Core
 		add_action		(	'admin_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
 		add_action		(	'login_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
 
+		register_activation_hook	(	__FILE__,				array(	$this,	'create_setting'			)			);
+		register_deactivation_hook	(	__FILE__,				array(	$this,	'remove_setting'			)			);
+
 	}
 
 	/**
@@ -96,6 +99,28 @@ class Airplane_Mode_Core
 	public function textdomain() {
 
 		load_plugin_textdomain( 'airplane-mode', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+	 /**
+	  * set our initial airplane mode setting to 'on'
+	  *
+	  * @return void
+	  */
+	public function create_setting() {
+
+		update_option( 'airplane-mode', 'on' );
+
+	}
+
+	/**
+	 * remove our setting field on plugin deactivation
+	 *
+	 * @return void
+	 */
+	public function remove_setting() {
+
+		delete_option( 'airplane-mode' );
+
 	}
 
 	/**

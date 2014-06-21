@@ -8,6 +8,7 @@ Control loading of external files when developing locally. WP loads certain exte
 * replaces Open Sans CSS font file with a blank CSS file due to dependency issues ( see [related Trac ticket](https://core.trac.wordpress.org/ticket/28478) )
 * replaces all instances of Gravatar with a local image to remove external call
 * removes all HTTP requests
+* includes toggle in admin bar for quick enable / disable
 
 ## Roadmap
 * fine tune HTTP request removal
