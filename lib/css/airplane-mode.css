@@ -1,0 +1,19 @@
+#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon {
+	height: 14px;
+	width: 14px;
+	border-radius: 50%;
+	background: #ccc;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 7px;
+	position: relative;
+	bottom: 2px;
+}
+
+#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon-on {
+	background: green;
+}
+
+#wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon-off {
+	background: red;
+}
