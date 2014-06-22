@@ -53,9 +53,9 @@ class Airplane_Mode_Core
 	 */
 	private function __construct() {
 		add_action		(	'plugins_loaded',						array(  $this,  'textdomain'			)			);
-		add_action		(	'wp_enqueue_scripts',					array(	$this,	'file_remove_replace'	),	9999	);
-		add_action		(	'admin_enqueue_scripts',				array(	$this,	'file_remove_replace'	),	9999	);
-		add_action		(	'login_enqueue_scripts',				array(	$this,	'file_remove_replace'	),	9999	);
+
+		add_action		(	'wp_default_styles',					array(	$this,	'block_style_load'		),	100		);
+		add_action		(	'wp_default_scripts',					array(	$this,	'block_script_load'		),	100		);
 
 		add_filter		(	'get_avatar',							array(	$this,	'replace_gravatar'		),	1,	5	);
 
@@ -113,7 +113,7 @@ class Airplane_Mode_Core
 	}
 
 	/**
-	 * remove our setting field on plugin deactivation
+	 * remove our setting on plugin deactivation
 	 *
 	 * @return void
 	 */
@@ -124,8 +124,9 @@ class Airplane_Mode_Core
 	}
 
 	/**
-	 * [check_status description]
-	 * @return [type] [description]
+	 * helper function to check the current status
+	 *
+	 * @return string	'on' or 'off'
 	 */
 	public function check_status() {
 
@@ -133,31 +134,71 @@ class Airplane_Mode_Core
 		$status	= get_option( 'airplane-mode' );
 
 		if ( ! empty( $status ) && $status == 'on' ) {
-			return true;
+			return 'on';
 		} else {
-			return false;
+			return 'off';
 		}
 	}
 
 	/**
-	 * replace Open Sans file with blank CSS to
-	 * avoid breaking dependencies. issue addressed
-	 * in trac ticket #28478
+	 * hop into the set of default CSS files to allow for
+	 * disabling Open Sans and filter to allow other mods
 	 *
-	 * @return string	url of blank CSS file
+	 * @param  object	$styles		all the registered CSS items
+	 * @return object	$styles		the same object with Open Sans src set to null
 	 */
-	public function file_remove_replace() {
+	public function block_style_load( $styles ) {
 
 		// bail if disabled
-		if ( ! $this->check_status() ) {
-			return;
+		if ( $this->check_status() == 'off' ) {
+			return $styles;
 		}
 
-		// deregister style first
-		wp_deregister_style( 'open-sans' );
+		// fetch our registered styles
+		$registered	= $styles->registered;
 
-		// register a blank file to prevent dependency issues
-		wp_register_style( 'open-sans', plugins_url( '/lib/blanks/blank.css', __FILE__) );
+		// pass the entire set of registered data to the action to allow a bypass
+		do_action( 'airplane_mode_style_load', $registered );
+
+		// fetch our open sans
+		$open_sans	= $registered['open-sans'];
+
+		// set the src inside the object to null
+		$open_sans->src = null;
+
+		// send it back
+		return $styles;
+
+	}
+
+	/**
+	 * hop into the set of default JS files to allow for
+	 * disabling as needed filter to allow other mods
+	 *
+	 * @param  object	$scripts	all the registered JS items
+	 * @return object	$scripts	the same object, possibly filtered
+	 */
+	public function block_script_load( $scripts ) {
+
+		// bail if disabled
+		if ( $this->check_status() == 'off' ) {
+			return $scripts;
+		}
+
+		// fetch our registered scripts
+		$registered	= $scripts->registered;
+
+		// pass the entire set of registered data to the action to allow a bypass
+		do_action( 'airplane_mode_script_load', $registered );
+
+		/*
+		 * nothing actually being done here at the present time. this is a
+		 * placeholder for being able to modify the script loading in the same
+		 * manner that we do the CSS files
+		 */
+
+		// send it back
+		return $scripts;
 
 	}
 
@@ -175,12 +216,12 @@ class Airplane_Mode_Core
 	public function replace_gravatar( $avatar, $id_or_email, $size, $default, $alt ) {
 
 		// bail if disabled
-		if ( ! $this->check_status() ) {
+		if ( $this->check_status() == 'off' ) {
 			return $avatar;
 		}
 
 		// swap out the file
-		$image	= plugins_url( '/lib/blanks/blank-32.png', __FILE__);
+		$image	= plugins_url( '/lib/img/blank-32.png', __FILE__);
 		$avatar	= "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' />";
 
 		// return the item
@@ -188,26 +229,30 @@ class Airplane_Mode_Core
 	}
 
 	/**
-	 * [disable_http_req description]
-	 * @param  [type] $false [description]
-	 * @param  [type] $args  [description]
-	 * @param  [type] $url   [description]
-	 * @return [type]        [description]
+	 * disable all the HTTP requests being made with the action
+	 * happening before the status check so others can allow certain
+	 * items as desired
+	 *
+	 * @param  boolean $status [description]
+	 * @param  array   $args   [description]
+	 * @param  string  $url    [description]
+	 * @return [type]          [description]
 	 */
-	public function disable_http_reqs( $false, $args, $url ) {
+	public function disable_http_reqs( $status = false, $args = array(), $url = '' ) {
 
 		// pass our data to the action to allow a bypass
-		do_action( 'airplane_mode_http_args', $false, $args, $url );
+		do_action( 'airplane_mode_http_args', $status, $args, $url );
 
 		// disable the http requests only if not disabled
-		if ( $this->check_status() ) {
-			return true;
-		}
+		$status	= $this->check_status() == 'on' ? true : false;
+
+		// send it back
+		return $status;
 
 	}
 
 	/**
-	 * [toggle_css description]
+	 * load our small CSS file for the toggle switch
 	 * @return [type] [description]
 	 */
 	public function toggle_css() {
@@ -217,8 +262,10 @@ class Airplane_Mode_Core
 	}
 
 	/**
-	 * [toggle_check description]
-	 * @return [type] [description]
+	 * check the user action from the toggle switch to set the option
+	 * to 'on' or 'off'
+	 *
+	 * @return void
 	 */
 	public function toggle_check() {
 
@@ -259,11 +306,14 @@ class Airplane_Mode_Core
 		// call our global admin bar object
 		global $wp_admin_bar;
 
-		// get the status paramater (in reverse since we want the opposize action)
-		$status	= $this->check_status() ? 'off' : 'on';
+		// get the current status
+		$status	= $this->check_status();
+
+		// set our toggle variable paramater (in reverse since we want the opposite action)
+		$toggle	= ! empty( $status ) && $status == 'on' ? 'off' : 'on';
 
 		// determine our class based on the status
-		$class	= $this->check_status() ? 'airplane-toggle-icon-on' : 'airplane-toggle-icon-off';
+		$class	= ! empty( $status ) && $status == 'on' ? 'airplane-toggle-icon-on' : 'airplane-toggle-icon-off';
 
 		// get my text
 		$text	= __( 'Airplane Mode', 'airplane-mode' );
@@ -272,7 +322,7 @@ class Airplane_Mode_Core
 		$icon	= '<span class="airplane-toggle-icon ' . esc_attr( $class ) . '"></span>';
 
 		// get our link with the status paramater
-		$link	= wp_nonce_url( add_query_arg( 'airplane-mode', $status ), 'airmde_nonce', 'airmde_nonce' );
+		$link	= wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
 		// now add the admin bar link
 		$wp_admin_bar->add_menu(
