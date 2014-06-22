@@ -16,4 +16,4 @@ Control loading of external files when developing locally. WP loads certain exte
 * add other requests from popular plugins
 
 
-### Pull Requests are very much welcome and encouraged
+#### pull requests are very much welcome and encouraged
