@@ -161,10 +161,12 @@ class Airplane_Mode_Core
 		do_action( 'airplane_mode_style_load', $registered );
 
 		// fetch our open sans
-		$open_sans	= $registered['open-sans'];
+		$open_sans	= (isset($registered['open-sans'])) ? $registered['open-sans'] : false;
 
-		// set the src inside the object to null
-		$open_sans->src = null;
+		if($open_sans) {
+			// set the src inside the object to null
+			$open_sans->src = null;
+		}
 
 		// send it back
 		return $styles;
