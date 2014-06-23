@@ -52,6 +52,12 @@ class Airplane_Mode_Core
 	 * there are many like it, but this one is mine
 	 */
 	private function __construct() {
+
+		global $phpmailer;
+
+		// Override WordPress mailer class with a mock mailer.
+		$phpmailer = new MockPHPMailer();
+
 		add_action		(	'plugins_loaded',						array(  $this,  'textdomain'			)			);
 
 		add_action		(	'wp_default_styles',					array(	$this,	'block_style_load'		),	100		);
@@ -349,6 +355,9 @@ class Airplane_Mode_Core
 
 /// end class
 }
+
+// Include dependencies
+require_once( 'lib/mock-mailer.php' );
 
 // Instantiate our class
 $Airplane_Mode_Core = Airplane_Mode_Core::getInstance();
