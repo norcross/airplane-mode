@@ -56,7 +56,9 @@ class Airplane_Mode_Core
 		global $phpmailer;
 
 		// Override WordPress mailer class with a mock mailer.
-		$phpmailer = new MockPHPMailer();
+		if ( $this->check_status() == 'on' ) {
+			$phpmailer = new MockPHPMailer();
+		}
 
 		add_action		(	'plugins_loaded',						array(  $this,  'textdomain'			)			);
 
