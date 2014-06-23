@@ -154,17 +154,22 @@ class Airplane_Mode_Core
 			return $styles;
 		}
 
+		// make sure we have something registered first
+		if ( ! isset( $styles->registered ) ) {
+			return $styles;
+		}
+
 		// fetch our registered styles
 		$registered	= $styles->registered;
 
 		// pass the entire set of registered data to the action to allow a bypass
 		do_action( 'airplane_mode_style_load', $registered );
 
-		// fetch our open sans
-		$open_sans	= $registered['open-sans'];
-
-		// set the src inside the object to null
-		$open_sans->src = null;
+		// fetch our open sans if present and set the src inside the object to null
+		if ( ! empty( $registered['open-sans'] ) ) {
+			$open_sans	= $registered['open-sans'];
+			$open_sans->src = null;
+		}
 
 		// send it back
 		return $styles;
@@ -182,6 +187,11 @@ class Airplane_Mode_Core
 
 		// bail if disabled
 		if ( $this->check_status() == 'off' ) {
+			return $scripts;
+		}
+
+		// make sure we have something registered first
+		if ( ! isset( $scripts->registered ) ) {
 			return $scripts;
 		}
 
