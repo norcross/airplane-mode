@@ -71,6 +71,11 @@ class Airplane_Mode_Core
 		add_action		(	'admin_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
 		add_action		(	'login_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
 
+		// keep jetpack from attempting external requests
+		if ( 'on' === self::check_status() ) {
+			add_filter	(	'jetpack_development_mode',				'__return_true',					9999	);
+		}
+
 		register_activation_hook	(	__FILE__,					array(	$this,	'create_setting'		)			);
 		register_deactivation_hook	(	__FILE__,					array(	$this,	'remove_setting'		)			);
 
