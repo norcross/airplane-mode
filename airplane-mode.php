@@ -52,33 +52,32 @@ class Airplane_Mode_Core
 	 * there are many like it, but this one is mine
 	 */
 	private function __construct() {
-		add_action		(	'plugins_loaded',						array(  $this,  'textdomain'			)			);
+		add_action( 'plugins_loaded', array( $this, 'textdomain' ) );
 
-		add_action		(	'wp_default_styles',					array(	$this,	'block_style_load'		),	100		);
-		add_action		(	'wp_default_scripts',					array(	$this,	'block_script_load'		),	100		);
-
-		add_filter		(	'get_avatar',							array(	$this,	'replace_gravatar'		),	1,	5	);
-
+		add_action( 'wp_default_styles', array( $this, 'block_style_load' ), 100 );
+		add_action( 'wp_default_scripts', array( $this, 'block_script_load' ), 100 );
+		
+		add_filter( 'get_avatar', array( $this, 'replace_gravatar' ), 1, 5 );
+		
 		// kill all the http requests
-		add_filter		(	'pre_http_request',						array(	$this,	'disable_http_reqs'		),	10, 3	);
-
+		add_filter( 'pre_http_request', array( $this, 'disable_http_reqs' ), 10, 3 );
+		
 		// check for our query string and handle accordingly
-		add_action		(	'init',									array(	$this,	'toggle_check'			)			);
-
+		add_action( 'init', array( $this, 'toggle_check' ) );
+		
 		// settings
-		add_action		(	'admin_bar_menu',						array(	$this,	'admin_bar_toggle'		),	9999	);
-		add_action		(	'wp_enqueue_scripts',					array(	$this,	'toggle_css'			),	9999	);
-		add_action		(	'admin_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
-		add_action		(	'login_enqueue_scripts',				array(	$this,	'toggle_css'			),	9999	);
-
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_toggle' ), 9999 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'toggle_css' ), 9999 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'toggle_css' ), 9999 );
+		add_action( 'login_enqueue_scripts', array( $this, 'toggle_css' ), 9999 );
+		
 		// keep jetpack from attempting external requests
 		if ( 'on' === self::check_status() ) {
-			add_filter	(	'jetpack_development_mode',				'__return_true',					9999	);
+			add_filter( 'jetpack_development_mode', '__return_true', 9999 );
 		}
-
-		register_activation_hook	(	__FILE__,					array(	$this,	'create_setting'		)			);
-		register_deactivation_hook	(	__FILE__,					array(	$this,	'remove_setting'		)			);
-
+		
+		register_activation_hook( __FILE__, array( $this, 'create_setting' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'remove_setting' ) );
 	}
 
 	/**
