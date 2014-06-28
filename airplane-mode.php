@@ -68,7 +68,7 @@ class Airplane_Mode_Core {
 		add_action( 'login_enqueue_scripts', array( $this, 'toggle_css'       ), 9999 );
 
 		// keep jetpack from attempting external requests
-		if ( 'on' === self::check_status() ) {
+		if ( $this->enabled() ) {
 			add_filter( 'jetpack_development_mode', '__return_true', 9999 );
 		}
 
@@ -105,7 +105,7 @@ class Airplane_Mode_Core {
 	  * @return void
 	  */
 	public function create_setting() {
-		update_option( 'airplane-mode', 'on' );
+		add_option( 'airplane-mode', 'on' );
 	}
 
 	/**
@@ -120,17 +120,11 @@ class Airplane_Mode_Core {
 	/**
 	 * helper function to check the current status
 	 *
-	 * @return string 'on' or 'off'
+	 * @return bool
 	 */
-	public function check_status() {
+	public function enabled() {
 		// pull our status from the options table
-		$status = get_option( 'airplane-mode' );
-
-		if ( ! empty( $status ) && $status == 'on' ) {
-			return 'on';
-		} else {
-			return 'off';
-		}
+		return 'on' === get_option( 'airplane-mode' );
 	}
 
 	/**
@@ -142,7 +136,7 @@ class Airplane_Mode_Core {
 	 */
 	public function block_style_load( $styles ) {
 		// bail if disabled
-		if ( $this->check_status() == 'off' ) {
+		if ( ! $this->enabled() ) {
 			return $styles;
 		}
 
@@ -176,7 +170,7 @@ class Airplane_Mode_Core {
 	 */
 	public function block_script_load( $scripts ) {
 		// bail if disabled
-		if ( 'off' === $this->check_status() ) {
+		if ( ! $this->enabled() ) {
 			return $scripts;
 		}
 
@@ -214,7 +208,7 @@ class Airplane_Mode_Core {
 	 */
 	public function replace_gravatar( $avatar, $id_or_email, $size, $default, $alt ) {
 		// bail if disabled
-		if ( 'off' === $this->check_status() ) {
+		if ( ! $this->enabled() ) {
 			return $avatar;
 		}
 
@@ -240,11 +234,8 @@ class Airplane_Mode_Core {
 		// pass our data to the action to allow a bypass
 		do_action( 'airplane_mode_http_args', $status, $args, $url );
 
-		// disable the http requests only if not disabled
-		$status = $this->check_status() == 'on' ? true : false;
-
-		// send it back
-		return $status;
+		// disable the http requests only if enabled
+		return $this->enabled();
 	}
 
 	/**
@@ -298,13 +289,14 @@ class Airplane_Mode_Core {
 		global $wp_admin_bar;
 
 		// get the current status
-		$status = $this->check_status();
+		$status = $this->enabled();
 
 		// set our toggle variable paramater (in reverse since we want the opposite action)
-		$toggle = ! empty( $status ) && $status == 'on' ? 'off' : 'on';
+		$toggle = $status ? 'off' : 'on';
 
 		// determine our class based on the status
-		$class = ! empty( $status ) && $status == 'on' ? 'airplane-toggle-icon-on' : 'airplane-toggle-icon-off';
+		$class  = 'airplane-toggle-icon-';
+		$class .= $status ? 'on' : 'off';
 
 		// get my text
 		$text = __( 'Airplane Mode', 'airplane-mode' );
