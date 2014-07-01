@@ -236,7 +236,7 @@ class Airplane_Mode_Core
 		}
 
 		// swap out the file
-		$image	= plugins_url( '/lib/img/blank-32.png', __FILE__);
+		$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 		$avatar	= "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' />";
 
 		// return the item
@@ -272,7 +272,7 @@ class Airplane_Mode_Core
 	 */
 	public function toggle_css() {
 
-		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.css', __FILE__), array(), AIRMDE_VER, 'all' );
+		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.min.css', __FILE__), array(), AIRMDE_VER, 'all' );
 
 	}
 
