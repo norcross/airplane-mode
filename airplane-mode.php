@@ -334,7 +334,7 @@ class Airplane_Mode_Core
 		$text	= __( 'Airplane Mode', 'airplane-mode' );
 
 		// get my icon
-		$icon	= '<span class="airplane-toggle-icon ' . esc_attr( $class ) . '"></span>';
+		$icon	= '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
 
 		// get our link with the status paramater
 		$link	= wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
@@ -345,10 +345,19 @@ class Airplane_Mode_Core
 				'id'		=> 'airplane-mode-toggle',
 				'title'		=> $icon . $text,
 				'href'		=> $link,
-				'position'	=> 0
+				'position'	=> 0,
+                'meta'   => array(
+                    'title' => __(
+                        sprintf(
+                            '%s %s',
+                            'Airplane Mode is',
+                            $status
+                        ),
+                        'airplane-mode'
+                    )
+                )
 			)
 		);
-
 	}
 
 
