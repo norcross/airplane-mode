@@ -236,7 +236,7 @@ class Airplane_Mode_Core
 		}
 
 		// swap out the file
-		$image	= plugins_url( '/lib/img/blank-32.png', __FILE__);
+		$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 		$avatar	= "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' />";
 
 		// return the item
@@ -272,7 +272,7 @@ class Airplane_Mode_Core
 	 */
 	public function toggle_css() {
 
-		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.css', __FILE__), array(), AIRMDE_VER, 'all' );
+		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.min.css', __FILE__), array(), AIRMDE_VER, 'all' );
 
 	}
 
@@ -334,7 +334,7 @@ class Airplane_Mode_Core
 		$text	= __( 'Airplane Mode', 'airplane-mode' );
 
 		// get my icon
-		$icon	= '<span class="airplane-toggle-icon ' . esc_attr( $class ) . '"></span>';
+		$icon	= '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
 
 		// get our link with the status paramater
 		$link	= wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
@@ -345,10 +345,19 @@ class Airplane_Mode_Core
 				'id'		=> 'airplane-mode-toggle',
 				'title'		=> $icon . $text,
 				'href'		=> $link,
-				'position'	=> 0
+				'position'	=> 0,
+                'meta'   => array(
+                    'title' => __(
+                        sprintf(
+                            '%s %s',
+                            'Airplane Mode is',
+                            $status
+                        ),
+                        'airplane-mode'
+                    )
+                )
 			)
 		);
-
 	}
 
 
