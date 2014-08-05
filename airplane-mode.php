@@ -225,17 +225,21 @@ class Airplane_Mode_Core {
      * happening before the status check so others can allow certain
      * items as desired
      *
-     * @param  boolean $status [description]
-     * @param  array   $args   [description]
-     * @param  string  $url    [description]
-     * @return [type]          [description]
+     * @param  bool|array|WP_Error $status Whether to preempt an HTTP request return. Default false.
+     * @param  array               $args   HTTP request arguments.
+     * @param  string              $url    The request URL.
+     * @return bool|array|WP_Error         A WP_Error object if Airplane Mode is enabled. Original $status if not.
      */
     public function disable_http_reqs( $status = false, $args = array(), $url = '' ) {
         // pass our data to the action to allow a bypass
         do_action( 'airplane_mode_http_args', $status, $args, $url );
 
         // disable the http requests only if enabled
-        return $this->enabled();
+        if ( $this->enabled() ) {
+        	return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
+        } else {
+        	return $status;
+        }
     }
 
     /**
