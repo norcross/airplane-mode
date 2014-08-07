@@ -63,9 +63,9 @@ class Airplane_Mode_Core {
 
         // settings
         add_action( 'admin_bar_menu',        array( $this, 'admin_bar_toggle' ), 9999 );
-        add_action( 'wp_enqueue_scripts',    array( $this, 'toggle_css'       ), 9999 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'toggle_css'       ), 9999 );
-        add_action( 'login_enqueue_scripts', array( $this, 'toggle_css'       ), 9999 );
+        add_action( 'wp_enqueue_scripts',    array( $this, 'toggle_assets'    ), 9999 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'toggle_assets'    ), 9999 );
+        add_action( 'login_enqueue_scripts', array( $this, 'toggle_assets'    ), 9999 );
 
         // keep jetpack from attempting external requests
         if ( $this->enabled() ) {
@@ -243,11 +243,15 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * load our small CSS file for the toggle switch
-     * @return [type] [description]
+     * load our JS and CSS files
      */
-    public function toggle_css() {
+    public function toggle_assets() {
         wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.css', __FILE__), array(), AIRMDE_VER, 'all' );
+        wp_enqueue_script( 'airplane-mode', plugins_url( '/lib/js/airplane-mode.js', __FILE__), array(), AIRMDE_VER );
+        wp_localize_script( 'airplane-mode', 'airmde', array(
+        	'enabled' => $this->enabled(),
+        	'aborted' => __( 'Airplane Mode is enabled. Aborted AJAX request to %1$s.', 'airplane-mode' ),
+        ) );
     }
 
     /**
