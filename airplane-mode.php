@@ -53,6 +53,7 @@ class Airplane_Mode_Core {
         add_action( 'plugins_loaded',     array( $this, 'textdomain'        )        );
         add_action( 'wp_default_styles',  array( $this, 'block_style_load'  ), 100   );
         add_action( 'wp_default_scripts', array( $this, 'block_script_load' ), 100   );
+        add_filter( 'embed_oembed_html',  array( $this, 'block_oembed_html' ), 1,  4 );
         add_filter( 'get_avatar',         array( $this, 'replace_gravatar'  ), 1,  5 );
 
         // kill all the http requests
@@ -193,6 +194,28 @@ class Airplane_Mode_Core {
 
         // send it back
         return $scripts;
+    }
+
+    /**
+     * Block oEmbeds from displaying.
+     * 
+     * @param string $html    The embed HTML.
+     * @param string $url     The attempted embed URL.
+     * @param array  $attr    An array of shortcode attributes.
+     * @param int    $post_ID Post ID.
+     */
+    public function block_oembed_html( $html, $url, $attr, $post_ID ) {
+
+    	if ( $this->enabled() ) {
+    		return sprintf( '<div class="loading-placeholder airplane-mode-placeholder"><p>%s</p></div>',
+    			sprintf( __( 'Airplane Mode is enabled. oEmbed blocked for %1$s.', 'airplane-mode' ),
+    				esc_url( $url )
+    			)
+    		);
+    	} else {
+    		return $html;
+    	}
+
     }
 
     /**
