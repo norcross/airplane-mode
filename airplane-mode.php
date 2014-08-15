@@ -198,7 +198,7 @@ class Airplane_Mode_Core {
 
     /**
      * Block oEmbeds from displaying.
-     * 
+     *
      * @param string $html    The embed HTML.
      * @param string $url     The attempted embed URL.
      * @param array  $attr    An array of shortcode attributes.
@@ -235,9 +235,9 @@ class Airplane_Mode_Core {
             return $avatar;
         }
 
-        // swap out the file
-        $image = plugins_url( '/lib/img/blank-32.png', __FILE__ );
-        $avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' />";
+        // swap out the file for a base64 encoded image
+        $image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+        $avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
         // return the item
         return $avatar;
@@ -270,7 +270,10 @@ class Airplane_Mode_Core {
      * @return [type] [description]
      */
     public function toggle_css() {
-        wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.css', __FILE__), array(), AIRMDE_VER, 'all' );
+        // set a suffix for loading the minified or normal
+        $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
+        // load the CSS file itself
+        wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode' . $suffix, __FILE__ ), array(), AIRMDE_VER, 'all' );
     }
 
     /**
@@ -318,6 +321,9 @@ class Airplane_Mode_Core {
         // get the current status
         $status = $this->enabled();
 
+        // set a title message (translatable)
+        $title  = ! $status ? __( 'Airplane Mode is disabled', 'airplane-mode' ) : __( 'Airplane Mode is enabled', 'airplane-mode' );
+
         // set our toggle variable paramater (in reverse since we want the opposite action)
         $toggle = $status ? 'off' : 'on';
 
@@ -337,10 +343,13 @@ class Airplane_Mode_Core {
         // now add the admin bar link
         $wp_admin_bar->add_menu(
             array(
-                'id'       => 'airplane-mode-toggle',
-                'title'    => $icon . $text,
-                'href'     => $link,
-                'position' => 0,
+                'id'        => 'airplane-mode-toggle',
+                'title'     => $icon . $text,
+                'href'      => $link,
+                'position'  => 0,
+                'meta'      => array(
+                    'title' => $title
+                )
             )
         );
     }
