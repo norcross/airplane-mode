@@ -7,6 +7,7 @@ Author: Andrew Norcross
 Version: 0.0.1
 Requires at least: 3.7
 Author URI: http://reaktivstudios.com/
+GitHub Plugin URI: https://github.com/norcross/airplane-mode
 
 Copyright 2014 Andrew Norcross
 
