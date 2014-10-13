@@ -303,8 +303,26 @@ class Airplane_Mode_Core {
         update_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
         // and go about our business
-        return;
+        wp_redirect( self::get_redirect() );
+        exit;
     }
+
+	/**
+	 * Fetch the URL to redirect to after toggling Airplane Mode.
+	 *
+	 * @return string The URL to redirect to.
+	 */
+	protected static function get_redirect() {
+
+		return remove_query_arg( array(
+			'airplane-mode', 'airmde_nonce',
+			'user_switched', 'switched_off', 'switched_back',
+			'message', 'update', 'updated', 'settings-updated', 'saved',
+			'activated', 'activate', 'deactivate', 'enabled', 'disabled',
+			'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
+		) );
+
+	}
 
     /**
      * add our quick toggle to the admin bar to enable / disable
