@@ -133,10 +133,10 @@ class Airplane_Mode_Core {
      * hop into the set of default CSS files to allow for
      * disabling Open Sans and filter to allow other mods
      *
-     * @param  object $styles all the registered CSS items
-     * @return object $styles the same object with Open Sans src set to null
+     * @param  WP_Styles $styles all the registered CSS items
+     * @return WP_Styles $styles the same object with Open Sans src set to null
      */
-    public function block_style_load( $styles ) {
+    public function block_style_load( WP_Styles $styles ) {
         // bail if disabled
         if ( ! $this->enabled() ) {
             return $styles;
@@ -167,10 +167,10 @@ class Airplane_Mode_Core {
      * hop into the set of default JS files to allow for
      * disabling as needed filter to allow other mods
      *
-     * @param  object $scripts all the registered JS items
-     * @return object $scripts the same object, possibly filtered
+     * @param  WP_Scripts $scripts all the registered JS items
+     * @return WP_Scripts $scripts the same object, possibly filtered
      */
-    public function block_script_load( $scripts ) {
+    public function block_script_load( WP_Scripts $scripts ) {
         // bail if disabled
         if ( ! $this->enabled() ) {
             return $scripts;
@@ -308,16 +308,14 @@ class Airplane_Mode_Core {
 
     /**
      * add our quick toggle to the admin bar to enable / disable
-     * @return [type] [description]
+     *
+     * @param WP_Admin_Bar $wp_admin_bar The admin bar object
      */
-    public function admin_bar_toggle() {
+    public function admin_bar_toggle( WP_Admin_Bar $wp_admin_bar ) {
         // bail if current user doesnt have cap
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
-
-        // call our global admin bar object
-        global $wp_admin_bar;
 
         // get the current status
         $status = $this->enabled();
