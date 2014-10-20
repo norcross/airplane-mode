@@ -107,7 +107,7 @@ class Airplane_Mode_Core {
       * @return void
       */
     public function create_setting() {
-        add_option( 'airplane-mode', 'on' );
+        add_site_option( 'airplane-mode', 'on' );
     }
 
     /**
@@ -117,6 +117,7 @@ class Airplane_Mode_Core {
      */
     public function remove_setting() {
         delete_option( 'airplane-mode' );
+        delete_site_option( 'airplane-mode' );
     }
 
     /**
@@ -129,7 +130,11 @@ class Airplane_Mode_Core {
             return false;
         }
         // pull our status from the options table
-        return 'on' === get_option( 'airplane-mode' );
+        $option = get_site_option( 'airplane-mode' );
+        if ( false === $option ) {
+            $option = get_option( 'airplane-mode' );
+        }
+        return 'on' === $option;
     }
 
     /**
@@ -302,8 +307,11 @@ class Airplane_Mode_Core {
             return;
         }
 
+        // delete old per-site option
+        delete_option( 'airplane-mode' );
+
         // update the setting
-        update_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
+        update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
         // and go about our business
         wp_redirect( self::get_redirect() );
