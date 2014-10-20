@@ -123,6 +123,9 @@ class Airplane_Mode_Core {
      * @return bool
      */
     public function enabled() {
+        if ( defined( 'WP_CLI' ) and WP_CLI ) {
+            return false;
+        }
         // pull our status from the options table
         return 'on' === get_option( 'airplane-mode' );
     }
