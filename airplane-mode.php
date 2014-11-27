@@ -5,7 +5,7 @@ Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
 Version: 0.0.1
-Requires at least: 3.7
+Requires WP: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
 
