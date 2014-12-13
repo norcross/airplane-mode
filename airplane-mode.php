@@ -56,6 +56,7 @@ class Airplane_Mode_Core {
         add_action( 'wp_default_scripts', array( $this, 'block_script_load' ), 100   );
         add_filter( 'embed_oembed_html',  array( $this, 'block_oembed_html' ), 1,  4 );
         add_filter( 'get_avatar',         array( $this, 'replace_gravatar'  ), 1,  5 );
+        add_filter( 'map_meta_cap',       array( $this, 'prevent_auto_updates' ), 10, 2 );
 
         // kill all the http requests
         add_filter( 'pre_http_request', array( $this, 'disable_http_reqs' ), 10, 3 );
@@ -381,6 +382,20 @@ class Airplane_Mode_Core {
                 )
             )
         );
+    }
+
+    /**
+     * Filter a user's meta capabilities to prevent auto-updates from being attempted.
+     *
+     * @param array  $caps    Returns the user's actual capabilities.
+     * @param string $cap     Capability name.
+     * @return array
+     */
+    function prevent_auto_updates( $caps, $cap ) {
+        if ( in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
+            $caps[] = 'do_not_allow';
+        }
+        return $caps;
     }
 
 /// end class
