@@ -5,7 +5,7 @@ Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
 Version: 0.0.1
-Requires at least: 3.7
+Requires WP: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
 
@@ -81,9 +81,9 @@ class Airplane_Mode_Core {
 
     /**
      * If an instance exists, this returns it.  If not, it creates one and
-     * retuns it.
+     * returns it.
      *
-     * @return $instance
+     * @return self::$instance
      */
     public static function getInstance() {
         if ( ! self::$instance ) {
@@ -213,6 +213,7 @@ class Airplane_Mode_Core {
      * @param string $url     The attempted embed URL.
      * @param array  $attr    An array of shortcode attributes.
      * @param int    $post_ID Post ID.
+     * @return string $html
      */
     public function block_oembed_html( $html, $url, $attr, $post_ID ) {
 
@@ -277,7 +278,7 @@ class Airplane_Mode_Core {
 
     /**
      * load our small CSS file for the toggle switch
-     * @return [type] [description]
+     * @return void [description]
      */
     public function toggle_css() {
         // set a suffix for loading the minified or normal
@@ -293,7 +294,7 @@ class Airplane_Mode_Core {
      * @return void
      */
     public function toggle_check() {
-        // bail if current user doesnt have cap
+        // bail if current user doesn't have cap
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
@@ -342,7 +343,7 @@ class Airplane_Mode_Core {
      * @param WP_Admin_Bar $wp_admin_bar The admin bar object
      */
     public function admin_bar_toggle( WP_Admin_Bar $wp_admin_bar ) {
-        // bail if current user doesnt have cap
+        // bail if current user doesn't have cap
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
