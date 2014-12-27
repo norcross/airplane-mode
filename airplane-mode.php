@@ -5,7 +5,7 @@ Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
 Version: 0.0.1
-Requires WP: 3.7
+Requires at least: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
 
@@ -24,7 +24,6 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 
 if ( ! defined( 'AIRMDE_BASE ' ) ) {
     define( 'AIRMDE_BASE', plugin_basename( __FILE__ ) );
@@ -81,9 +80,9 @@ class Airplane_Mode_Core {
 
     /**
      * If an instance exists, this returns it.  If not, it creates one and
-     * returns it.
+     * retuns it.
      *
-     * @return self::$instance
+     * @return $instance
      */
     public static function getInstance() {
         if ( ! self::$instance ) {
@@ -103,18 +102,14 @@ class Airplane_Mode_Core {
     }
 
      /**
-      * set our initial airplane mode setting to 'on'
-      *
-      * @return void
+      * Set our initial airplane mode setting to 'on' on activation.
       */
     public function create_setting() {
         add_site_option( 'airplane-mode', 'on' );
     }
 
     /**
-     * remove our setting on plugin deactivation
-     *
-     * @return void
+     * Remove our setting on plugin deactivation.
      */
     public function remove_setting() {
         delete_option( 'airplane-mode' );
@@ -122,9 +117,9 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * helper function to check the current status
+     * Helper function to check the current status.
      *
-     * @return bool
+     * @return bool True if status is 'on'; false if not.
      */
     public function enabled() {
         if ( defined( 'WP_CLI' ) and WP_CLI ) {
@@ -139,11 +134,11 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * hop into the set of default CSS files to allow for
-     * disabling Open Sans and filter to allow other mods
+     * Hop into the set of default CSS files to allow for
+     * disabling Open Sans and filter to allow other mods.
      *
-     * @param  WP_Styles $styles all the registered CSS items
-     * @return WP_Styles $styles the same object with Open Sans src set to null
+     * @param  WP_Styles $styles All the registered CSS items.
+     * @return WP_Styles $styles The same object with Open Sans 'src' set to null.
      */
     public function block_style_load( WP_Styles $styles ) {
         // bail if disabled
@@ -173,11 +168,11 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * hop into the set of default JS files to allow for
-     * disabling as needed filter to allow other mods
+     * Hop into the set of default JS files to allow for
+     * disabling as needed filter to allow other mods.
      *
-     * @param  WP_Scripts $scripts all the registered JS items
-     * @return WP_Scripts $scripts the same object, possibly filtered
+     * @param  WP_Scripts $scripts All the registered JS items.
+     * @return WP_Scripts $scripts The same object, possibly filtered.
      */
     public function block_script_load( WP_Scripts $scripts ) {
         // bail if disabled
@@ -209,11 +204,11 @@ class Airplane_Mode_Core {
     /**
      * Block oEmbeds from displaying.
      *
-     * @param string $html    The embed HTML.
-     * @param string $url     The attempted embed URL.
-     * @param array  $attr    An array of shortcode attributes.
+     * @param string $html The embed HTML.
+     * @param string $url The attempted embed URL.
+     * @param array  $attr An array of shortcode attributes.
      * @param int    $post_ID Post ID.
-     * @return string $html
+     * @return string
      */
     public function block_oembed_html( $html, $url, $attr, $post_ID ) {
 
@@ -230,15 +225,15 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * replace all instances of gravatar with a local image file
-     * to remove the call to remote service
+     * Replace all instances of gravatar with a local image file
+     * to remove the call to remote service.
      *
-     * @param  [type] $avatar      [description]
-     * @param  [type] $id_or_email [description]
-     * @param  [type] $size        [description]
-     * @param  [type] $default     [description]
-     * @param  [type] $alt         [description]
-     * @return [type]              [description]
+     * @param string            $avatar Image tag for the user's avatar.
+     * @param int|object|string $id_or_email A user ID, email address, or comment object.
+     * @param string            $default URL to a default image to use if no avatar is available
+     * @param int               $size Square avatar width and height in pixels to retrieve.
+     * @param string            $alt Alternative text to use in the avatar image tag.
+     * @return string `<img>` tag for the user's avatar.
      */
     public function replace_gravatar( $avatar, $id_or_email, $size, $default, $alt ) {
         // bail if disabled
@@ -255,9 +250,9 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * disable all the HTTP requests being made with the action
+     * Disable all the HTTP requests being made with the action
      * happening before the status check so others can allow certain
-     * items as desired
+     * items as desired.
      *
      * @param  bool|array|WP_Error $status Whether to preempt an HTTP request return. Default false.
      * @param  array               $args   HTTP request arguments.
@@ -277,8 +272,7 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * load our small CSS file for the toggle switch
-     * @return void [description]
+     * Load our small CSS file for the toggle switch.
      */
     public function toggle_css() {
         // set a suffix for loading the minified or normal
@@ -288,13 +282,13 @@ class Airplane_Mode_Core {
     }
 
     /**
-     * check the user action from the toggle switch to set the option
-     * to 'on' or 'off'
+     * Check the user action from the toggle switch to set the option
+     * to 'on' or 'off'.
      *
-     * @return void
+     * @return void if any of the sanity checks fail and we bail early.
      */
     public function toggle_check() {
-        // bail if current user doesn't have cap
+        // bail if current user doesnt have cap
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
@@ -338,9 +332,10 @@ class Airplane_Mode_Core {
 	}
 
     /**
-     * add our quick toggle to the admin bar to enable / disable
+     * Add our quick toggle to the admin bar to enable / disable
      *
-     * @param WP_Admin_Bar $wp_admin_bar The admin bar object
+     * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
+     * @return void if current user can't manage options and we bail early.
      */
     public function admin_bar_toggle( WP_Admin_Bar $wp_admin_bar ) {
         // bail if current user doesn't have cap
@@ -354,7 +349,7 @@ class Airplane_Mode_Core {
         // set a title message (translatable)
         $title  = ! $status ? __( 'Airplane Mode is disabled', 'airplane-mode' ) : __( 'Airplane Mode is enabled', 'airplane-mode' );
 
-        // set our toggle variable paramater (in reverse since we want the opposite action)
+        // set our toggle variable parameter (in reverse since we want the opposite action)
         $toggle = $status ? 'off' : 'on';
 
         // determine our class based on the status
@@ -367,7 +362,7 @@ class Airplane_Mode_Core {
         // get my icon
         $icon = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
 
-        // get our link with the status paramater
+        // get our link with the status parameter
         $link = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
         // now add the admin bar link
@@ -389,7 +384,7 @@ class Airplane_Mode_Core {
      *
      * @param array  $caps    Returns the user's actual capabilities.
      * @param string $cap     Capability name.
-     * @return array
+     * @return array The user's filtered capabilities.
      */
     function prevent_auto_updates( $caps, $cap ) {
         if ( in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
