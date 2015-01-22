@@ -56,6 +56,7 @@ class Airplane_Mode_Core {
         add_action( 'wp_default_scripts', array( $this, 'block_script_load' ), 100   );
         add_filter( 'embed_oembed_html',  array( $this, 'block_oembed_html' ), 1,  4 );
         add_filter( 'get_avatar',         array( $this, 'replace_gravatar'  ), 1,  5 );
+        add_filter( 'default_avatar_select', array( $this, 'default_avatar' ) );
 
         // kill all the http requests
         add_filter( 'pre_http_request', array( $this, 'disable_http_reqs' ), 10, 3 );
@@ -250,6 +251,24 @@ class Airplane_Mode_Core {
 
         // return the item
         return $avatar;
+    }
+
+    /**
+     * Remove avatar images from the default avatar list
+     *
+     * @param  string $avatar_list List of default avatars
+     * @return string              Updated list with images removed
+     */
+    public function default_avatar( $avatar_list ) {
+    	// bail if disabled
+    	if ( ! $this->enabled() ) {
+    	    return $avatar_list;
+    	}
+
+    	// remove images
+    	$avatar_list = preg_replace('|<img([^>]+)> |i', '', $avatar_list);
+
+    	return $avatar_list;
     }
 
     /**
