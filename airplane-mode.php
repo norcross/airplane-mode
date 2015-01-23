@@ -4,7 +4,7 @@ Plugin Name: Airplane Mode
 Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
-Version: 0.0.2
+Version: 0.0.3
 Requires WP: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
@@ -34,7 +34,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.2' );
+	define( 'AIRMDE_VER', '0.0.3' );
 }
 
 
@@ -50,33 +50,36 @@ class Airplane_Mode_Core {
 	 * there are many like it, but this one is mine
 	 */
 	private function __construct() {
-		add_action( 'plugins_loaded',         array( $this, 'textdomain'           )        );
-		add_action( 'wp_default_styles',      array( $this, 'block_style_load'     ), 100   );
-		add_action( 'wp_default_scripts',     array( $this, 'block_script_load'    ), 100   );
-		add_filter( 'embed_oembed_html',      array( $this, 'block_oembed_html'    ), 1,  4 );
-		add_filter( 'get_avatar',             array( $this, 'replace_gravatar'     ), 1,  5 );
-		add_filter( 'map_meta_cap',           array( $this, 'prevent_auto_updates' ), 10, 2 );
-		add_filter( 'default_avatar_select',  array( $this, 'default_avatar'       )        );
+		add_action( 'plugins_loaded',               array( $this, 'textdomain'           )        );
+		add_action( 'wp_default_styles',            array( $this, 'block_style_load'     ), 100   );
+		add_action( 'wp_default_scripts',           array( $this, 'block_script_load'    ), 100   );
+		add_filter( 'embed_oembed_html',            array( $this, 'block_oembed_html'    ), 1,  4 );
+		add_filter( 'get_avatar',                   array( $this, 'replace_gravatar'     ), 1,  5 );
+		add_filter( 'map_meta_cap',                 array( $this, 'prevent_auto_updates' ), 10, 2 );
+		add_filter( 'default_avatar_select',        array( $this, 'default_avatar'       )        );
 
 		// kill all the http requests
-		add_filter( 'pre_http_request',       array( $this, 'disable_http_reqs'    ), 10, 3 );
+		add_filter( 'pre_http_request',             array( $this, 'disable_http_reqs'    ), 10, 3 );
 
 		// check for our query string and handle accordingly
-		add_action( 'init',                   array( $this, 'toggle_check'         )        );
+		add_action( 'init',                         array( $this, 'toggle_check'         )        );
+
+		// check for status change and purge transients as needed
+		add_action( 'airplane_mode_status_change',  array( $this, 'purge_transients'     )        );
 
 		// settings
-		add_action( 'admin_bar_menu',         array( $this, 'admin_bar_toggle'     ), 9999  );
-		add_action( 'wp_enqueue_scripts',     array( $this, 'toggle_css'           ), 9999  );
-		add_action( 'admin_enqueue_scripts',  array( $this, 'toggle_css'           ), 9999  );
-		add_action( 'login_enqueue_scripts',  array( $this, 'toggle_css'           ), 9999  );
+		add_action( 'admin_bar_menu',               array( $this, 'admin_bar_toggle'     ), 9999  );
+		add_action( 'wp_enqueue_scripts',           array( $this, 'toggle_css'           ), 9999  );
+		add_action( 'admin_enqueue_scripts',        array( $this, 'toggle_css'           ), 9999  );
+		add_action( 'login_enqueue_scripts',        array( $this, 'toggle_css'           ), 9999  );
 
 		// keep jetpack from attempting external requests
 		if ( $this->enabled() ) {
 			add_filter( 'jetpack_development_mode', '__return_true', 9999 );
 		}
 
-		register_activation_hook( __FILE__,   array( $this, 'create_setting'       )        );
-		register_deactivation_hook( __FILE__, array( $this, 'remove_setting'       )        );
+		register_activation_hook( __FILE__,         array( $this, 'create_setting'       )        );
+		register_deactivation_hook( __FILE__,       array( $this, 'remove_setting'       )        );
 	}
 
 	/**
@@ -222,7 +225,6 @@ class Airplane_Mode_Core {
 		} else {
 			return $html;
 		}
-
 	}
 
 	/**
@@ -340,6 +342,10 @@ class Airplane_Mode_Core {
 	 */
 	protected static function get_redirect() {
 
+		// fire action to allow for functions to run on status change
+		do_action( 'airplane_mode_status_change' );
+
+		// return the args for the actual redirect
 		return remove_query_arg( array(
 			'airplane-mode', 'airmde_nonce',
 			'user_switched', 'switched_off', 'switched_back',
@@ -347,7 +353,6 @@ class Airplane_Mode_Core {
 			'activated', 'activate', 'deactivate', 'enabled', 'disabled',
 			'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
 		) );
-
 	}
 
 	/**
@@ -405,12 +410,28 @@ class Airplane_Mode_Core {
 	 * @param string $cap     Capability name.
 	 * @return array The user's filtered capabilities.
 	 */
-	function prevent_auto_updates( $caps, $cap ) {
+	public function prevent_auto_updates( $caps, $cap ) {
 
 		if ( $this->enabled() && in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
 			$caps[] = 'do_not_allow';
 		}
 		return $caps;
+	}
+
+	/**
+	 * Check the new status after airplane mode has been enabled or
+	 * disabled and purge related transients
+	 *
+	 * @return null
+	 */
+	public function purge_transients() {
+
+		// purge the transients related to updates when disabled
+		if ( ! $this->enabled() ) {
+			delete_site_transient( 'update_core' );
+			delete_site_transient( 'update_plugins' );
+			delete_site_transient( 'update_themes' );
+		}
 	}
 
 /// end class

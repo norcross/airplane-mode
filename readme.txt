@@ -1,38 +1,61 @@
-Airplane Mode
-========================
 
-Current Version: 0.0.3
+=== Airplane Mode ===
+Contributors: norcross
+Donate link: https://andrewnorcross.com/donate
+Tags: external calls, HTTP
+Requires at least: 3.7
+Tested up to: 4.1
+Stable tag: 0.0.3
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-## About
+Control loading of external files when developing locally
+
+== Description ==
+
 Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
 
-## Current Actions
+Features
+
 * sets the src for Open Sans CSS font file to null due to dependency issues ( see [related Trac ticket](https://core.trac.wordpress.org/ticket/28478) )
 * replaces all instances of Gravatar with a local image to remove external call
 * removes all HTTP requests
 * includes toggle in admin bar for quick enable / disable
 
-## Changelog:
+== Installation ==
 
-### Version 0.0.3 - 2015/01/23
+This section describes how to install the plugin and get it working.
 
+1. Upload `airplane-mode` to the `/wp-content/plugins/` directory.
+1. Activate the plugin through the 'Plugins' menu in WordPress.
+1. Toggle users as needed
+
+== Frequently Asked Questions ==
+
+= Why do I need this? =
+
+Because you are a jet set developer who needs to work without internet.
+
+
+== Screenshots ==
+
+
+== Changelog ==
+
+= 0.0.3 - 2015/01/23 =
 * added `airplane_mode_status_change` hook for functions to fire on status change
 * purge update related transients on disable
 * added WordPress formatted readme file
 
-### Version 0.0.2 - 2015/01/21
-
+= 0.0.2 - 2015/01/21 =
 * added GitHub Updater support
 * fixed update capabilities when status is disabled
 
-### Version 0.0.1 - 2014/06/01
-
+= 0.0.1 - 2014/06/01 =
 * lots of stuff. I wasn't keeping a changelog. I apologize.
 
-## Roadmap
-* fine tune HTTP request removal
-* find other calls from core
-* add other requests from popular plugins
 
+== Upgrade Notice ==
 
-#### pull requests are very much welcome and encouraged
+= 0.0.1 =
+Initial release
