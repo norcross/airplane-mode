@@ -5,7 +5,7 @@ Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
 Version: 0.0.2
-Requires at least: 3.7
+Requires WP: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
 
@@ -81,9 +81,9 @@ class Airplane_Mode_Core {
 
 	/**
 	 * If an instance exists, this returns it.  If not, it creates one and
-	 * retuns it.
+	 * returns it.
 	 *
-	 * @return $instance
+	 * @return self::$instance
 	 */
 	public static function getInstance() {
 		if ( ! self::$instance ) {
@@ -307,7 +307,7 @@ class Airplane_Mode_Core {
 	 * @return void if any of the sanity checks fail and we bail early.
 	 */
 	public function toggle_check() {
-		// bail if current user doesnt have cap
+		// bail if current user doesn't have cap
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
