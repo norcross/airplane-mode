@@ -46,6 +46,12 @@ class Airplane_Mode_Core {
 	static $instance = false;
 
 	/**
+	 * Number of HTTP requests
+	 * @var $http_count
+	 */
+	private $http_count = 0;
+
+	/**
 	 * this is our constructor.
 	 * there are many like it, but this one is mine
 	 */
@@ -80,6 +86,8 @@ class Airplane_Mode_Core {
 
 		register_activation_hook( __FILE__,         array( $this, 'create_setting'       )        );
 		register_deactivation_hook( __FILE__,       array( $this, 'remove_setting'       )        );
+
+		add_action( 'airplane_mode_http_args',      array( $this, 'count_http_requests'  ), 0, 0  );
 	}
 
 	/**
@@ -386,6 +394,9 @@ class Airplane_Mode_Core {
 		// get my icon
 		$icon = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
 
+		// HTTP request count
+		$count = '<span class="airplane-http-count">' . $this->http_count . '</span>';
+
 		// get our link with the status parameter
 		$link = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
@@ -393,7 +404,7 @@ class Airplane_Mode_Core {
 		$wp_admin_bar->add_menu(
 			array(
 				'id'        => 'airplane-mode-toggle',
-				'title'     => $icon . $text,
+				'title'     => $count . $icon . $text,
 				'href'      => esc_url( $link ),
 				'position'  => 0,
 				'meta'      => array(
@@ -432,6 +443,16 @@ class Airplane_Mode_Core {
 			delete_site_transient( 'update_plugins' );
 			delete_site_transient( 'update_themes' );
 		}
+	}
+
+	/**
+	 * Increase HTTP request counter by one.
+	 *
+	 * @return null
+	 */
+	public function count_http_requests() {
+
+		$this->http_count++;
 	}
 
 /// end class
