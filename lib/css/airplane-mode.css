@@ -17,3 +17,7 @@
 #wp-admin-bar-airplane-mode-toggle span.airplane-toggle-icon-off {
 	background: red;
 }
+
+.plugin-install-php a.upload.add-new-h2, .wp-filter, .theme-browser.content-filterable.rendered, a.browse-themes.add-new-h2{
+	display: none !important;
+}
