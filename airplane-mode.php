@@ -18,7 +18,7 @@ the Free Software Foundation; version 2 of the License (GPL v2) only.
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License for more details.ta
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
@@ -154,7 +154,7 @@ class Airplane_Mode_Core {
 			remove_action( 'admin_init', 'wp_theme_update_rows' );
 			remove_action( 'admin_notices', 'maintenance_nag' );
 			remove_action('init', 'wp_schedule_update_checks');
-			add_filter( 'install_plugins_tabs', array( $this, 'no_tabs2' ) );
+			add_filter( 'install_plugins_tabs', array( $this, 'no_plugin_add_new_tabs' ) );
 			add_action('install_themes_upload', 'install_themes_upload', 10, 0);
 		}
 
@@ -602,7 +602,7 @@ class Airplane_Mode_Core {
 		return $actions;
 	}
 
-	public function no_tabs2( $nonmenu_tabs ){
+	public function no_plugin_add_new_tabs( $nonmenu_tabs ){
 		unset( $nonmenu_tabs['featured'] );
 		unset( $nonmenu_tabs['popular']);
 		unset( $nonmenu_tabs['recommended']);
