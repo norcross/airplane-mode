@@ -76,7 +76,6 @@ class Airplane_Mode_Core {
 		register_activation_hook( __FILE__,         array( $this, 'create_setting'       )        );
 		register_deactivation_hook( __FILE__,       array( $this, 'remove_setting'       )        );
 
-		// keep jetpack from attempting external requests
 		if ( $this->enabled() ) {
 			// keep jetpack from attempting external requests
 			add_filter( 'jetpack_development_mode', '__return_true', 9999 );
