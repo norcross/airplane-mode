@@ -168,8 +168,12 @@ class Airplane_Mode_Core {
 			add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
 			// Define core contants for more protection
-			define( 'AUTOMATIC_UPDATER_DISABLED', true );
-			define( 'WP_AUTO_UPDATE_CORE', false );
+			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
+				define( 'AUTOMATIC_UPDATER_DISABLED', true );
+			}
+			if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) {
+				define( 'WP_AUTO_UPDATE_CORE', false );
+			}
 		}
 	}
 
