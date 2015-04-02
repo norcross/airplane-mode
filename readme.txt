@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 0.0.3
+Stable tag: 0.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.0.4 - 2015/04/02 =
+* added multiple checks for all the various theme and plugin update calls. props @chriscct7
+* added HTTP counter on a per-page basis. props @szepeviktor
 
 = 0.0.3 - 2015/01/23 =
 * added `airplane_mode_status_change` hook for functions to fire on status change

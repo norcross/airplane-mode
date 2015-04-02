@@ -4,7 +4,7 @@ Plugin Name: Airplane Mode
 Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
-Version: 0.0.3
+Version: 0.0.4
 Requires WP: 3.7
 Author URI: http://reaktivstudios.com/
 GitHub Plugin URI: https://github.com/norcross/airplane-mode
@@ -34,7 +34,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.3' );
+	define( 'AIRMDE_VER', '0.0.4' );
 }
 
 /**
