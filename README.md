@@ -14,6 +14,9 @@ Control loading of external files when developing locally. WP loads certain exte
 
 ## Changelog:
 
+### Version 0.0.5 - 2015/04/02
+* fixed bug in update logic that was preventing checks when disabled (but activated). props @johnbillion
+
 ### Version 0.0.4 - 2015/04/02
 
 * added multiple checks for all the various theme and plugin update calls. props @chriscct7

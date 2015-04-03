@@ -34,7 +34,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.4' );
+	define( 'AIRMDE_VER', '0.0.5' );
 }
 
 /**
