@@ -498,11 +498,15 @@ class Airplane_Mode_Core {
 		// get my text
 		$text   = __( 'Airplane Mode', 'airplane-mode' );
 
-		// get my icon
-		$icon   = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
-
 		// get the HTTP count
-		$count  = '<span class="airplane-http-count">' . absint( $this->http_count ) . '</span>';
+		if ( ! empty( $this->http_count ) ) {
+			$count = number_format_i18n( $this->http_count );
+		} else {
+			$count = '';
+		}
+
+		// get my icon
+		$icon   = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '">' . $count . '</span>';
 
 		// get our link with the status parameter
 		$link   = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
@@ -511,7 +515,7 @@ class Airplane_Mode_Core {
 		$wp_admin_bar->add_menu(
 			array(
 				'id'        => 'airplane-mode-toggle',
-				'title'     => $count . $icon . $text,
+				'title'     => $icon . $text,
 				'href'      => esc_url( $link ),
 				'position'  => 0,
 				'meta'      => array(
