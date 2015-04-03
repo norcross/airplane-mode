@@ -1,7 +1,7 @@
 Airplane Mode
 ========================
 
-Current Version: 0.0.4
+Current Version: 0.0.6
 
 ## About
 Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
@@ -13,6 +13,9 @@ Control loading of external files when developing locally. WP loads certain exte
 * includes toggle in admin bar for quick enable / disable
 
 ## Changelog:
+
+### Version 0.0.6 - 2015/04/02 =
+* version bump for GitHub updater
 
 ### Version 0.0.5 - 2015/04/02
 * fixed bug in update logic that was preventing checks when disabled (but activated). props @johnbillion
