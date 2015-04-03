@@ -89,14 +89,17 @@ class Airplane_Mode_Core {
 		add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ), 9999  );
 
 		// Remove bulk action for updating themes/plugins
-		add_filter('bulk_actions-plugins',                  array( $this, 'remove_bulk_actions'     )        );
-		add_filter('bulk_actions-themes',                   array( $this, 'remove_bulk_actions'     )        );
-		add_filter('bulk_actions-plugins-network',          array( $this, 'remove_bulk_actions'     )        );
-		add_filter('bulk_actions-themes-network',           array( $this, 'remove_bulk_actions'     )        );
+		add_filter( 'bulk_actions-plugins',                 array( $this, 'remove_bulk_actions'     )        );
+		add_filter( 'bulk_actions-themes',                  array( $this, 'remove_bulk_actions'     )        );
+		add_filter( 'bulk_actions-plugins-network',         array( $this, 'remove_bulk_actions'     )        );
+		add_filter( 'bulk_actions-themes-network',          array( $this, 'remove_bulk_actions'     )        );
 
 		// admin UI items
 		add_action( 'admin_menu',                           array( $this, 'admin_menu_items'        ), 9999  );
 		add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )        );
+
+		// theme update API for different calls
+		add_filter( 'themes_api_args',                      array( $this, 'bypass_theme_api'        ), 10, 2 );
 
 		// time based transient checks
 		add_filter( 'pre_site_transient_update_themes',     array( $this, 'last_checked_themes'     )        );
@@ -206,6 +209,7 @@ class Airplane_Mode_Core {
 	public function create_setting() {
 		add_site_option( 'airplane-mode', 'on' );
 		set_transient( 'available_translations', '', 999999999999 );
+		set_transient( 'wporg_theme_feature_list', array(), 999999999999 );
 	}
 
 	/**
@@ -215,6 +219,7 @@ class Airplane_Mode_Core {
 		delete_option( 'airplane-mode' );
 		delete_site_option( 'airplane-mode' );
 		delete_transient( 'available_translations' );
+		delete_transient( 'wporg_theme_feature_list' );
 	}
 
 	/**
@@ -621,6 +626,26 @@ class Airplane_Mode_Core {
 		wp_clear_scheduled_hook( 'wp_update_plugins' );
 		wp_clear_scheduled_hook( 'wp_version_check' );
 		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
+	}
+
+	/**
+	 * hijack the themes api setup to bypass the API call
+	 *
+	 * @param object $args   Arguments used to query for installer pages from the Themes API.
+	 * @param string $action Requested action. Likely values are 'theme_information',
+	 *                       'feature_list', or 'query_themes'.
+	 *
+	 * @return bool          true or false depending on the type of query
+	 */
+	public function bypass_theme_api( $args, $action ) {
+
+		// bail if disabled
+		if ( ! $this->enabled() ) {
+			return $args;
+		}
+
+		// return false on feature list to avoid the API call
+		return ! empty( $action ) && $action == 'feature_list' ? false : $args;
 	}
 
 	/**
