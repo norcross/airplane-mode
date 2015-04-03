@@ -723,6 +723,11 @@ class Airplane_Mode_Core {
 	 * @return array           an empty array
 	 */
 	public function remove_update_array( $items ) {
+		// bail if disabled
+		if ( ! $this->enabled() ) {
+			return $items;
+		}
+
 		return array();
 	}
 
