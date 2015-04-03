@@ -765,12 +765,12 @@ class Airplane_Mode_Core {
 
 		// bail if disabled
 		if ( ! $this->enabled() ) {
-			return $actions;
+			return $nonmenu_tabs;
 		}
 
 		// set an array of tabs to be removed with optional filter
 		if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'featured', 'popular', 'recommended', 'favorites' ) ) ) {
-			return $actions;
+			return $nonmenu_tabs;
 		}
 
 		// loop the item array and unset each
