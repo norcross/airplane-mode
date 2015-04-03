@@ -412,12 +412,8 @@ class Airplane_Mode_Core {
 	 * Load our small CSS file for the toggle switch.
 	 */
 	public function toggle_css() {
-
-		// set a suffix for loading the minified or normal
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
-
 		// load the CSS file itself
-		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode' . $suffix, __FILE__ ), array(), AIRMDE_VER, 'all' );
+		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode.css', __FILE__ ), array(), AIRMDE_VER, 'all' );
 	}
 
 	/**
