@@ -418,6 +418,11 @@ class Airplane_Mode_Core {
 
 		// load the CSS file itself
 		wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode' . $suffix, __FILE__ ), array(), AIRMDE_VER, 'all' );
+
+		// load this CSS when enabled
+		if ( $this->enabled() ) {
+			wp_enqueue_style( 'airplane-mode-enabled', plugins_url( '/lib/css/airplane-mode-enabled' . $suffix . '.php', __FILE__ ), array(), AIRMDE_VER, 'all' );
+		}
 	}
 
 	/**
