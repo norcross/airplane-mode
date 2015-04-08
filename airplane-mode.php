@@ -170,6 +170,9 @@ class Airplane_Mode_Core {
 			// add back the upload tab
 			add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
+			// add body class to target CSS
+			add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
+
 			// Define core contants for more protection
 			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
 				define( 'AUTOMATIC_UPDATER_DISABLED', true );
@@ -821,6 +824,14 @@ class Airplane_Mode_Core {
 		$this->http_count++;
 	}
 
+	/**
+	 * Add body class to admin pages.
+	 *
+	 * @return string
+	 */
+	public function admin_body_class() {
+		return 'airplane-mode-enabled';
+	}
 
 /// end class
 }
