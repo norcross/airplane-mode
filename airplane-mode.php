@@ -802,7 +802,7 @@ class Airplane_Mode_Core {
 		}
 
 		// set an array of tabs to be removed with optional filter
-		if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'featured', 'popular', 'recommended', 'favorites' ) ) ) {
+		if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'featured', 'popular', 'recommended', 'favorites', 'beta' ) ) ) {
 			return $nonmenu_tabs;
 		}
 
