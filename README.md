@@ -1,8 +1,6 @@
 Airplane Mode
 ========================
 
-Current Version: 0.0.6
-
 ## About
 Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
 
@@ -12,38 +10,13 @@ Control loading of external files when developing locally. WP loads certain exte
 * removes all HTTP requests
 * includes toggle in admin bar for quick enable / disable
 
-## Changelog:
+## Changelog
 
-### Version 0.0.6 - 2015/04/02 =
-* version bump for GitHub updater
-
-### Version 0.0.5 - 2015/04/02
-* fixed bug in update logic that was preventing checks when disabled (but activated). props @johnbillion
-
-### Version 0.0.4 - 2015/04/02
-
-* added multiple checks for all the various theme and plugin update calls. props @chriscct7
-* added HTTP counter on a per-page basis. props @szepeviktor
-
-### Version 0.0.3 - 2015/01/23
-
-* added `airplane_mode_status_change` hook for functions to fire on status change
-* purge update related transients on disable
-* added WordPress formatted readme file
-
-### Version 0.0.2 - 2015/01/21
-
-* added GitHub Updater support
-* fixed update capabilities when status is disabled
-
-### Version 0.0.1 - 2014/06/01
-
-* lots of stuff. I wasn't keeping a changelog. I apologize.
+See [CHANGES.md](CHANGES.md).
 
 ## Roadmap
 * fine tune HTTP request removal
 * find other calls from core
 * add other requests from popular plugins
-
 
 #### pull requests are very much welcome and encouraged
