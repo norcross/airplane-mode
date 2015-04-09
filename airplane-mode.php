@@ -64,6 +64,7 @@ class Airplane_Mode_Core {
 		add_action( 'wp_default_scripts',                   array( $this, 'block_script_load'       ), 100   );
 		add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )        );
 		add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )        );
+		add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )        );
 
 		add_filter( 'embed_oembed_html',                    array( $this, 'block_oembed_html'       ), 1,  4 );
 		add_filter( 'get_avatar',                           array( $this, 'replace_gravatar'        ), 1,  5 );
@@ -170,9 +171,6 @@ class Airplane_Mode_Core {
 			// add back the upload tab
 			add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
-			// add body class to target CSS
-			add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
-
 			// Define core contants for more protection
 			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
 				define( 'AUTOMATIC_UPDATER_DISABLED', true );
@@ -232,6 +230,7 @@ class Airplane_Mode_Core {
 	 */
 	public function enabled() {
 
+		// bail if CLI
 		if ( defined( 'WP_CLI' ) and WP_CLI ) {
 			return false;
 		}
@@ -239,10 +238,12 @@ class Airplane_Mode_Core {
 		// pull our status from the options table
 		$option = get_site_option( 'airplane-mode' );
 
+		// backup check for regular options table
 		if ( false === $option ) {
 			$option = get_option( 'airplane-mode' );
 		}
 
+		// return the option flag
 		return 'on' === $option;
 	}
 
@@ -327,6 +328,15 @@ class Airplane_Mode_Core {
 	 */
 	public function block_oembed_html( $html, $url, $attr, $post_ID ) {
 		return $this->enabled() ? sprintf( '<div class="loading-placeholder airplane-mode-placeholder"><p>%s</p></div>', sprintf( __( 'Airplane Mode is enabled. oEmbed blocked for %1$s.', 'airplane-mode' ), esc_url( $url ) ) ) : $html;
+	}
+
+	/**
+	 * Add body class to admin pages based on plugin status
+	 *
+	 * @return string          our new class appended to the existing string
+	 */
+	public function admin_body_class() {
+		return $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
 	}
 
 	/**
@@ -822,15 +832,6 @@ class Airplane_Mode_Core {
 	 */
 	public function count_http_requests() {
 		$this->http_count++;
-	}
-
-	/**
-	 * Add body class to admin pages.
-	 *
-	 * @return string
-	 */
-	public function admin_body_class() {
-		return 'airplane-mode-enabled';
 	}
 
 /// end class
