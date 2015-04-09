@@ -22,9 +22,9 @@
 	background: red;
 }
 
-.plugin-install-php a.upload.add-new-h2,
-.wp-filter,
-.theme-browser.content-filterable.rendered,
-a.browse-themes.add-new-h2 {
+.airplane-mode-enabled .plugin-install-php a.upload.add-new-h2,
+.airplane-mode-enabled .wp-filter,
+.airplane-mode-enabled .theme-browser.content-filterable.rendered,
+.airplane-mode-enabled a.browse-themes.add-new-h2 {
 	display: none !important;
 }
