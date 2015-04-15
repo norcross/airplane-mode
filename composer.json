@@ -2,7 +2,7 @@
     "name": "norcross/airplane-mode",
         "description": "Disables external data calls and loading for working on a purely local (i.e. no internet connection) WordPress site",
         "type": "wordpress-plugin",
-        "license": "GPL 2.0",
+        "license": "MIT",
         "authors":[
         {
             "name": "Andrew Norcross",
