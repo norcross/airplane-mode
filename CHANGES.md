@@ -1,3 +1,8 @@
+#### Version 0.0.7 - 2015/04/21
+* fixed some CSS from hiding plugins page bar
+* moved changelog to it's own file
+* added `composer.json`
+
 #### Version 0.0.6 - 2015/04/02
 * version bump for GitHub updater
 

@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 3.7
 Tested up to: 4.1
-Stable tag: 0.0.6
+Stable tag: 0.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,11 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.0.7 - 2015/04/21 =
+  * fixed some CSS from hiding plugins page bar
+  * moved changelog to it's own file
+  * added `composer.json`
 
 = 0.0.6 - 2015/04/02 =
 * version bump for GitHub updater
