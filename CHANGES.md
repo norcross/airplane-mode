@@ -2,6 +2,8 @@
 * fixed some CSS from hiding plugins page bar
 * moved changelog to it's own file
 * added `composer.json`
+* added contributors to readme
+* clarified license (MIT)
 
 #### Version 0.0.6 - 2015/04/02
 * version bump for GitHub updater

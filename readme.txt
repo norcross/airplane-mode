@@ -1,13 +1,14 @@
 
 === Airplane Mode ===
 Contributors: norcross
+Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 3.7
 Tested up to: 4.2
 Stable tag: 0.0.7
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: MIT
+License URI: http://opensource.org/licenses/mit-license.php
 
 Control loading of external files when developing locally
 
