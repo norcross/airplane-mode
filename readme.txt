@@ -1,6 +1,6 @@
 
 === Airplane Mode ===
-Contributors: norcross
+Contributors: norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquith
 Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
@@ -44,9 +44,11 @@ Because you are a jet set developer who needs to work without internet.
 == Changelog ==
 
 = 0.0.7 - 2015/04/21 =
-  * fixed some CSS from hiding plugins page bar
-  * moved changelog to it's own file
-  * added `composer.json`
+* fixed some CSS from hiding plugins page bar
+* moved changelog to it's own file
+* added `composer.json`
+* added contributors to readme
+* clarified license (MIT)
 
 = 0.0.6 - 2015/04/02 =
 * version bump for GitHub updater
