@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Airplane Mode
-Plugin URI: https://github.com/norcross/airplane-mode
+Plugin URI: http://reaktivstudios.com/
 Description: Control loading of external files when developing locally
 Author: Andrew Norcross
 Version: 0.0.7
