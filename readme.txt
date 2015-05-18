@@ -6,7 +6,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 3.7
 Tested up to: 4.2
-Stable tag: 0.0.7
+Stable tag: 0.0.8
 License: MIT
 License URI: http://opensource.org/licenses/mit-license.php
 
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.0.8 - 2015/05/18
+* added `class_exists` as now included in DesktopServer and collisions could result
+* fixed `if ( ! defined ...` for `AIRMDE_BASE` constant
 
 = 0.0.7 - 2015/04/21 =
 * fixed some CSS from hiding plugins page bar

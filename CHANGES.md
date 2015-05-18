@@ -1,3 +1,8 @@
+#### Version 0.0.8 - 2015/05/18
+* added `class_exists` as now included in DesktopServer and collisions could result
+* fixed `if ( ! defined ...` for `AIRMDE_BASE` constant
+* add `.gitattributes` to remove certain files from updates
+
 #### Version 0.0.7 - 2015/04/21
 * fixed some CSS from hiding plugins page bar
 * moved changelog to it's own file
