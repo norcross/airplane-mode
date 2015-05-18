@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 */
 
-if ( ! defined( 'AIRMDE_BASE ' ) ) {
+if ( ! defined( 'AIRMDE_BASE' ) ) {
 	define( 'AIRMDE_BASE', plugin_basename( __FILE__ ) );
 }
 
