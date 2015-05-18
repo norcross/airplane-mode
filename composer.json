@@ -1,15 +1,15 @@
 {
-    "name": "norcross/airplane-mode",
-        "description": "Disables external data calls and loading for working on a purely local (i.e. no internet connection) WordPress site",
-        "type": "wordpress-plugin",
-        "license": "MIT",
-        "authors":[
+    "name": "Airplane Mode",
+    "description": "Disables external data calls and loading for working on a purely local (i.e. no internet connection) WordPress site",
+    "type": "wordpress-plugin",
+    "license": "MIT",
+    "authors":[
         {
             "name": "Andrew Norcross",
             "email": "andrew@andrewnorcross.com"
         }
     ],
-        "require": {
-            "composer/installers": "~1.0"
-        }
+    "require": {
+        "composer/installers": "~1.0"
+    }
 }

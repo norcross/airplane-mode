@@ -43,7 +43,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.7' );
+	define( 'AIRMDE_VER', '0.0.8' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -70,59 +70,59 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * there are many like it, but this one is mine
 		 */
 		private function __construct() {
-			add_action( 'plugins_loaded',                       array( $this, 'textdomain'              )        );
-			add_action( 'wp_default_styles',                    array( $this, 'block_style_load'        ), 100   );
-			add_action( 'wp_default_scripts',                   array( $this, 'block_script_load'       ), 100   );
-			add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )        );
-			add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )        );
-			add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )        );
+			add_action( 'plugins_loaded',                       array( $this, 'textdomain'              )           );
+			add_action( 'wp_default_styles',                    array( $this, 'block_style_load'        ),  100     );
+			add_action( 'wp_default_scripts',                   array( $this, 'block_script_load'       ),  100     );
+			add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )           );
+			add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )           );
+			add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )           );
 
-			add_filter( 'embed_oembed_html',                    array( $this, 'block_oembed_html'       ), 1,  4 );
-			add_filter( 'get_avatar',                           array( $this, 'replace_gravatar'        ), 1,  5 );
-			add_filter( 'map_meta_cap',                         array( $this, 'prevent_auto_updates'    ), 10, 2 );
-			add_filter( 'default_avatar_select',                array( $this, 'default_avatar'          )        );
+			add_filter( 'embed_oembed_html',                    array( $this, 'block_oembed_html'       ),  1,  4   );
+			add_filter( 'get_avatar',                           array( $this, 'replace_gravatar'        ),  1,  5   );
+			add_filter( 'map_meta_cap',                         array( $this, 'prevent_auto_updates'    ),  10, 2   );
+			add_filter( 'default_avatar_select',                array( $this, 'default_avatar'          )           );
 
 			// kill all the http requests
-			add_filter( 'pre_http_request',                     array( $this, 'disable_http_reqs'       ), 10, 3 );
+			add_filter( 'pre_http_request',                     array( $this, 'disable_http_reqs'       ),  10, 3   );
 
 			// check for our query string and handle accordingly
-			add_action( 'init',                                 array( $this, 'toggle_check'            )        );
+			add_action( 'init',                                 array( $this, 'toggle_check'            )           );
 
 			// check for status change and purge transients as needed
-			add_action( 'airplane_mode_status_change',          array( $this, 'purge_transients'        )        );
+			add_action( 'airplane_mode_status_change',          array( $this, 'purge_transients'        )           );
 
 			// add our counter action
-			add_action( 'airplane_mode_http_args',              array( $this, 'count_http_requests'     ),  0, 0 );
+			add_action( 'airplane_mode_http_args',              array( $this, 'count_http_requests'     ),  0, 0    );
 
 			// settings
-			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ), 9999  );
-			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ), 9999  );
-			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ), 9999  );
-			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ), 9999  );
+			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ),  9999    );
+			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
+			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
+			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 
 			// Remove bulk action for updating themes/plugins
-			add_filter( 'bulk_actions-plugins',                 array( $this, 'remove_bulk_actions'     )        );
-			add_filter( 'bulk_actions-themes',                  array( $this, 'remove_bulk_actions'     )        );
-			add_filter( 'bulk_actions-plugins-network',         array( $this, 'remove_bulk_actions'     )        );
-			add_filter( 'bulk_actions-themes-network',          array( $this, 'remove_bulk_actions'     )        );
+			add_filter( 'bulk_actions-plugins',                 array( $this, 'remove_bulk_actions'     )           );
+			add_filter( 'bulk_actions-themes',                  array( $this, 'remove_bulk_actions'     )           );
+			add_filter( 'bulk_actions-plugins-network',         array( $this, 'remove_bulk_actions'     )           );
+			add_filter( 'bulk_actions-themes-network',          array( $this, 'remove_bulk_actions'     )           );
 
 			// admin UI items
-			add_action( 'admin_menu',                           array( $this, 'admin_menu_items'        ), 9999  );
-			add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )        );
+			add_action( 'admin_menu',                           array( $this, 'admin_menu_items'        ),  9999    );
+			add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )           );
 
 			// theme update API for different calls
-			add_filter( 'themes_api_args',                      array( $this, 'bypass_theme_api'        ), 10, 2 );
+			add_filter( 'themes_api_args',                      array( $this, 'bypass_theme_api'        ),  10, 2   );
 
 			// time based transient checks
-			add_filter( 'pre_site_transient_update_themes',     array( $this, 'last_checked_themes'     )        );
-			add_filter( 'pre_site_transient_update_plugins',    array( $this, 'last_checked_plugins'    )        );
-			add_filter( 'pre_site_transient_update_core',       array( $this, 'last_checked_core'       )        );
-			add_filter( 'site_transient_update_themes',         array( $this, 'remove_update_array'     )        );
-			add_filter( 'site_transient_update_plugins',        array( $this, 'remove_update_array'     )        );
+			add_filter( 'pre_site_transient_update_themes',     array( $this, 'last_checked_themes'     )           );
+			add_filter( 'pre_site_transient_update_plugins',    array( $this, 'last_checked_plugins'    )           );
+			add_filter( 'pre_site_transient_update_core',       array( $this, 'last_checked_core'       )           );
+			add_filter( 'site_transient_update_themes',         array( $this, 'remove_update_array'     )           );
+			add_filter( 'site_transient_update_plugins',        array( $this, 'remove_update_array'     )           );
 
 			// our activation / deactivation triggers
-			register_activation_hook( __FILE__,                 array( $this, 'create_setting'          )        );
-			register_deactivation_hook( __FILE__,               array( $this, 'remove_setting'          )        );
+			register_activation_hook( __FILE__,                 array( $this, 'create_setting'          )           );
+			register_deactivation_hook( __FILE__,               array( $this, 'remove_setting'          )           );
 
 			// all our various filter checks
 			if ( $this->enabled() ) {
