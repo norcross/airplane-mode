@@ -515,7 +515,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$status = $this->enabled();
 
 			// set a title message (translatable)
-			$title  = ! $status ? __( 'Airplane Mode is disabled', 'airplane-mode' ) : __( 'Airplane Mode is enabled', 'airplane-mode' );
+			$title  = ! $status ? __( 'Airplane Mode is disabled.', 'airplane-mode' ) : __( 'Airplane Mode is enabled.', 'airplane-mode' );
 
 			// set our toggle variable parameter (in reverse since we want the opposite action)
 			$toggle = $status ? 'off' : 'on';
@@ -530,8 +530,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// get the HTTP count
 			if ( ! empty( $this->http_count ) ) {
 				$count = number_format_i18n( $this->http_count );
+				$title .= sprintf( _n( ' There was %s http request.', ' There were %s http requests.', $count, 'airplane-mode' ), $count );
 			} else {
 				$count = '';
+				$title .= __( ' There were no http requests.', 'airplane-mode' );
 			}
 
 			// get my icon
