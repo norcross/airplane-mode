@@ -452,6 +452,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_check() {
 
+			global $pagenow;
+
 			// bail if current user doesn't have cap
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
@@ -474,7 +476,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
 			// and go about our business
-			wp_redirect( self::get_redirect() );
+			$alt_url = is_multisite() ? network_admin_url() : admin_url();
+			$url     = $this->enabled() && ( 'update-core.php' !== $pagenow ) ? self::get_redirect() : $alt_url;
+
+			wp_redirect( $url );
 			exit;
 		}
 
