@@ -485,8 +485,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		protected static function get_redirect() {
 
-			global $pagenow;
-
 			// fire action to allow for functions to run on status change
 			do_action( 'airplane_mode_status_change' );
 
@@ -500,8 +498,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			) );
 
 			// redirect away from the update core page
-			$alt_url  = is_multisite() ? network_admin_url() : admin_url();
-			$redirect = ( 'update-core.php' !== $pagenow ) ? $redirect : $alt_url;
+			$redirect = str_replace( 'update-core.php', '', $redirect );
 
 			return $redirect;
 		}
