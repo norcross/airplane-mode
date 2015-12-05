@@ -489,13 +489,18 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			do_action( 'airplane_mode_status_change' );
 
 			// return the args for the actual redirect
-			return remove_query_arg( array(
-				'airplane-mode', 'airmde_nonce',
-				'user_switched', 'switched_off', 'switched_back',
-				'message', 'update', 'updated', 'settings-updated', 'saved',
-				'activated', 'activate', 'deactivate', 'enabled', 'disabled',
-				'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
+			$redirect = remove_query_arg( array(
+					'airplane-mode', 'airmde_nonce',
+					'user_switched', 'switched_off', 'switched_back',
+					'message', 'update', 'updated', 'settings-updated', 'saved',
+					'activated', 'activate', 'deactivate', 'enabled', 'disabled',
+					'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
 			) );
+
+			// redirect away from the update core page
+			$redirect = str_replace( 'update-core.php', '', $redirect );
+
+			return $redirect;
 		}
 
 		/**
