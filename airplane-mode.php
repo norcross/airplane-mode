@@ -452,8 +452,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_check() {
 
-			global $pagenow;
-
 			// bail if current user doesn't have cap
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
@@ -476,10 +474,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
 			// and go about our business
-			$alt_url = is_multisite() ? network_admin_url() : admin_url();
-			$url     = $this->enabled() && ( 'update-core.php' !== $pagenow ) ? self::get_redirect() : $alt_url;
-
-			wp_redirect( $url );
+			wp_redirect( self::get_redirect() );
 			exit;
 		}
 
@@ -490,17 +485,25 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		protected static function get_redirect() {
 
+			global $pagenow;
+
 			// fire action to allow for functions to run on status change
 			do_action( 'airplane_mode_status_change' );
 
 			// return the args for the actual redirect
-			return remove_query_arg( array(
-				'airplane-mode', 'airmde_nonce',
-				'user_switched', 'switched_off', 'switched_back',
-				'message', 'update', 'updated', 'settings-updated', 'saved',
-				'activated', 'activate', 'deactivate', 'enabled', 'disabled',
-				'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
+			$redirect = remove_query_arg( array(
+					'airplane-mode', 'airmde_nonce',
+					'user_switched', 'switched_off', 'switched_back',
+					'message', 'update', 'updated', 'settings-updated', 'saved',
+					'activated', 'activate', 'deactivate', 'enabled', 'disabled',
+					'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
 			) );
+
+			// redirect away from the update core page
+			$alt_url  = is_multisite() ? network_admin_url() : admin_url();
+			$redirect = ( 'update-core.php' !== $pagenow ) ? $redirect : $alt_url;
+
+			return $redirect;
 		}
 
 		/**
