@@ -13,7 +13,7 @@ Airplane Mode
 Control loading of external files when developing locally. WP loads certain external files (fonts, Gravatar, etc.) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes/unhooks those actions to reduce load time and avoid errors due to missing files.
 
 ## Current Actions
-* sets the source for the Open Sans CSS font file to null due to dependency issues (see [related Trac ticket](https://core.trac.wordpress.org/ticket/28478))
+* sets the source for external style sheets to null
 * replaces all instances of Gravatar with a local image to remove the external call
 * removes all HTTP requests
 * includes a toggle in the admin bar for quick enable/disable
