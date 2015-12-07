@@ -1,3 +1,10 @@
+#### Version 0.0.9 - 2015/12/07
+* changed from colored circle to actual airplane icon for usability
+* fixed dashboard link icon for multisite
+* changed to exclude all external stylesheets, not just Open Sans
+* added language files for translateable goodness
+* general cleanup for WP coding standards
+
 #### Version 0.0.8 - 2015/05/18
 * added `class_exists` as now included in DesktopServer and collisions could result
 * fixed `if ( ! defined ...` for `AIRMDE_BASE` constant

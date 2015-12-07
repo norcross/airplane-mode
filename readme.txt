@@ -4,9 +4,9 @@ Contributors: norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquit
 Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
-Requires at least: 3.7
-Tested up to: 4.2
-Stable tag: 0.0.8
+Requires at least: 4.0
+Tested up to: 4.3
+Stable tag: 0.0.9
 License: MIT
 License URI: http://opensource.org/licenses/mit-license.php
 
@@ -42,6 +42,13 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.0.9 - 2015/12/07
+* changed from colored circle to actual airplane icon for usability
+* fixed dashboard link icon for multisite
+* changed to exclude all external stylesheets, not just Open Sans
+* added language files for translateable goodness
+* general cleanup for WP coding standards
 
 = 0.0.8 - 2015/05/18
 * added `class_exists` as now included in DesktopServer and collisions could result

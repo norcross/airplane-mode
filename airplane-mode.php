@@ -1,38 +1,40 @@
 <?php
+/**
+ * Plugin Name: Airplane Mode
+ * Plugin URI: http://reaktivstudios.com/
+ * Description: Control loading of external files when developing locally
+ * Author: Andrew Norcross
+ * Author URI: http://reaktivstudios.com/
+ * Version: 0.0.9
+ * Text Domain: airplane-mode
+ * Requires WP: 4.0
+ * Domain Path: languages
+ * GitHub Plugin URI: https://github.com/norcross/airplane-mode
+ */
+
 /*
-Plugin Name: Airplane Mode
-Plugin URI: http://reaktivstudios.com/
-Description: Control loading of external files when developing locally
-Author: Andrew Norcross
-Version: 0.0.8
-Requires WP: 3.7
-Author URI: http://reaktivstudios.com/
-GitHub Plugin URI: https://github.com/norcross/airplane-mode
-*/
-/*
-The MIT License (MIT)
-
-Copyright (c) 2015 Andrew Norcross
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Andrew Norcross
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 if ( ! defined( 'AIRMDE_BASE' ) ) {
 	define( 'AIRMDE_BASE', plugin_basename( __FILE__ ) );
@@ -43,13 +45,13 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.8' );
+	define( 'AIRMDE_VER', '0.0.9' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 	/**
-	 * lets get started
+	 * Call our class.
 	 */
 	class Airplane_Mode_Core {
 
@@ -60,14 +62,13 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		static $instance = false;
 
 		/**
-		 * number of HTTP requests
+		 * Set a var for the number of HTTP requests.
 		 * @var $http_count
 		 */
 		private $http_count = 0;
 
 		/**
-		 * this is our constructor.
-		 * there are many like it, but this one is mine
+		 * This is our constructor. There are many like it, but this one is mine.
 		 */
 		private function __construct() {
 			add_action( 'plugins_loaded',                       array( $this, 'textdomain'              )           );
@@ -108,6 +109,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// admin UI items
 			add_action( 'admin_menu',                           array( $this, 'admin_menu_items'        ),  9999    );
+			add_action( 'network_admin_menu',                   array( $this, 'ms_admin_menu_items'     ),  9999    );
 			add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )           );
 
 			// theme update API for different calls
@@ -207,7 +209,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * load our textdomain for localization
+		 * Load our textdomain for localization.
 		 *
 		 * @return void
 		 */
@@ -241,20 +243,20 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function enabled() {
 
-			// bail if CLI
+			// Bail if CLI.
 			if ( defined( 'WP_CLI' ) and WP_CLI ) {
 				return false;
 			}
 
-			// pull our status from the options table
+			// Pull our status from the options table.
 			$option = get_site_option( 'airplane-mode' );
 
-			// backup check for regular options table
+			// Backup check for regular options table.
 			if ( false === $option ) {
 				$option = get_option( 'airplane-mode' );
 			}
 
-			// return the option flag
+			// Return the option flag.
 			return 'on' === $option;
 		}
 
@@ -263,33 +265,53 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * disabling Open Sans and filter to allow other mods.
 		 *
 		 * @param  WP_Styles $styles All the registered CSS items.
+		 *
 		 * @return WP_Styles $styles The same object with Open Sans 'src' set to null.
 		 */
 		public function block_style_load( WP_Styles $styles ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $styles;
 			}
 
-			// make sure we have something registered first
+			// Make sure we have something registered first.
 			if ( ! isset( $styles->registered ) ) {
 				return $styles;
 			}
 
-			// fetch our registered styles
+			// Fetch our registered styles.
 			$registered = $styles->registered;
 
-			// pass the entire set of registered data to the action to allow a bypass
+			// Pass the entire set of registered data to the action to allow a bypass.
 			do_action( 'airplane_mode_style_load', $registered );
 
-			// fetch our open sans if present and set the src inside the object to null
-			if ( ! empty( $registered['open-sans'] ) ) {
-				$open_sans = $registered['open-sans'];
-				$open_sans->src = null;
+			// Loop through each registered item and check for external URLs.
+			foreach ( $registered as $handle => $registered_item ) {
+
+				// If we don't have a source, just continue to the next item.
+				if ( empty( $registered_item->src ) ) {
+					continue;
+				}
+
+				// Set my source URL as a variable.
+				$source = $registered_item->src;
+
+				// Parse my URL.
+				$parsed = parse_url( $source );
+
+				// It's a local URL, just continue to the next item.
+				if ( empty( $parsed['host'] ) ) {
+					continue;
+				}
+
+				// If the URL of the script isn't in the Home URL, set it to null.
+				if ( false === strpos( home_url(), $parsed['host'] ) ) {
+					$registered[ $handle ]->src = null;
+				}
 			}
 
-			// send it back
+			// Send back the remaining registered styles.
 			return $styles;
 		}
 
@@ -298,24 +320,25 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * disabling as needed filter to allow other mods.
 		 *
 		 * @param  WP_Scripts $scripts All the registered JS items.
+		 *
 		 * @return WP_Scripts $scripts The same object, possibly filtered.
 		 */
 		public function block_script_load( WP_Scripts $scripts ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $scripts;
 			}
 
-			// make sure we have something registered first
+			// Make sure we have something registered first.
 			if ( ! isset( $scripts->registered ) ) {
 				return $scripts;
 			}
 
-			// fetch our registered scripts
+			// Fetch our registered scripts.
 			$registered = $scripts->registered;
 
-			// pass the entire set of registered data to the action to allow a bypass
+			// Pass the entire set of registered data to the action to allow a bypass.
 			do_action( 'airplane_mode_script_load', $registered );
 
 			/*
@@ -324,7 +347,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			 * manner that we do the CSS files
 			 */
 
-			// send it back
+			// Send back the remaining registered scripts.
 			return $scripts;
 		}
 
@@ -335,6 +358,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * @param string $url The attempted embed URL.
 		 * @param array  $attr An array of shortcode attributes.
 		 * @param int    $post_ID Post ID.
+		 *
 		 * @return string
 		 */
 		public function block_oembed_html( $html, $url, $attr, $post_ID ) {
@@ -351,65 +375,83 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * remove menu items for updates
+		 * Remove menu items for updates from a standard WP install.
 		 *
 		 * @return null
 		 */
 		public function admin_menu_items() {
 
-			// bail if disabled
-			if ( ! $this->enabled() ) {
+			// Bail if disabled, or on a multisite.
+			if ( ! $this->enabled() || is_multisite() ) {
 				return;
 			}
 
-			// remove our items
+			// Remove our items.
 			remove_submenu_page( 'index.php', 'update-core.php' );
 			remove_submenu_page( 'index.php', 'index.php' );
+		}
+
+		/**
+		 * Remove menu items for updates from a multisite instance.
+		 *
+		 * @return null
+		 */
+		public function ms_admin_menu_items() {
+
+			// Bail if disabled or not on our network admin.
+			if ( ! $this->enabled() || ! is_network_admin() ) {
+				return;
+			}
+
+			// Remove the items.
+			remove_submenu_page( 'index.php', 'upgrade.php' );
 		}
 
 		/**
 		 * Replace all instances of gravatar with a local image file
 		 * to remove the call to remote service.
 		 *
-		 * @param string            $avatar Image tag for the user's avatar.
-		 * @param int|object|string $id_or_email A user ID, email address, or comment object.
-		 * @param string            $default URL to a default image to use if no avatar is available
-		 * @param int               $size Square avatar width and height in pixels to retrieve.
-		 * @param string            $alt Alternative text to use in the avatar image tag.
+		 * @param string            $avatar       Image tag for the user's avatar.
+		 * @param int|object|string $id_or_email  A user ID, email address, or comment object.
+		 * @param int               $size         Square avatar width and height in pixels to retrieve.
+		 * @param string            $default      URL to a default image to use if no avatar is available.
+		 * @param string            $alt          Alternative text to use in the avatar image tag.
+		 *
 		 * @return string `<img>` tag for the user's avatar.
 		 */
 		public function replace_gravatar( $avatar, $id_or_email, $size, $default, $alt ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $avatar;
 			}
 
-			// swap out the file for a base64 encoded image
+			// Swap out the file for a base64 encoded image.
 			$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
-			// return the item
+			// Return the avatar.
 			return $avatar;
 		}
 
 		/**
 		 * Remove avatar images from the default avatar list
 		 *
-		 * @param  string $avatar_list List of default avatars
-		 * @return string              Updated list with images removed
+		 * @param  string $avatar_list  List of default avatars.
+		 *
+		 * @return string               Updated list with images removed
 		 */
 		public function default_avatar( $avatar_list ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $avatar_list;
 			}
 
-			// remove images
+			// Remove images.
 			$avatar_list = preg_replace( '|<img([^>]+)> |i', '', $avatar_list );
 
-			// send it back
+			// Send back the list.
 			return $avatar_list;
 		}
 
@@ -418,17 +460,18 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * happening before the status check so others can allow certain
 		 * items as desired.
 		 *
-		 * @param  bool|array|WP_Error $status Whether to preempt an HTTP request return. Default false.
-		 * @param  array               $args   HTTP request arguments.
-		 * @param  string              $url    The request URL.
-		 * @return bool|array|WP_Error         A WP_Error object if Airplane Mode is enabled. Original $status if not.
+		 * @param  bool|array|WP_Error $status  Whether to preempt an HTTP request return. Default false.
+		 * @param  array               $args    HTTP request arguments.
+		 * @param  string              $url     The request URL.
+		 *
+		 * @return bool|array|WP_Error          A WP_Error object if Airplane Mode is enabled. Original $status if not.
 		 */
 		public function disable_http_reqs( $status = false, $args = array(), $url = '' ) {
 
-			// pass our data to the action to allow a bypass
+			// Pass our data to the action to allow a bypass.
 			do_action( 'airplane_mode_http_args', $status, $args, $url );
 
-			// disable the http requests only if enabled
+			// Disable the http requests only if enabled.
 			return $this->enabled() ? new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) ) : $status;
 		}
 
@@ -437,10 +480,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_css() {
 
-			// set a suffix for loading the minified or normal
+			// Set a suffix for loading the minified or normal.
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
 
-			// load the CSS file itself
+			// Load the CSS file itself.
 			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode' . $suffix, __FILE__ ), array(), AIRMDE_VER, 'all' );
 		}
 
@@ -452,28 +495,28 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_check() {
 
-			// bail if current user doesn't have cap
+			// Bail if current user doesn't have cap.
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
 
-			// check for our nonce
+			// Check for our nonce.
 			if ( ! isset( $_GET['airmde_nonce'] ) || ! wp_verify_nonce( $_GET['airmde_nonce'], 'airmde_nonce' ) ) {
 				return;
 			}
 
-			// now check for our query string
+			// Now check for our query string.
 			if ( ! isset( $_REQUEST['airplane-mode'] ) || ! in_array( $_REQUEST['airplane-mode'], array( 'on', 'off' ) ) ) {
 				return;
 			}
 
-			// delete old per-site option
+			// Delete old per-site option.
 			delete_option( 'airplane-mode' );
 
-			// update the setting
+			// Update the setting.
 			update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
-			// and go about our business
+			// And go about our business.
 			wp_redirect( self::get_redirect() );
 			exit;
 		}
@@ -485,73 +528,100 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		protected static function get_redirect() {
 
-			// fire action to allow for functions to run on status change
+			// Fire action to allow for functions to run on status change.
 			do_action( 'airplane_mode_status_change' );
 
-			// return the args for the actual redirect
-			return remove_query_arg( array(
-				'airplane-mode', 'airmde_nonce',
-				'user_switched', 'switched_off', 'switched_back',
-				'message', 'update', 'updated', 'settings-updated', 'saved',
-				'activated', 'activate', 'deactivate', 'enabled', 'disabled',
-				'locked', 'skipped', 'deleted', 'trashed', 'untrashed',
+			// Return the args for the actual redirect.
+			$redirect = remove_query_arg( array(
+				'airplane-mode',
+				'airmde_nonce',
+				'user_switched',
+				'switched_off',
+				'switched_back',
+				'message',
+				'update',
+				'updated',
+				'settings-updated',
+				'saved',
+				'activated',
+				'activate',
+				'deactivate',
+				'enabled',
+				'disabled',
+				'locked',
+				'skipped',
+				'deleted',
+				'trashed',
+				'untrashed',
 			) );
+
+			// Redirect away from the update core page.
+			$redirect = str_replace( 'update-core.php', '', $redirect );
+
+			// And return the redirect.
+			return apply_filters( 'airplane_mode_redirect_url', $redirect );
 		}
 
 		/**
 		 * Add our quick toggle to the admin bar to enable / disable
 		 *
 		 * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
+		 *
 		 * @return void if current user can't manage options and we bail early.
 		 */
 		public function admin_bar_toggle( WP_Admin_Bar $wp_admin_bar ) {
 
-			// bail if current user doesn't have cap
+			// Bail if current user doesn't have cap.
 			if ( ! current_user_can( 'manage_options' ) ) {
 				return;
 			}
 
-			// get the current status
+			// Get the current status.
 			$status = $this->enabled();
 
-			// set a title message (translatable)
-			$title  = ! $status ? __( 'Airplane Mode is disabled.', 'airplane-mode' ) : __( 'Airplane Mode is enabled.', 'airplane-mode' );
+			// Set a title message (translatable).
+			$title  = $status ? __( 'Airplane Mode is enabled.', 'airplane-mode' ) : __( 'Airplane Mode is disabled.', 'airplane-mode' );
 
-			// set our toggle variable parameter (in reverse since we want the opposite action)
+			// Set our toggle variable parameter (in reverse since we want the opposite action).
 			$toggle = $status ? 'off' : 'on';
 
-			// determine our class based on the status
-			$class  = 'airplane-toggle-icon-';
-			$class .= $status ? 'on' : 'off';
+			// Determine our class based on the status.
+			$class  = $status ? 'airplane-toggle-icon-on' : 'airplane-toggle-icon-off';
 
-			// get my text
-			$text   = __( 'Airplane Mode', 'airplane-mode' );
+			// Get my label and wrap it in a span for styling.
+			$label  = $status ? __( 'Active', 'airplane-mode' ) : __( 'Inactive', 'airplane-mode' );
+			$text   = '<span class="airplane-toggle-text">' . esc_html( $label ) . '</span>';
+			$icon   = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
 
-			// get the HTTP count
-			if ( ! empty( $this->http_count ) ) {
-				$count = number_format_i18n( $this->http_count );
-				$title .= sprintf( _n( ' There was %s http request.', ' There were %s http requests.', $count, 'airplane-mode' ), $count );
-			} else {
-				$count = '';
-				$title .= __( ' There were no http requests.', 'airplane-mode' );
+			// Set my HTTP bubble display to a blank string for now.
+			$bubble = '';
+
+			// Get and display the HTTP count when active.
+			if ( $status ) {
+
+				// Pull my HTTP count.
+				$count  = ! empty( $this->http_count ) ? number_format_i18n( $this->http_count ) : 0;
+
+				// Build the markup for my bubble.
+				$bubble = '<span class="airplane-toggle-count">' . absint( $count ) . '</span>';
+
+				// Amend the tooltip title with the count.
+				$title .= '&nbsp;' . sprintf( _n( 'There was %s HTTP request.', 'There were %s HTTP requests.', $count, 'airplane-mode' ), $count );
 			}
 
-			// get my icon
-			$icon   = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '">' . $count . '</span>';
-
-			// get our link with the status parameter
+			// Get our link with the status parameter.
 			$link   = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
-			// now add the admin bar link
+			// Now add the admin bar link.
 			$wp_admin_bar->add_menu(
 				array(
 					'id'        => 'airplane-mode-toggle',
-					'title'     => $icon . $text,
+					'title'     => $icon . $text . $bubble,
 					'href'      => esc_url( $link ),
 					'position'  => 0,
 					'meta'      => array(
-						'title' => $title
-					)
+						'title' => $title,
+					),
 				)
 			);
 		}
@@ -561,16 +631,17 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 *
 		 * @param array  $caps    Returns the user's actual capabilities.
 		 * @param string $cap     Capability name.
+		 *
 		 * @return array The user's filtered capabilities.
 		 */
 		public function prevent_auto_updates( $caps, $cap ) {
 
-			// check for being enabled and look for specific cap requirements
+			// Check for being enabled and look for specific cap requirements.
 			if ( $this->enabled() && in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
 				$caps[] = 'do_not_allow';
 			}
 
-			// send back the data array
+			// Send back the data array.
 			return $caps;
 		}
 
@@ -578,11 +649,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * Check the new status after airplane mode has been enabled or
 		 * disabled and purge related transients
 		 *
-		 * @return null
+		 * @return void
 		 */
 		public function purge_transients() {
 
-			// purge the transients related to updates when disabled
+			// Purge the transients related to updates when disabled.
 			if ( ! $this->enabled() ) {
 				delete_site_transient( 'update_core' );
 				delete_site_transient( 'update_plugins' );
@@ -591,31 +662,30 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * remove all the various places WP does the update checks
-		 * as you can see there are a lot of them
+		 * Remove all the various places WP does the update checks. As you can see there are a lot of them.
 		 *
 		 * @return null
 		 */
 		public function remove_update_crons() {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return;
 			}
 
-			// do a quick check to make sure we can remove things
+			// Do a quick check to make sure we can remove things.
 			if ( ! function_exists( 'remove_action' ) ) {
 				return;
 			}
 
-			// Disable Theme Updates
+			// Disable Theme Updates.
 			remove_action( 'load-update-core.php', 'wp_update_themes' );
 			remove_action( 'load-themes.php', 'wp_update_themes' );
 			remove_action( 'load-update.php', 'wp_update_themes' );
 			remove_action( 'wp_update_themes', 'wp_update_themes' );
 			remove_action( 'admin_init', '_maybe_update_themes' );
 
-			// Disable Plugin Updates
+			// Disable Plugin Updates.
 			remove_action( 'load-update-core.php', 'wp_update_plugins' );
 			remove_action( 'load-plugins.php', 'wp_update_plugins' );
 			remove_action( 'load-update.php', 'wp_update_plugins' );
@@ -623,27 +693,27 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			remove_action( 'admin_init', '_maybe_update_plugins' );
 
 			// Disable Core updates
-			// @@ TODO figure out how to do this without a create_function
+			// @@ TODO figure out how to do this without a create_function.
 			add_action( 'init', create_function( '', 'remove_action( \'init\', \'wp_version_check\' );' ), 2 );
 
 			// Don't look for WordPress updates. Seriously!
 			remove_action( 'wp_version_check', 'wp_version_check' );
 			remove_action( 'admin_init', '_maybe_update_core' );
 
-			// not even maybe
+			// Not even maybe.
 			remove_action( 'wp_maybe_auto_update', 'wp_maybe_auto_update' );
 			remove_action( 'admin_init', 'wp_maybe_auto_update' );
 			remove_action( 'admin_init', 'wp_auto_update_core' );
 		}
 
 		/**
-		 * remove all the various schedule hooks for themes, plugins, etc
+		 * Remove all the various schedule hooks for themes, plugins, etc.
 		 *
 		 * @return null
 		 */
 		public function remove_schedule_hook() {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return;
 			}
@@ -655,23 +725,23 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * hijack the themes api setup to bypass the API call
+		 * Hijack the themes api setup to bypass the API call.
 		 *
-		 * @param object $args   Arguments used to query for installer pages from the Themes API.
-		 * @param string $action Requested action. Likely values are 'theme_information',
-		 *                       'feature_list', or 'query_themes'.
+		 * @param object $args    Arguments used to query for installer pages from the Themes API.
+		 * @param string $action  Requested action. Likely values are 'theme_information',
+		 *                        'feature_list', or 'query_themes'.
 		 *
-		 * @return bool          true or false depending on the type of query
+		 * @return bool           true or false depending on the type of query
 		 */
 		public function bypass_theme_api( $args, $action ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $args;
 			}
 
-			// return false on feature list to avoid the API call
-			return ! empty( $action ) && $action == 'feature_list' ? false : $args;
+			// Return false on feature list to avoid the API call.
+			return ! empty( $action ) && 'feature_list' === $action ? false : $args;
 		}
 
 		/**
@@ -681,19 +751,19 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function last_checked_core() {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return false;
 			}
 
-			// call the global WP version
+			// Call the global WP version.
 			global $wp_version;
 
-			// return our object
+			// Return our object.
 			return (object) array(
 				'last_checked'		=> time(),
 				'updates'			=> array(),
-				'version_checked'	=> $wp_version
+				'version_checked'	=> $wp_version,
 			);
 		}
 
@@ -704,28 +774,28 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function last_checked_themes() {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return false;
 			}
 
-			// call the global WP version
+			// Call the global WP version.
 			global $wp_version;
 
-			// set a blank data array
+			// Set a blank data array.
 			$data = array();
 
-			// build my theme data array
+			// Build my theme data array.
 			foreach ( wp_get_themes() as $theme ) {
-				$data[$theme->get_stylesheet()] = $theme->get( 'Version' );
+				$data[ $theme->get_stylesheet() ] = $theme->get( 'Version' );
 			}
 
-			// return our object
+			// Return our object.
 			return (object) array(
 				'last_checked'		=> time(),
 				'updates'			=> array(),
 				'version_checked'	=> $wp_version,
-				'checked'			=> $data
+				'checked'			=> $data,
 			);
 		}
 
@@ -736,112 +806,108 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function last_checked_plugins() {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return false;
 			}
 
-			// call the global WP version
+			// Call the global WP version.
 			global $wp_version;
 
-			// set a blank data array
+			// Set a blank data array.
 			$data = array();
 
-			// add our plugin file if we don't have it
+			// Add our plugin file if we don't have it.
 			if ( ! function_exists( 'get_plugins' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
 
-			// build my plugin data array
-			foreach( get_plugins() as $file => $pl ) {
-				$data[$file] = $pl['Version'];
+			// Build my plugin data array.
+			foreach ( get_plugins() as $file => $pl ) {
+				$data[ $file ] = $pl['Version'];
 			}
 
-			// return our object
+			// Return our object.
 			return (object) array(
 				'last_checked'		=> time(),
 				'updates'			=> array(),
 				'version_checked'	=> $wp_version,
-				'checked'			=> $data
+				'checked'			=> $data,
 			);
 		}
 
 		/**
-		 * return an empty array of items requiring update
-		 * for both themes and plugins
+		 * Return an empty array of items requiring update for both themes and plugins
 		 *
-		 * @param  array  $items   all the items being passed for update
-		 * @return array           an empty array
+		 * @param  array $items  All the items being passed for update.
+		 *
+		 * @return array         An empty array, or the original items if not enabled.
 		 */
 		public function remove_update_array( $items ) {
-			// bail if disabled
-			if ( ! $this->enabled() ) {
-				return $items;
-			}
-
-			return array();
+			return ! $this->enabled() ? $items : array();
 		}
 
 		/**
 		 * Remove the ability to update plugins/themes from single
 		 * site and multisite bulk actions
 		 *
-		 * @param  array  $actions all the bulk actions
-		 * @return array  $actions the remaining actions
+		 * @param  array $actions  All the bulk actions.
+		 *
+		 * @return array $actions  The remaining actions
 		 */
-		public function remove_bulk_actions( $actions ){
+		public function remove_bulk_actions( $actions ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $actions;
 			}
 
-			// set an array of items to be removed with optional filter
+			// Set an array of items to be removed with optional filter.
 			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'update-selected', 'update', 'upgrade' ) ) ) {
 				return $actions;
 			}
 
-			// loop the item array and unset each
+			// Loop the item array and unset each.
 			foreach ( $remove as $key ) {
-				unset( $actions[$key] );
+				unset( $actions[ $key ] );
 			}
 
-			// return the remaining
+			// Return the remaining.
 			return $actions;
 		}
 
 		/**
-		 * remove the tabs on the plugin page to add new items
-		 * since they require the WP connection and will fail
+		 * Remove the tabs on the plugin page to add new items
+		 * since they require the WP connection and will fail.
 		 *
-		 * @param  array  $nonmenu_tabs all the tabs displayed
-		 * @return array  $nonmenu_tabs the remaining tabs
+		 * @param  array $nonmenu_tabs  All the tabs displayed.
+		 * @return array $nonmenu_tabs  The remaining tabs.
 		 */
-		public function plugin_add_tabs( $nonmenu_tabs ){
+		public function plugin_add_tabs( $nonmenu_tabs ) {
 
-			// bail if disabled
+			// Bail if disabled.
 			if ( ! $this->enabled() ) {
 				return $nonmenu_tabs;
 			}
 
-			// set an array of tabs to be removed with optional filter
+			// Set an array of tabs to be removed with optional filter.
 			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'featured', 'popular', 'recommended', 'favorites', 'beta' ) ) ) {
 				return $nonmenu_tabs;
 			}
 
-			// loop the item array and unset each
+			// Loop the item array and unset each.
 			foreach ( $remove as $key ) {
-				unset( $nonmenu_tabs[$key] );
+				unset( $nonmenu_tabs[ $key ] );
 			}
 
-			// return the tabs
+			// Return the tabs.
 			return $nonmenu_tabs;
 		}
 
 		/**
 		 * Increase HTTP request counter by one.
 		 *
-		 * @return null
+		 * @return void
 		 */
 		public function count_http_requests() {
 			$this->http_count++;
@@ -852,5 +918,5 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 } //end class_exists
 
 
-// Instantiate our class
+// Instantiate our class.
 $Airplane_Mode_Core = Airplane_Mode_Core::getInstance();
