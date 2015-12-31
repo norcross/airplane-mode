@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.0.9
+ * Version: 0.1.0
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.0.9' );
+	define( 'AIRMDE_VER', '0.1.0' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -83,108 +83,109 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_filter( 'map_meta_cap',                         array( $this, 'prevent_auto_updates'    ),  10, 2   );
 			add_filter( 'default_avatar_select',                array( $this, 'default_avatar'          )           );
 
-			// kill all the http requests
+			// Kill all the http requests.
 			add_filter( 'pre_http_request',                     array( $this, 'disable_http_reqs'       ),  10, 3   );
 
-			// check for our query string and handle accordingly
+			// Check for our query string and handle accordingly.
 			add_action( 'init',                                 array( $this, 'toggle_check'            )           );
 
-			// check for status change and purge transients as needed
+			// Check for status change and purge transients as needed.
 			add_action( 'airplane_mode_status_change',          array( $this, 'purge_transients'        )           );
 
-			// add our counter action
+			// Add our counter action.
 			add_action( 'airplane_mode_http_args',              array( $this, 'count_http_requests'     ),  0, 0    );
 
-			// settings
+			// CSS loader and top toggle.
 			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ),  9999    );
 			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 
-			// Remove bulk action for updating themes/plugins
+			// Remove bulk action for updating themes/plugins.
 			add_filter( 'bulk_actions-plugins',                 array( $this, 'remove_bulk_actions'     )           );
 			add_filter( 'bulk_actions-themes',                  array( $this, 'remove_bulk_actions'     )           );
 			add_filter( 'bulk_actions-plugins-network',         array( $this, 'remove_bulk_actions'     )           );
 			add_filter( 'bulk_actions-themes-network',          array( $this, 'remove_bulk_actions'     )           );
 
-			// admin UI items
+			// Admin UI items.
 			add_action( 'admin_menu',                           array( $this, 'admin_menu_items'        ),  9999    );
 			add_action( 'network_admin_menu',                   array( $this, 'ms_admin_menu_items'     ),  9999    );
 			add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )           );
 
-			// theme update API for different calls
+			// Theme update API for different calls.
 			add_filter( 'themes_api_args',                      array( $this, 'bypass_theme_api'        ),  10, 2   );
 
-			// time based transient checks
+			// Time based transient checks.
 			add_filter( 'pre_site_transient_update_themes',     array( $this, 'last_checked_themes'     )           );
 			add_filter( 'pre_site_transient_update_plugins',    array( $this, 'last_checked_plugins'    )           );
 			add_filter( 'pre_site_transient_update_core',       array( $this, 'last_checked_core'       )           );
 			add_filter( 'site_transient_update_themes',         array( $this, 'remove_update_array'     )           );
 			add_filter( 'site_transient_update_plugins',        array( $this, 'remove_update_array'     )           );
 
-			// our activation / deactivation triggers
+			// Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                 array( $this, 'create_setting'          )           );
 			register_deactivation_hook( __FILE__,               array( $this, 'remove_setting'          )           );
 
-			// all our various filter checks
+			// All our various filter checks.
 			if ( $this->enabled() ) {
 
-				// keep jetpack from attempting external requests
+				// Keep jetpack from attempting external requests.
 				add_filter( 'jetpack_development_mode',             '__return_true', 9999 );
 
-				// Disable automatic updater updates
+				// Disable automatic updater updates.
 				add_filter( 'automatic_updater_disabled',           '__return_true' );
 
-				// hijack the themes api setup to bypass the API call
+				// Hijack the themes api setup to bypass the API call.
 				add_filter( 'themes_api',                           '__return_true' );
 
-				// Tell WordPress we are on a version control system to add additional blocks
+				// Tell WordPress we are on a version control system to add additional blocks.
 				add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
 
-				// Disable translation updates
+				// Disable translation updates.
 				add_filter( 'auto_update_translation',              '__return_false' );
 
-				// Disable minor core updates
+				// Disable minor core updates.
 				add_filter( 'allow_minor_auto_core_updates',        '__return_false' );
 
-				// Disable major core updates
+				// Disable major core updates.
 				add_filter( 'allow_major_auto_core_updates',        '__return_false' );
 
-				// Disable dev core updates
+				// Disable dev core updates.
 				add_filter( 'allow_dev_auto_core_updates',          '__return_false' );
 
-				// Disable overall core updates
+				// Disable overall core updates.
 				add_filter( 'auto_update_core',                     '__return_false' );
 				add_filter( 'wp_auto_update_core',                  '__return_false' );
 
-				// Disable automatic plugin and theme updates (used by WP to force push security fixes)
+				// Disable automatic plugin and theme updates (used by WP to force push security fixes).
 				add_filter( 'auto_update_plugin',                   '__return_false' );
 				add_filter( 'auto_update_theme',                    '__return_false' );
 
-				// Disable debug emails (used by core for rollback alerts in automatic update deployment)
+				// Disable debug emails (used by core for rollback alerts in automatic update deployment).
 				add_filter( 'automatic_updates_send_debug_email',   '__return_false' );
 
-				// Disable update emails (for when we push the new WordPress versions manually) as well as the notification there is a new version emails
+				// Disable update emails (for when we push the new WordPress versions manually) as well
+				// as the notification there is a new version emails.
 				add_filter( 'auto_core_update_send_email',          '__return_false' );
 				add_filter( 'send_core_update_notification_email',  '__return_false' );
 				add_filter( 'automatic_updates_send_debug_email ',  '__return_false', 1 );
 
-				// Get rid of the version number in the footer
+				// Get rid of the version number in the footer.
 				add_filter( 'update_footer',                        '__return_empty_string', 11 );
 
-				// filter out the pre core option
+				// Filter out the pre core option.
 				add_filter( 'pre_option_update_core',               '__return_null' );
 
-				// remove some actions
+				// Remove some actions.
 				remove_action( 'admin_init',            'wp_plugin_update_rows' );
 				remove_action( 'admin_init',            'wp_theme_update_rows' );
 				remove_action( 'admin_notices',         'maintenance_nag' );
 				remove_action( 'init',                  'wp_schedule_update_checks' );
 
-				// add back the upload tab
+				// Add back the upload tab.
 				add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
-				// Define core contants for more protection
+				// Define core contants for more protection.
 				if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
 					define( 'AUTOMATIC_UPDATER_DISABLED', true );
 				}
@@ -500,13 +501,17 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				return;
 			}
 
+			// Set a sanitized variable of our potential nonce and request.
+			$nonce  = isset( $_GET['airmde_nonce'] ) ? sanitize_key( $_GET['airmde_nonce'] ) : '';
+			$switch = isset( $_REQUEST['airplane-mode'] ) ? sanitize_key( $_REQUEST['airplane-mode'] ) : '';
+
 			// Check for our nonce.
-			if ( ! isset( $_GET['airmde_nonce'] ) || ! wp_verify_nonce( $_GET['airmde_nonce'], 'airmde_nonce' ) ) {
+			if ( ! empty( $nonce ) || ! wp_verify_nonce( $nonce, 'airmde_nonce' ) ) {
 				return;
 			}
 
 			// Now check for our query string.
-			if ( ! isset( $_REQUEST['airplane-mode'] ) || ! in_array( $_REQUEST['airplane-mode'], array( 'on', 'off' ) ) ) {
+			if ( empty( $switch ) || ! in_array( $switch, array( 'on', 'off' ) ) ) {
 				return;
 			}
 
@@ -652,6 +657,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * @return void
 		 */
 		public function purge_transients() {
+
+			// First check for the filter to avoid this action overall.
+			if ( false === $clear = apply_filters( 'airplane_mode_purge_transients', true ) ) {
+				return;
+			}
 
 			// Purge the transients related to updates when disabled.
 			if ( ! $this->enabled() ) {

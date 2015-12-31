@@ -6,7 +6,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
 Tested up to: 4.3
-Stable tag: 0.0.9
+Stable tag: 0.1.0
 License: MIT
 License URI: http://opensource.org/licenses/mit-license.php
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.0 - 2015/12/30
+* added `airplane_mode_purge_transients` filter to bypass transient purge
 
 = 0.0.9 - 2015/12/07
 * changed from colored circle to actual airplane icon for usability

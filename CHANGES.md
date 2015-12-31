@@ -1,3 +1,6 @@
+#### Version 0.1.0 - 2015/12/30
+* added `airplane_mode_purge_transients` filter to bypass transient purge
+
 #### Version 0.0.9 - 2015/12/07
 * changed from colored circle to actual airplane icon for usability
 * fixed dashboard link icon for multisite
