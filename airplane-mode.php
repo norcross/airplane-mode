@@ -72,7 +72,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		private function __construct() {
 			add_action( 'plugins_loaded',                       array( $this, 'textdomain'              )           );
-			add_action( 'wp_default_styles',                    array( $this, 'block_style_load'        ),  100     );
+			add_action( 'style_loader_src',                     array( $this, 'block_style_load'        ),  100     );
 			add_action( 'wp_default_scripts',                   array( $this, 'block_script_load'       ),  100     );
 			add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )           );
 			add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )           );
@@ -261,58 +261,23 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Hop into the set of default CSS files to allow for
-		 * disabling Open Sans and filter to allow other mods.
+		 * Block remote stylesheets like Open Sans and Merriweather.
 		 *
-		 * @param  WP_Styles $styles All the registered CSS items.
-		 *
-		 * @return WP_Styles $styles The same object with Open Sans 'src' set to null.
+		 * @param string $source The URL of the stylesheet
 		 */
-		public function block_style_load( WP_Styles $styles ) {
-
+		public function block_style_load( $source ) {
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
-				return $styles;
+				return $source;
 			}
 
-			// Make sure we have something registered first.
-			if ( ! isset( $styles->registered ) ) {
-				return $styles;
+			$parsed = parse_url( $source );
+
+			if ( isset( $parsed['host'] ) && false === strpos( home_url(), $parsed['host'] ) ) {
+				$source = null;
 			}
 
-			// Fetch our registered styles.
-			$registered = $styles->registered;
-
-			// Pass the entire set of registered data to the action to allow a bypass.
-			do_action( 'airplane_mode_style_load', $registered );
-
-			// Loop through each registered item and check for external URLs.
-			foreach ( $registered as $handle => $registered_item ) {
-
-				// If we don't have a source, just continue to the next item.
-				if ( empty( $registered_item->src ) ) {
-					continue;
-				}
-
-				// Set my source URL as a variable.
-				$source = $registered_item->src;
-
-				// Parse my URL.
-				$parsed = parse_url( $source );
-
-				// It's a local URL, just continue to the next item.
-				if ( empty( $parsed['host'] ) ) {
-					continue;
-				}
-
-				// If the URL of the script isn't in the Home URL, set it to null.
-				if ( false === strpos( home_url(), $parsed['host'] ) ) {
-					$registered[ $handle ]->src = null;
-				}
-			}
-
-			// Send back the remaining registered styles.
-			return $styles;
+			return $source;
 		}
 
 		/**
