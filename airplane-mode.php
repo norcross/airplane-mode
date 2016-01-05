@@ -506,7 +506,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$switch = isset( $_REQUEST['airplane-mode'] ) ? sanitize_key( $_REQUEST['airplane-mode'] ) : '';
 
 			// Check for our nonce.
-			if ( ! empty( $nonce ) || ! wp_verify_nonce( $nonce, 'airmde_nonce' ) ) {
+			if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'airmde_nonce' ) ) {
 				return;
 			}
 
