@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.0
+ * Version: 0.1.1
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.0' );
+	define( 'AIRMDE_VER', '0.1.1' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -72,8 +72,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		private function __construct() {
 			add_action( 'plugins_loaded',                       array( $this, 'textdomain'              )           );
-			add_action( 'wp_default_styles',                    array( $this, 'block_style_load'        ),  100     );
-			add_action( 'wp_default_scripts',                   array( $this, 'block_script_load'       ),  100     );
+			add_action( 'style_loader_src',                     array( $this, 'block_style_load'        ),  100     );
+			add_action( 'script_loader_src',                    array( $this, 'block_script_load'       ),  100     );
 			add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )           );
 			add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )           );
 			add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )           );
@@ -262,94 +262,55 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Hop into the set of default CSS files to allow for
-		 * disabling Open Sans and filter to allow other mods.
+		 * Check the URL of a stylesheet and remove any that are not on the local URL.
 		 *
-		 * @param  WP_Styles $styles All the registered CSS items.
+		 * @param  string $source  The source URL of the CSS sheet.
 		 *
-		 * @return WP_Styles $styles The same object with Open Sans 'src' set to null.
+		 * @return string $source  The same URL, or null.
 		 */
-		public function block_style_load( WP_Styles $styles ) {
+		public function block_style_load( $source ) {
 
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
-				return $styles;
+				return $source;
 			}
 
-			// Make sure we have something registered first.
-			if ( ! isset( $styles->registered ) ) {
-				return $styles;
+			// Parse the URL being passed to pull out the host.
+			$parsed = parse_url( $source, PHP_URL_HOST );
+
+			// First run the filter to allow a source host to get through.
+			if ( false === apply_filters( 'airplane_mode_parse_style', true, $parsed ) ) {
+				return $source;
 			}
 
-			// Fetch our registered styles.
-			$registered = $styles->registered;
-
-			// Pass the entire set of registered data to the action to allow a bypass.
-			do_action( 'airplane_mode_style_load', $registered );
-
-			// Loop through each registered item and check for external URLs.
-			foreach ( $registered as $handle => $registered_item ) {
-
-				// If we don't have a source, just continue to the next item.
-				if ( empty( $registered_item->src ) ) {
-					continue;
-				}
-
-				// Set my source URL as a variable.
-				$source = $registered_item->src;
-
-				// Parse my URL.
-				$parsed = parse_url( $source );
-
-				// It's a local URL, just continue to the next item.
-				if ( empty( $parsed['host'] ) ) {
-					continue;
-				}
-
-				// If the URL of the script isn't in the Home URL, set it to null.
-				if ( false === strpos( home_url(), $parsed['host'] ) ) {
-					$registered[ $handle ]->src = null;
-				}
-			}
-
-			// Send back the remaining registered styles.
-			return $styles;
+			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
+			return isset( $parsed ) && false === strpos( home_url(), $parsed ) ? null : $source;
 		}
 
 		/**
-		 * Hop into the set of default JS files to allow for
-		 * disabling as needed filter to allow other mods.
+		 * Check the URL of a JS file and remove any that are not on the local URL.
 		 *
-		 * @param  WP_Scripts $scripts All the registered JS items.
+		 * @param  string $source  The source URL of the JS file.
 		 *
-		 * @return WP_Scripts $scripts The same object, possibly filtered.
+		 * @return string $source  The same URL, or null.
 		 */
-		public function block_script_load( WP_Scripts $scripts ) {
+		public function block_script_load( $source ) {
 
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
-				return $scripts;
+				return $source;
 			}
 
-			// Make sure we have something registered first.
-			if ( ! isset( $scripts->registered ) ) {
-				return $scripts;
+			// Parse the URL being passed to pull out the host.
+			$parsed = parse_url( $source, PHP_URL_HOST );
+
+			// First run the filter to allow a source host to get through.
+			if ( false === apply_filters( 'airplane_mode_parse_script', true, $parsed ) ) {
+				return $source;
 			}
 
-			// Fetch our registered scripts.
-			$registered = $scripts->registered;
-
-			// Pass the entire set of registered data to the action to allow a bypass.
-			do_action( 'airplane_mode_script_load', $registered );
-
-			/*
-			 * nothing actually being done here at the present time. this is a
-			 * placeholder for being able to modify the script loading in the same
-			 * manner that we do the CSS files
-			 */
-
-			// Send back the remaining registered scripts.
-			return $scripts;
+			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
+			return isset( $parsed ) && false === strpos( home_url(), $parsed ) ? null : $source;
 		}
 
 		/**

@@ -1,12 +1,11 @@
-
 === Airplane Mode ===
 Contributors: norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquith
 Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
-Tested up to: 4.3
-Stable tag: 0.1.0
+Tested up to: 4.4
+Stable tag: 0.1.1
 License: MIT
 License URI: http://opensource.org/licenses/mit-license.php
 
@@ -18,9 +17,10 @@ Control loading of external files when developing locally. WP loads certain exte
 
 Features
 
-* sets the src for Open Sans CSS font file to null due to dependency issues ( see [related Trac ticket](https://core.trac.wordpress.org/ticket/28478) )
+* removes external JS and CSS files from loading
 * replaces all instances of Gravatar with a local image to remove external call
 * removes all HTTP requests
+* disables all WP update checks for core, themes, and plugins
 * includes toggle in admin bar for quick enable / disable
 
 == Installation ==
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.1 - 2016/01/06
+* fixed incorrect nonce check that was breaking toggle
+* changed CSS and JS checks to include all themes and plugins as well as core
 
 = 0.1.0 - 2015/12/30
 * added `airplane_mode_purge_transients` filter to bypass transient purge

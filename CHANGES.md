@@ -1,3 +1,7 @@
+#### Version 0.1.1 - 2016/01/06
+* fixed incorrect nonce check that was breaking toggle
+* changed CSS and JS checks to include all themes and plugins as well as core
+
 #### Version 0.1.0 - 2015/12/30
 * added `airplane_mode_purge_transients` filter to bypass transient purge
 
