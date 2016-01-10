@@ -1,3 +1,7 @@
+#### Version 0.1.2 - 2016/01/09
+* added back HTTP count when inactive
+* removed HTTP count completely when Query Monitor is active
+
 #### Version 0.1.1 - 2016/01/06
 * fixed incorrect nonce check that was breaking toggle
 * changed CSS and JS checks to include all themes and plugins as well as core

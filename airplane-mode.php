@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.1
+ * Version: 0.1.2
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.1' );
+	define( 'AIRMDE_VER', '0.1.2' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -562,8 +562,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Set my HTTP bubble display to a blank string for now.
 			$bubble = '';
 
-			// Get and display the HTTP count when active.
-			if ( $status ) {
+			// Get and display the HTTP count when Query Monitor isn't active.
+			if ( ! class_exists( 'QueryMonitor' ) ) {
 
 				// Pull my HTTP count.
 				$count  = ! empty( $this->http_count ) ? number_format_i18n( $this->http_count ) : 0;

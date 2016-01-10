@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
 Tested up to: 4.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: MIT
 License URI: http://opensource.org/licenses/mit-license.php
 
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.2 - 2016/01/09
+* added back HTTP count when inactive
+* removed HTTP count completely when Query Monitor is active
 
 = 0.1.1 - 2016/01/06
 * fixed incorrect nonce check that was breaking toggle
