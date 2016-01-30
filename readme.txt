@@ -7,7 +7,7 @@ Requires at least: 4.0
 Tested up to: 4.4
 Stable tag: 0.1.2
 License: MIT
-License URI: http://opensource.org/licenses/mit-license.php
+License URI: http://norcross.mit-license.org/
 
 Control loading of external files when developing locally
 
