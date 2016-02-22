@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.2
+ * Version: 0.1.3
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.2' );
+	define( 'AIRMDE_VER', '0.1.3' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -482,6 +482,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Update the setting.
 			update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
 
+			// Fire action to allow for functions to run on status change.
+			do_action( 'airplane_mode_status_change', $switch );
+
 			// And go about our business.
 			wp_redirect( self::get_redirect() );
 			exit;
@@ -493,9 +496,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * @return string The URL to redirect to.
 		 */
 		protected static function get_redirect() {
-
-			// Fire action to allow for functions to run on status change.
-			do_action( 'airplane_mode_status_change' );
 
 			// Return the args for the actual redirect.
 			$redirect = remove_query_arg( array(

@@ -1,4 +1,8 @@
 
+#### Version 0.1.3 - 2016/02/22
+* modified CSS rules to fix media bulk actions bar from disappearing
+* moved `airplane_mode_status_change` action to run before redirect, and now includes the status being run.
+
 #### Version 0.1.2 - 2016/01/09
 * added back HTTP count when inactive
 * removed HTTP count completely when Query Monitor is active

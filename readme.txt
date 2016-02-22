@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
 Tested up to: 4.4
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.3 - 2016/02/22
+* modified CSS rules to fix media bulk actions bar from disappearing
+* moved `airplane_mode_status_change` action to run before redirect, and now includes the status being run.
 
 = 0.1.2 - 2016/01/09
 * added back HTTP count when inactive
