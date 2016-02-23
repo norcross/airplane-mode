@@ -888,6 +888,18 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 } //end class_exists
 
+if ( ! class_exists( 'Airplane_Mode_WP_Error' ) ) {
+
+	class Airplane_Mode_WP_Error extends WP_Error {
+
+		public function __tostring() {
+			$data = $this->get_error_data();
+			return $data['return'];
+		}
+
+	}
+
+}
 
 // Instantiate our class.
 $Airplane_Mode_Core = Airplane_Mode_Core::getInstance();
