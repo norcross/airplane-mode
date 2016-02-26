@@ -1,3 +1,5 @@
+#### Version 0.1.4 - 2016/02/26
+* better setup for blocked external assets. props @johnbillion
 
 #### Version 0.1.3 - 2016/02/22
 * modified CSS rules to fix media bulk actions bar from disappearing

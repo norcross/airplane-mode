@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
 Tested up to: 4.4
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.4 - 2016/02/26
+* better setup for blocked external assets. props @johnbillion
 
 = 0.1.3 - 2016/02/22
 * modified CSS rules to fix media bulk actions bar from disappearing

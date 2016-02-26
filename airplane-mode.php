@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.3
+ * Version: 0.1.4
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.3' );
+	define( 'AIRMDE_VER', '0.1.4' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
