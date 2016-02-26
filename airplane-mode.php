@@ -284,7 +284,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
-			return isset( $parsed ) && false === strpos( home_url(), $parsed ) ? null : $source;
+			return isset( $parsed ) && false === strpos( home_url(), $parsed )
+				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked style', 'airplane-mode' ), array(
+					'return' => '',
+					'src'    => $source,
+				) )
+				: $source;
 		}
 
 		/**
@@ -310,7 +315,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
-			return isset( $parsed ) && false === strpos( home_url(), $parsed ) ? null : $source;
+			return isset( $parsed ) && false === strpos( home_url(), $parsed )
+				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked script', 'airplane-mode' ), array(
+					'return' => '',
+					'src'    => $source,
+				) )
+				: $source;
 		}
 
 		/**
@@ -888,6 +898,18 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 } //end class_exists
 
+if ( ! class_exists( 'Airplane_Mode_WP_Error' ) ) {
+
+	class Airplane_Mode_WP_Error extends WP_Error {
+
+		public function __tostring() {
+			$data = $this->get_error_data();
+			return $data['return'];
+		}
+
+	}
+
+}
 
 // Instantiate our class.
 $Airplane_Mode_Core = Airplane_Mode_Core::getInstance();
