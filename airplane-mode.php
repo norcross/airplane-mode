@@ -574,6 +574,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Get and display the HTTP count when Query Monitor isn't active.
 			if ( ! class_exists( 'QueryMonitor' ) ) {
+			if ( ! class_exists( 'QueryMonitor' ) || defined( 'QM_DISABLED' ) && QM_DISABLED ) {
 
 				// Pull my HTTP count.
 				$count  = ! empty( $this->http_count ) ? number_format_i18n( $this->http_count ) : 0;
