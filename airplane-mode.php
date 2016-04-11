@@ -561,38 +561,33 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Set our toggle variable parameter (in reverse since we want the opposite action).
 			$toggle = $status ? 'off' : 'on';
 
-			// Determine our class based on the status.
-			$class  = $status ? 'airplane-toggle-icon-on' : 'airplane-toggle-icon-off';
-
-			// Get my label and wrap it in a span for styling.
-			$label  = $status ? __( 'Active', 'airplane-mode' ) : __( 'Inactive', 'airplane-mode' );
-			$text   = '<span class="airplane-toggle-text">' . esc_html( $label ) . '</span>';
-			$icon   = '<span class="airplane-toggle-icon ' . sanitize_html_class( $class ) . '"></span>';
-
-			// Set my HTTP bubble display to a blank string for now.
-			$bubble = '';
+			// Set my HTTP request count label to a blank string for now.
+			$label = '';
 
 			// Get and display the HTTP count when Query Monitor isn't active.
-			if ( ! class_exists( 'QueryMonitor' ) ) {
+			if ( ! class_exists( 'QueryMonitor' ) || defined( 'QM_DISABLED' ) && QM_DISABLED ) {
 
 				// Pull my HTTP count.
 				$count  = ! empty( $this->http_count ) ? number_format_i18n( $this->http_count ) : 0;
 
-				// Build the markup for my bubble.
-				$bubble = '<span class="airplane-toggle-count">' . absint( $count ) . '</span>';
+				$count_label = sprintf( _n( 'There was %s HTTP request.', 'There were %s HTTP requests.', $count, 'airplane-mode' ), $count );
+
+				// Build the markup for my label.
+				$label = '<span class="ab-label" aria-hidden="true">' . absint( $count ) . '</span>';
+				$label .= '<span class="screen-reader-text">' . esc_html( $count_label ) . '</span>';
 
 				// Amend the tooltip title with the count.
-				$title .= '&nbsp;' . sprintf( _n( 'There was %s HTTP request.', 'There were %s HTTP requests.', $count, 'airplane-mode' ), $count );
+				$title .= '&nbsp;' . $count_label;
 			}
 
 			// Get our link with the status parameter.
-			$link   = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
+			$link = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
 			// Now add the admin bar link.
 			$wp_admin_bar->add_menu(
 				array(
 					'id'        => 'airplane-mode-toggle',
-					'title'     => $icon . $text . $bubble,
+					'title'     => '<span class="ab-icon"></span>' . $label,
 					'href'      => esc_url( $link ),
 					'position'  => 0,
 					'meta'      => array(
