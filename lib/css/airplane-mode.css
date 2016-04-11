@@ -18,12 +18,6 @@
 	font: normal 18px/1 airplanemodeicons;
 }
 
-#wp-admin-bar-airplane-mode-toggle .ab-icon:before {
-	-webkit-transform: rotateY(180deg);
-	-ms-transform: rotateY(180deg);
-	transform: rotateY(180deg);
-}
-
 .airplane-mode-disabled #wp-admin-bar-airplane-mode-toggle .ab-icon:before {
 	content: "\e001";
 }
