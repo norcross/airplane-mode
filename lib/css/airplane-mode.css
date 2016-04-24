@@ -22,8 +22,19 @@
 	content: "\e001";
 }
 
+ /* Set the opacity to mimic comment moderation queue. */
 .airplane-mode-disabled #wp-admin-bar-airplane-mode-toggle .ab-label {
-	opacity: .5; // Mimics comment moderation queue.
+  /* Theoretically for IE 8 & 9 (more valid) */
+  /* ...but not required as filter works too */
+  /* should come BEFORE filter */
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+
+  /* This works in IE 8 & 9 too */
+  /* ... but also 5, 6, 7 */
+	filter: alpha(opacity=50); /* IE 5-7 */
+
+  /* Modern Browsers */
+  opacity: 0.5;
 }
 
 .airplane-mode-enabled.plugin-install-php h1 a.upload,

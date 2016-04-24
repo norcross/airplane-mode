@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.4
+ * Version: 0.1.5
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.4' );
+	define( 'AIRMDE_VER', '0.1.5' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -76,7 +76,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'script_loader_src',                    array( $this, 'block_script_load'       ),  100     );
 			add_action( 'admin_init',                           array( $this, 'remove_update_crons'     )           );
 			add_action( 'admin_init',                           array( $this, 'remove_schedule_hook'    )           );
-			add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )           );
 
 			add_filter( 'embed_oembed_html',                    array( $this, 'block_oembed_html'       ),  1,  4   );
 			add_filter( 'get_avatar',                           array( $this, 'replace_gravatar'        ),  1,  5   );
@@ -100,6 +99,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
+
+			// Body class on each location for the display.
+			add_filter( 'body_class',                           array( $this, 'body_class'              )           );
+			add_filter( 'login_body_class',                     array( $this, 'body_class'              )           );
+			add_filter( 'admin_body_class',                     array( $this, 'admin_body_class'        )           );
 
 			// Remove bulk action for updating themes/plugins.
 			add_filter( 'bulk_actions-plugins',                 array( $this, 'remove_bulk_actions'     )           );
@@ -338,12 +342,26 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
+		 * Add body class to front-end pages and login based on plugin status
+		 *
+		 * @return string          our new class appended to the existing string
+		 */
+		public function body_class() {
+
+			// Add the class based on the current status.
+			$classes[]	= $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
+
+			// Return our array of classes.
+			return $classes;
+		}
+
+		/**
 		 * Add body class to admin pages based on plugin status
 		 *
 		 * @return string          our new class appended to the existing string
 		 */
 		public function admin_body_class() {
-			return $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
+			return $this->enabled() ? ' airplane-mode-enabled' : ' airplane-mode-disabled';
 		}
 
 		/**

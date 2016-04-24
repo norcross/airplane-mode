@@ -1,3 +1,6 @@
+#### Version 0.1.5 - 2016/04/24
+* adding custom icon font for display and removing label. props @barryceelen
+
 #### Version 0.1.4 - 2016/02/26
 * better setup for blocked external assets. props @johnbillion
 
