@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.0
 Tested up to: 4.5
-Stable tag: 0.1.5
+Stable tag: 0.1.6
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.6 - 2016/04/25
+* minor tweak to include CSS for new icon font
 
 = 0.1.5 - 2016/04/24
 * adding custom icon font for display and removing label. props @barryceelen

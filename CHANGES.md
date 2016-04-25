@@ -1,3 +1,6 @@
+#### Version 0.1.6 - 2016/04/25
+* minor tweak to include CSS for new icon font
+
 #### Version 0.1.5 - 2016/04/24
 * adding custom icon font for display and removing label. props @barryceelen
 

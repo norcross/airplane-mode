@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.5
+ * Version: 0.1.6
  * Text Domain: airplane-mode
  * Requires WP: 4.0
  * Domain Path: languages
@@ -45,7 +45,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 }
 
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.5' );
+	define( 'AIRMDE_VER', '0.1.6' );
 }
 
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
@@ -342,26 +342,45 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Add body class to front-end pages and login based on plugin status
+		 * Add body class to front-end pages and login based on plugin status.
 		 *
-		 * @return string          our new class appended to the existing string
+		 * @param  array $classes  The existing array of body classes.
+		 *
+		 * @return array $classes  The updated array of body classes.
 		 */
-		public function body_class() {
+		public function body_class( $classes ) {
 
 			// Add the class based on the current status.
 			$classes[]	= $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
+
+			// Also add in the margin setup for Query Monitor because I'm a perfectionist.
+			if ( ! class_exists( 'QueryMonitor' ) || defined( 'QM_DISABLED' ) && QM_DISABLED ) {
+				$classes[]	= 'airplane-mode-no-qm';
+			}
 
 			// Return our array of classes.
 			return $classes;
 		}
 
 		/**
-		 * Add body class to admin pages based on plugin status
+		 * Add body class to admin pages based on plugin status.
 		 *
-		 * @return string          our new class appended to the existing string
+		 * @param  string $classes  The existing space-separated list of CSS classes.
+		 *
+		 * @return string $classes  The updated space-separated list of CSS classes.
 		 */
-		public function admin_body_class() {
-			return $this->enabled() ? ' airplane-mode-enabled' : ' airplane-mode-disabled';
+		public function admin_body_class( $classes ) {
+
+			// First add the standard set of classes based on status.
+			$classes .= $this->enabled() ? ' airplane-mode-enabled' : ' airplane-mode-disabled';
+
+			// Also add in the margin setup for Query Monitor because I'm a perfectionist.
+			if ( ! class_exists( 'QueryMonitor' ) || defined( 'QM_DISABLED' ) && QM_DISABLED ) {
+				$classes .= ' airplane-mode-no-qm';
+			}
+
+			// Return our string of classes.
+			return $classes;
 		}
 
 		/**

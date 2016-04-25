@@ -22,6 +22,18 @@
 	content: "\e001";
 }
 
+#wpadminbar > #wp-toolbar > #wp-admin-bar-root-default > #wp-admin-bar-airplane-mode-toggle .ab-icon,
+#wpadminbar #wp-admin-bar-airplane-mode-toggle .ab-icon,
+#wpadminbar #wp-admin-bar-airplane-mode-toggle .ab-item::before {
+  margin-right: 0;
+}
+
+.airplane-mode-no-qm #wpadminbar > #wp-toolbar > #wp-admin-bar-root-default > #wp-admin-bar-airplane-mode-toggle .ab-icon,
+.airplane-mode-no-qm #wpadminbar #wp-admin-bar-airplane-mode-toggle .ab-icon,
+.airplane-mode-no-qm #wpadminbar #wp-admin-bar-airplane-mode-toggle .ab-item::before {
+  margin-right: 6px;
+}
+
  /* Set the opacity to mimic comment moderation queue. */
 .airplane-mode-disabled #wp-admin-bar-airplane-mode-toggle .ab-label {
   /* Theoretically for IE 8 & 9 (more valid) */
