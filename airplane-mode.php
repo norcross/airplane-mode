@@ -480,8 +480,22 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Pass our data to the action to allow a bypass.
 			do_action( 'airplane_mode_http_args', $status, $args, $url );
 
-			// Disable the http requests only if enabled.
-			return $this->enabled() ? new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) ) : $status;
+			if ( ! $this->enabled() ) {
+				return $status;
+			}
+
+			$url_host = parse_url( $url, PHP_URL_HOST );
+
+			// Allow the request to pass through if the URL host matches the site's host:
+			if ( $url_host && parse_url( home_url(), PHP_URL_HOST ) === $url_host ) {
+				// But allow this to be disabled via a filter:
+				if ( apply_filters( 'airplane_mode_allow_local_bypass', true, $url, $args ) ) {
+					return $status;
+				}
+			}
+
+			// Disable the http requests if enabled.
+			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
 		}
 
 		/**
