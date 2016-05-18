@@ -3,9 +3,9 @@ Contributors: norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquit
 Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
-Requires at least: 4.0
+Requires at least: 4.4
 Tested up to: 4.5
-Stable tag: 0.1.6
+Stable tag: 0.1.7
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,11 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.7 - 2016/05/18
+* allow local HTTP calls with optional filter. props @johnbillion
+* add back index.php link to main dashboard menu item
+* bumped minimum WP version requirement to 4.4
 
 = 0.1.6 - 2016/04/25
 * minor tweak to include CSS for new icon font

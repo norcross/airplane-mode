@@ -5,9 +5,9 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://reaktivstudios.com/
- * Version: 0.1.6
+ * Version: 0.1.7
  * Text Domain: airplane-mode
- * Requires WP: 4.0
+ * Requires WP: 4.4
  * Domain Path: languages
  * GitHub Plugin URI: https://github.com/norcross/airplane-mode
  */
@@ -36,18 +36,22 @@
  * THE SOFTWARE.
  */
 
+// Set our base if not already defined.
 if ( ! defined( 'AIRMDE_BASE' ) ) {
 	define( 'AIRMDE_BASE', plugin_basename( __FILE__ ) );
 }
 
+// Set our directory if not already defined.
 if ( ! defined( 'AIRMDE_DIR' ) ) {
 	define( 'AIRMDE_DIR', plugin_dir_path( __FILE__ ) );
 }
 
+// Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.6' );
+	define( 'AIRMDE_VER', '0.1.7' );
 }
 
+// Ensure the class has not already been loaded.
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 	/**
@@ -56,13 +60,15 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 	class Airplane_Mode_Core {
 
 		/**
-		 * Static property to hold our singleton instance
+		 * Static property to hold our singleton instance.
+		 *
 		 * @var $instance
 		 */
 		static $instance = false;
 
 		/**
 		 * Set a var for the number of HTTP requests.
+		 *
 		 * @var $http_count
 		 */
 		private $http_count = 0;

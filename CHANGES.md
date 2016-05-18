@@ -1,3 +1,8 @@
+#### Version 0.1.7 - 2016/05/18
+* allow local HTTP calls with optional filter. props @johnbillion
+* add back index.php link to main dashboard menu item
+* bumped minimum WP version requirement to 4.4
+
 #### Version 0.1.6 - 2016/04/25
 * minor tweak to include CSS for new icon font
 
