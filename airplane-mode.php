@@ -397,7 +397,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Remove our items.
 			remove_submenu_page( 'index.php', 'update-core.php' );
-			remove_submenu_page( 'index.php', 'index.php' );
 		}
 
 		/**
