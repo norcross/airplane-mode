@@ -4,8 +4,8 @@ Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
-Tested up to: 4.5
-Stable tag: 0.1.7
+Tested up to: 4.6
+Stable tag: 0.1.8
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.8 - 2016/07/12
+* allow `JETPACK_DEV_DEBUG` constant to take priority over filter. props @kopepasah
+* added additional CSS for upcoming 4.6. change to upload tab.
 
 = 0.1.7 - 2016/05/18
 * allow local HTTP calls with optional filter. props @johnbillion

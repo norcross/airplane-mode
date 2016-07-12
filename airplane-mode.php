@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Airplane Mode
- * Plugin URI: http://reaktivstudios.com/
+ * Plugin URI: https://github.com/norcross/airplane-mode
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
- * Author URI: http://reaktivstudios.com/
- * Version: 0.1.7
+ * Author URI: http://andrewnorcross.com/
+ * Version: 0.1.8
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
@@ -48,7 +48,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.7' );
+	define( 'AIRMDE_VER', '0.1.8' );
 }
 
 // Ensure the class has not already been loaded.
@@ -494,9 +494,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			$url_host = parse_url( $url, PHP_URL_HOST );
 
-			// Allow the request to pass through if the URL host matches the site's host:
+			// Allow the request to pass through if the URL host matches the site's host.
 			if ( $url_host && parse_url( home_url(), PHP_URL_HOST ) === $url_host ) {
-				// But allow this to be disabled via a filter:
+
+				// But allow this to be disabled via a filter.
 				if ( apply_filters( 'airplane_mode_allow_local_bypass', true, $url, $args ) ) {
 					return $status;
 				}
@@ -948,7 +949,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$this->http_count++;
 		}
 
-	} // end class
+		// End class.
+	}
 
 } //end class_exists
 
