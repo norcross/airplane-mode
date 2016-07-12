@@ -139,8 +139,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// All our various filter checks.
 			if ( $this->enabled() ) {
 
-				// Keep jetpack from attempting external requests.
-				add_filter( 'jetpack_development_mode',             '__return_true', 9999 );
+				// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
+				if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
+					// Keep jetpack from attempting external requests.
+					add_filter( 'jetpack_development_mode',         '__return_true', 9999 );
+				}
 
 				// Disable automatic updater updates.
 				add_filter( 'automatic_updater_disabled',           '__return_true' );
