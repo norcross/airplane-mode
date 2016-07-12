@@ -49,6 +49,7 @@
   opacity: 0.5;
 }
 
+.airplane-mode-enabled.plugin-install-php.branch-4-6 h1 a.upload-view-toggle,
 .airplane-mode-enabled.plugin-install-php h1 a.upload,
 .airplane-mode-enabled.plugin-install-php .wp-filter,
 .airplane-mode-enabled.theme-install-php .wp-filter,
