@@ -145,6 +145,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 					add_filter( 'jetpack_development_mode',         '__return_true', 9999 );
 				}
 
+				// Prevent BuddyPress from falling back to Gravatar avatars.
+				add_filter( 'bp_core_fetch_avatar_no_grav',         '__return_true' );
+
 				// Disable automatic updater updates.
 				add_filter( 'automatic_updater_disabled',           '__return_true' );
 
