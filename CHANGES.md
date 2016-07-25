@@ -1,3 +1,6 @@
+#### Version 0.1.9 - 2016/07/25
+* Prevent BuddyPress from falling back to Gravatar. props @johnbillion
+
 #### Version 0.1.8 - 2016/07/12
 * allow `JETPACK_DEV_DEBUG` constant to take priority over filter. props @kopepasah
 * added additional CSS for upcoming 4.6. change to upload tab.

@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 0.1.8
+Stable tag: 0.1.9
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.1.9 - 2016/07/25
+* Prevent BuddyPress from falling back to Gravatar. props @johnbillion
 
 = 0.1.8 - 2016/07/12
 * allow `JETPACK_DEV_DEBUG` constant to take priority over filter. props @kopepasah
