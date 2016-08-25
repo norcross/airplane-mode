@@ -28,7 +28,10 @@ See [CHANGES.md](CHANGES.md).
 * [Mark Jaquith](https://github.com/markjaquith)
 
 ## License
+
 [MIT](https://github.com/devgeniem/wp-core-blocker/blob/master/LICENSE)
 
-#### [Pull requests](https://github.com/devgeniem/wp-core-blocker/pulls) are very much welcome and encouraged.
+## Contributing
+
+[Pull requests](https://github.com/devgeniem/wp-core-blocker/pulls) are very much welcome and encouraged.
 
