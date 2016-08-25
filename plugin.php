@@ -83,6 +83,9 @@ if ( ! class_exists( __NAMESPACE__ . '\CoreBlocker' ) ) {
             add_filter( 'site_transient_update_themes',         array( __CLASS__, 'remove_update_array'     )           );
             add_filter( 'site_transient_update_plugins',        array( __CLASS__, 'remove_update_array'     )           );
 
+            // Remove admin news dashboard widget
+            add_action( 'admin_init',                           array( __CLASS__, 'remove_dashboards'       )           );
+
             // Run various hooks if the plugin should be enabled
             if ( self::enabled() ) {
 
@@ -178,6 +181,13 @@ if ( ! class_exists( __NAMESPACE__ . '\CoreBlocker' ) ) {
 
             // Remove our items.
             remove_submenu_page( 'index.php', 'update-core.php' );
+        }
+
+        /**
+         * Remove WordPress news dashboard widget
+         */
+        static function remove_dashboards() {
+            remove_meta_box( 'dashboard_primary', 'dashboard', 'normal' );
         }
 
         /**
