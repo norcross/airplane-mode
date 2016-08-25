@@ -515,6 +515,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_css() {
 
+			if ( ! is_admin_bar_showing() ) {
+				return;
+			}
+
 			// Set a suffix for loading the minified or normal.
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
 
