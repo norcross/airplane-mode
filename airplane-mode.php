@@ -104,7 +104,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ),  9999    );
 			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
-			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 
 			// Body class on each location for the display.
 			add_filter( 'body_class',                           array( $this, 'body_class'              )           );
