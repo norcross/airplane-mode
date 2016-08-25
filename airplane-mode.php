@@ -104,7 +104,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ),  9999    );
 			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
-			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 
 			// Body class on each location for the display.
 			add_filter( 'body_class',                           array( $this, 'body_class'              )           );
@@ -514,6 +513,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * Load our small CSS file for the toggle switch.
 		 */
 		public function toggle_css() {
+
+			if ( ! is_admin_bar_showing() ) {
+				return;
+			}
 
 			// Set a suffix for loading the minified or normal.
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
