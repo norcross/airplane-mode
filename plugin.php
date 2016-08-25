@@ -5,7 +5,7 @@
  * Description: Disables WP from contacting wp.org servers and disables users from installing anything in wp-admin.
  * Author: Onni Hakala / Geniem Oy
  * Author URI: http://github.com/onnimonni
- * Version: 0.2.2
+ * Version: 0.2.3
  * Requires WP: 4.4
  * GitHub Plugin URI: https://github.com/devgeniem/wp-core-blocker
  */

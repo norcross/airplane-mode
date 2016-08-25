@@ -5,11 +5,11 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: MIT
 License URI: http://norcross.mit-license.org/
 
-Control loading of external files when developing locally
+Disable WordPress Core external requests, installatian and updates.
 
 == Description ==
 
@@ -40,6 +40,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.3 - 2016/08/26
+* Disable core from downloading the full language list in options-general.php page.
 
 = 0.2.2 - 2016/08/25
 * Make removing gravatar an additional option trigger by `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',false)`
