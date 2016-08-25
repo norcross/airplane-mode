@@ -1,5 +1,8 @@
+#### Version 0.2.1 - 2016/08/25
+* Remove WordPress news dashboard widget and disabled installation of plugins
+
 #### Version 0.2.0 - 2016/08/25
-* Rewrite plugin to only block core connections and disable plugin / theme installation
+* Rewrite plugin to only block core connections and disabled installation of themes
 
 #### Version 0.1.9 - 2016/07/25
 * Prevent BuddyPress from falling back to Gravatar. props @johnbillion

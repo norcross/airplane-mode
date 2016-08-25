@@ -5,7 +5,7 @@
  * Description: Disables WP from contacting wp.org servers and disables users from installing anything in wp-admin.
  * Author: Onni Hakala / Geniem Oy
  * Author URI: http://github.com/onnimonni
- * Version: 0.2.0
+ * Version: 0.2.1
  * Requires WP: 4.4
  * GitHub Plugin URI: https://github.com/devgeniem/wp-core-blocker
  */
@@ -301,7 +301,7 @@ if ( ! class_exists( __NAMESPACE__ . '\CoreBlocker' ) ) {
         static public function prevent_auto_updates( $caps, $cap ) {
 
             // Check for being enabled and look for specific cap requirements.
-            if ( self::enabled() && in_array( $cap, array( 'install_themes', 'update_plugins', 'update_themes', 'update_core' ) ) ) {
+            if ( self::enabled() && in_array( $cap, array( 'install_plugins', 'install_themes', 'update_plugins', 'update_themes', 'update_core' ) ) ) {
                 $caps[] = 'do_not_allow';
             }
 
