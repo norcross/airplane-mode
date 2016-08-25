@@ -1,3 +1,6 @@
+#### Version 0.2.2 - 2016/08/25
+* Make removing gravatar an additional option trigger by `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',false)`
+
 #### Version 0.2.1 - 2016/08/25
 * Remove WordPress news dashboard widget and disabled installation of plugins
 

@@ -54,8 +54,10 @@ if ( ! class_exists( __NAMESPACE__ . '\CoreBlocker' ) ) {
             add_action( 'admin_init',                           array( __CLASS__, 'remove_schedule_hook'    )           );
 
             // Disable gravatars
-            add_filter( 'get_avatar',                           array( __CLASS__, 'replace_gravatar'        ),  1,  5   );
-            add_filter( 'default_avatar_select',                array( __CLASS__, 'default_avatar'          )           );
+            if ( defined( 'WP_CORE_BLOCKER_DISABLE_GRAVATAR' ) and WP_CORE_BLOCKER_DISABLE_GRAVATAR ) {
+                add_filter( 'get_avatar',                           array( __CLASS__, 'replace_gravatar'        ),  1,  5   );
+                add_filter( 'default_avatar_select',                array( __CLASS__, 'default_avatar'          )           );
+            }
 
             // Prevent users from even trying to update plugins and themes
             add_filter( 'map_meta_cap',                         array( __CLASS__, 'prevent_auto_updates'    ),  10, 2   );

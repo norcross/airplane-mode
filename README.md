@@ -9,7 +9,7 @@ This is fork from excellent work from [norcross/airplane-mode](https://github.co
 Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. Helps you to force composer for installing/updating sites.
 
 ## Current Actions
-* replaces all instances of Gravatar with a local image to remove external call
+* `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',true)` replaces all instances of Gravatar with a local image to remove external call
 * disables installing plugins and themes
 * disables all WP update checks for core, themes, and plugins
 

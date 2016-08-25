@@ -17,9 +17,9 @@ Disables WordPress from connecting to wp.org servers. Disables users from instal
 
 Features
 
-* replaces all instances of Gravatar with a local image to remove external call
 * disables installing plugins and themes
 * disables all WP update checks for core, themes, and plugins
+* define('WP_CORE_BLOCKER_DISABLE_GRAVATAR', true) replaces all instances of Gravatar with a local image to remove external call
 
 == Installation ==
 
