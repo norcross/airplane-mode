@@ -671,7 +671,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function prevent_auto_updates( $caps, $cap ) {
 
 			// Check for being enabled and look for specific cap requirements.
-			if ( $this->enabled() && in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
+			if ( $this->enabled() && in_array( $cap, array( 'install_themes', 'update_plugins', 'update_themes', 'update_core' ) ) ) {
 				$caps[] = 'do_not_allow';
 			}
 
