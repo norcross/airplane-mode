@@ -6,7 +6,7 @@
 This is fork from excellent work from [norcross/airplane-mode](https://github.com/norcross/airplane-mode/). We needed something to help local development and to disable all core update checks from production servers.
 
 ## About
-Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. We use composer for installing/updating sites.
+Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. Helps you to force composer for installing/updating sites.
 
 ## Current Actions
 * replaces all instances of Gravatar with a local image to remove external call

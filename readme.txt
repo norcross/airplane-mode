@@ -1,6 +1,6 @@
 === Airplane Mode ===
-Contributors: norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquith
-Website Link: https://github.com/norcross/airplane-mode
+Contributors: onnimonni, norcross, johnbillion, afragen, szepeviktor, chriscct7, markjaquith
+Website Link: https://github.com/devgeniem/wp-core-blocker
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
@@ -13,15 +13,13 @@ Control loading of external files when developing locally
 
 == Description ==
 
-Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
+Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. Helps you to force composer for installing/updating sites.
 
 Features
 
-* removes external JS and CSS files from loading
 * replaces all instances of Gravatar with a local image to remove external call
-* removes all HTTP requests
+* disables installing plugins and themes
 * disables all WP update checks for core, themes, and plugins
-* includes toggle in admin bar for quick enable / disable
 
 == Installation ==
 
