@@ -1,29 +1,13 @@
 {
-    "name": "norcross/airplane-mode",
-    "description": "Disables external data calls and loading for working on a purely local (i.e. no internet connection) WordPress site",
-    "type": "wordpress-plugin",
+    "name": "devgeniem/wp-core-blocker",
+    "description": "Disables WP from contacting wp.org servers and disables users from installing anything in wp-admin.",
+    "type": "wordpress-muplugin",
     "license": "MIT",
     "authors":[
         {
-            "name": "Andrew Norcross",
-            "email": "andrew@andrewnorcross.com",
-            "homepage": "https://github.com/norcross"
-        },
-        {
-            "name": "John Blackbourn",
-            "homepage": "https://github.com/johnbillion"
-        },
-        {
-            "name": "Andy Fragen",
-            "homepage": "https://github.com/afragen"
-        },
-        {
-            "name": "Mark Jaquith",
-            "homepage": "https://github.com/markjaquith"
-        },
-        {
-            "name": "Chris Christoff",
-            "homepage": "https://github.com/chriscct7"
+            "name": "Onni Hakala",
+            "homepage": "https://github.com/onnimonni",
+            "role": "developer"
         }
     ],
     "require": {
