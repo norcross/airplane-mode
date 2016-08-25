@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -40,6 +40,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.2 - 2016/08/25
+* Make removing gravatar an additional option trigger by `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',false)`
 
 = 0.2.1 - 2016/08/25
 * Remove WordPress news dashboard widget and disabled installation of plugins
