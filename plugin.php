@@ -39,7 +39,7 @@ namespace geniem\helper;
 use WP_Error;
 
 // Ensure the class has not already been loaded.
-if ( ! class_exists( __NAMESPACE__ . '\CoreBlocker' ) ) {
+if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
 
     /**
      * Call our class.
