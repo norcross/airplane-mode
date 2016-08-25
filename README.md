@@ -36,3 +36,6 @@ See [CHANGES.md](CHANGES.md).
 
 [Pull requests](https://github.com/devgeniem/wp-core-blocker/pulls) are very much welcome and encouraged.
 
+## Maintainers
+[@onnimonni](https://github.com/onnimonni)
+
