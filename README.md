@@ -1,22 +1,15 @@
-Airplane Mode
+WP Core Blocker
 ========================
 
-## Contributors
-* [Andrew Norcross](https://github.com/norcross)
-* [John Blackbourn](https://github.com/johnbillion)
-* [Andy Fragen](https://github.com/afragen)
-* [Viktor Szépe](https://github.com/szepeviktor)
-* [Chris Christoff](https://github.com/chriscct7)
-* [Mark Jaquith](https://github.com/markjaquith)
+## History
+This is fork from excellent work from [norcross/airplane-mode](https://github.com/norcross/airplane-mode/). We needed something to help local development and to disable all core update checks from production servers.
 
 ## About
-Control loading of external files when developing locally. WP loads certain external files (fonts, Gravatar, etc.) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes/unhooks those actions to reduce load time and avoid errors due to missing files.
+Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. We use composer for installing/updating sites.
 
 ## Current Actions
-* removes external JS and CSS files from loading
 * replaces all instances of Gravatar with a local image to remove external call
-* removes all HTTP requests
-* disables all WP update checks for core, themes, and plugins
+* disables installing plugins and themes
 * includes toggle in admin bar for quick enable / disable
 
 ## Changelog
@@ -24,8 +17,18 @@ Control loading of external files when developing locally. WP loads certain exte
 See [CHANGES.md](CHANGES.md).
 
 ## Roadmap
-* fine tune HTTP request removal
-* find other calls from core
-* add other requests from popular plugins
+* Disable all connections which cause errors without internet connections so that we can use whoops in local development without annoying errors.
 
-#### [Pull requests](https://github.com/norcross/airplane-mode/pulls) are very much welcome and encouraged.
+## Credits
+* [Andrew Norcross](https://github.com/norcross)
+* [John Blackbourn](https://github.com/johnbillion)
+* [Andy Fragen](https://github.com/afragen)
+* [Viktor Szépe](https://github.com/szepeviktor)
+* [Chris Christoff](https://github.com/chriscct7)
+* [Mark Jaquith](https://github.com/markjaquith)
+
+## License
+[MIT](https://github.com/devgeniem/wp-core-blocker/blob/master/LICENSE)
+
+#### [Pull requests](https://github.com/devgeniem/wp-core-blocker/pulls) are very much welcome and encouraged.
+
