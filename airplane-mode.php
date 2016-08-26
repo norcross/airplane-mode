@@ -104,7 +104,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'admin_bar_menu',                       array( $this, 'admin_bar_toggle'        ),  9999    );
 			add_action( 'wp_enqueue_scripts',                   array( $this, 'toggle_css'              ),  9999    );
 			add_action( 'admin_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
-			add_action( 'login_enqueue_scripts',                array( $this, 'toggle_css'              ),  9999    );
 
 			// Body class on each location for the display.
 			add_filter( 'body_class',                           array( $this, 'body_class'              )           );
@@ -123,7 +122,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_filter( 'install_plugins_tabs',                 array( $this, 'plugin_add_tabs'         )           );
 
 			// Theme update API for different calls.
-			add_filter( 'themes_api_args',                      array( $this, 'bypass_theme_api'        ),  10, 2   );
+			add_filter( 'themes_api',                           array( $this, 'bypass_theme_api_call'   ),  10, 3   );
+			add_filter( 'themes_api_result',                    array( $this, 'bypass_theme_api_result' ),  10, 3   );
 
 			// Time based transient checks.
 			add_filter( 'pre_site_transient_update_themes',     array( $this, 'last_checked_themes'     )           );
@@ -150,9 +150,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 				// Disable automatic updater updates.
 				add_filter( 'automatic_updater_disabled',           '__return_true' );
-
-				// Hijack the themes api setup to bypass the API call.
-				add_filter( 'themes_api',                           '__return_true' );
 
 				// Tell WordPress we are on a version control system to add additional blocks.
 				add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
@@ -515,11 +512,19 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function toggle_css() {
 
+			// Don't display CSS on the front-end if the admin bar is not loading.
+			if ( ! is_admin() && ! is_admin_bar_showing() ) {
+				return;
+			}
+
 			// Set a suffix for loading the minified or normal.
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '.css' : '.min.css';
+			$file   = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? 'airplane-mode.css' : 'airplane-mode.min.css';
+
+			// Set a version for browser caching.
+			$vers   = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : AIRMDE_VER;
 
 			// Load the CSS file itself.
-			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/airplane-mode' . $suffix, __FILE__ ), array(), AIRMDE_VER, 'all' );
+			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/' . $file, __FILE__ ), array(), $vers, 'all' );
 		}
 
 		/**
@@ -697,6 +702,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				delete_site_transient( 'update_core' );
 				delete_site_transient( 'update_plugins' );
 				delete_site_transient( 'update_themes' );
+				delete_site_transient( 'wporg_theme_feature_list' );
 			}
 		}
 
@@ -764,23 +770,45 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Hijack the themes api setup to bypass the API call.
+		 * Override the API call made for pulling themes from the .org repo.
 		 *
-		 * @param object $args    Arguments used to query for installer pages from the Themes API.
-		 * @param string $action  Requested action. Likely values are 'theme_information',
-		 *                        'feature_list', or 'query_themes'.
+		 * @param false|object|array $override  Whether to override the WordPress.org Themes API. Default false.
+		 * @param string             $action    Requested action. Likely values are 'theme_information',
+		 *                                      'feature_list', or 'query_themes'.
+		 * @param object             $args      Arguments used to query for installer pages from the Themes API.
 		 *
-		 * @return bool           true or false depending on the type of query
+		 * @return bool                         True if enabled, otherwise the existng value.
 		 */
-		public function bypass_theme_api( $args, $action ) {
+		public function bypass_theme_api_call( $override, $action, $args ) {
 
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
-				return $args;
+				return $override;
 			}
 
 			// Return false on feature list to avoid the API call.
-			return ! empty( $action ) && 'feature_list' === $action ? false : $args;
+			return ! empty( $action ) && 'feature_list' === $action ? true : $override;
+		}
+
+		/**
+		 * Hijack the expected themes API result.
+		 *
+		 * @param array|object|WP_Error $res     WordPress.org Themes API response.
+		 * @param string                $action  Requested action. Likely values are 'theme_information',
+		 *                                       'feature_list', or 'query_themes'.
+		 * @param object                $args    Arguments used to query for installer pages from the WordPress.org Themes API.
+		 *
+		 * @return bool                          An empty array if enabled, otherwise the existng result.
+		 */
+		public function bypass_theme_api_result( $res, $action, $args ) {
+
+			// Bail if disabled.
+			if ( ! $this->enabled() ) {
+				return $res;
+			}
+
+			// Return false on feature list to avoid the API call.
+			return ! empty( $action ) && in_array( $action, array( 'feature_list', 'query_themes' ) ) ? array() : $res;
 		}
 
 		/**
