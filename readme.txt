@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 0.1.9
+Stable tag: 0.2.0
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.0 - 2016/08/26
+* modify CSS loading for front-end, removed loading for login page. props @barryceelen
+* fixed WP.org theme API call request to avoid `WP_Error` return. props @onnimonni
 
 = 0.1.9 - 2016/07/25
 * Prevent BuddyPress from falling back to Gravatar. props @johnbillion

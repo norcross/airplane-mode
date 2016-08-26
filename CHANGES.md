@@ -1,5 +1,9 @@
+#### Version 0.2.0 - 2016/08/26
+* modify CSS loading for front-end, removed loading for login page. props @barryceelen
+* fixed WP.org theme API call request to avoid `WP_Error` return. props @onnimonni
+
 #### Version 0.1.9 - 2016/07/25
-* Prevent BuddyPress from falling back to Gravatar. props @johnbillion
+* prevent BuddyPress from falling back to Gravatar. props @johnbillion
 
 #### Version 0.1.8 - 2016/07/12
 * allow `JETPACK_DEV_DEBUG` constant to take priority over filter. props @kopepasah

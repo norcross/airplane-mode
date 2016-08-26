@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://andrewnorcross.com/
- * Version: 0.1.9
+ * Version: 0.2.0
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
@@ -48,7 +48,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.1.9' );
+	define( 'AIRMDE_VER', '0.2.0' );
 }
 
 // Ensure the class has not already been loaded.
