@@ -5,13 +5,20 @@
 ## History
 This is fork from excellent work from [norcross/airplane-mode](https://github.com/norcross/airplane-mode/). We needed something to help local development and to disable all core update checks from production servers.
 
+## Installation
+Preferred installation way is with composer:
+```
+$ composer require devgeniem/wp-core-blocker
+```
+
 ## About
-Disables WordPress from connecting to wp.org servers. Disables users from installing anything from wp-admin. Helps you to force composer for installing/updating sites.
+This plugin is meant for composer driven sites. It helps you to force installing/updating stuff only through composer or cli. It also blocks WordPress core from connecting to wp.org servers to make site faster and not to fail under local development with poor internet connection.
 
 ## Current Actions
-* `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',true)` replaces all instances of Gravatar with a local image to remove external call
 * disables installing plugins and themes
-* disables all WP update checks for core, themes, and plugins
+* disables admin dashboard WP news widget
+* disables all WP update checks for core, translations, themes, and plugins
+* `define('WP_CORE_BLOCKER_DISABLE_GRAVATAR',true)` replaces all instances of Gravatar with a local image to remove external call
 
 ## Changelog
 
