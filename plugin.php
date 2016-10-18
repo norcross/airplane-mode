@@ -88,6 +88,9 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
             // Remove admin news dashboard widget
             add_action( 'admin_init',                           array( __CLASS__, 'remove_dashboards'       )           );
 
+            // Remove cronjobs which check for updates
+            add_filter( 'option_cron',                      array( __CLASS__, 'remove_cron_updates'     )           );
+
             // Run various hooks if the plugin should be enabled
             if ( self::enabled() ) {
 
@@ -193,6 +196,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
          */
         static function remove_dashboards() {
             remove_meta_box( 'dashboard_primary', 'dashboard', 'normal' );
+        }
+
+        /**
+         * Filter core/theme/plugin update cron events from cron list
+         */
+        static function remove_cron_updates($cron_events) {
+
+            // quick bailout
+            if ( empty($cron_events) ) {
+                return $cron_events;
+            }
+
+            foreach($cron_events as &$time) {
+
+                if( isset($time['wp_version_check']) ) {
+                    unset($time['wp_version_check']);
+                }
+
+                if( isset($time['wp_update_plugins']) ) {
+                    unset($time['wp_update_plugins']);
+                }
+
+                if( isset($time['wp_update_themes']) ) {
+                    unset($time['wp_update_themes']);
+                }
+            }
+
+            return $cron_events;
         }
 
         /**
