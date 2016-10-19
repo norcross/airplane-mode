@@ -16,7 +16,7 @@ Control loading of external files when developing locally. WP loads certain exte
 * removes external JS and CSS files from loading
 * replaces all instances of Gravatar with a local image to remove external call
 * removes all HTTP requests
-* disables all WP update checks for core, themes, and plugins
+* disables all WP update checks for core, languages, themes, and plugins
 * includes toggle in admin bar for quick enable / disable
 
 ## Changelog
