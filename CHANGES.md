@@ -1,3 +1,6 @@
+#### Version 0.2.1 - 2016/10/19
+* Fix settings page language drowdown when used offline. props @onnimonni
+
 #### Version 0.2.0 - 2016/08/26
 * modify CSS loading for front-end, removed loading for login page. props @barryceelen
 * fixed WP.org theme API call request to avoid `WP_Error` return. props @onnimonni

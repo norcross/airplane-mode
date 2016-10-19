@@ -5,11 +5,12 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://andrewnorcross.com/
- * Version: 0.2.0
+ * Version: 0.2.1
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
  * GitHub Plugin URI: https://github.com/norcross/airplane-mode
+ * @package airplane-mode
  */
 
 /*
@@ -48,7 +49,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.2.0' );
+	define( 'AIRMDE_VER', '0.2.1' );
 }
 
 // Ensure the class has not already been loaded.
@@ -133,7 +134,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_filter( 'site_transient_update_plugins',        array( $this, 'remove_update_array'     )           );
 
 			// Disable fetching languages from online
-            add_filter( 'site_transient_available_translations', array( $this, 'available_translations' ), 9999, 1  );
+			add_filter( 'site_transient_available_translations', array( $this, 'available_translations' ), 9999, 1  );
 
 			// Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                 array( $this, 'create_setting'          )           );
@@ -361,11 +362,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function body_class( $classes ) {
 
 			// Add the class based on the current status.
-			$classes[]	= $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
+			$classes[]  = $this->enabled() ? 'airplane-mode-enabled' : 'airplane-mode-disabled';
 
 			// Also add in the margin setup for Query Monitor because I'm a perfectionist.
 			if ( ! class_exists( 'QueryMonitor' ) || defined( 'QM_DISABLED' ) && QM_DISABLED ) {
-				$classes[]	= 'airplane-mode-no-qm';
+				$classes[]  = 'airplane-mode-no-qm';
 			}
 
 			// Return our array of classes.
@@ -829,9 +830,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Return our object.
 			return (object) array(
-				'last_checked'		=> time(),
-				'updates'			=> array(),
-				'version_checked'	=> $wp_version,
+				'last_checked'      => time(),
+				'updates'           => array(),
+				'version_checked'   => $wp_version,
 			);
 		}
 
@@ -860,10 +861,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Return our object.
 			return (object) array(
-				'last_checked'		=> time(),
-				'updates'			=> array(),
-				'version_checked'	=> $wp_version,
-				'checked'			=> $data,
+				'last_checked'      => time(),
+				'updates'           => array(),
+				'version_checked'   => $wp_version,
+				'checked'           => $data,
 			);
 		}
 
@@ -897,20 +898,20 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Return our object.
 			return (object) array(
-				'last_checked'		=> time(),
-				'updates'			=> array(),
-				'version_checked'	=> $wp_version,
-				'checked'			=> $data,
+				'last_checked'      => time(),
+				'updates'           => array(),
+				'version_checked'   => $wp_version,
+				'checked'           => $data,
 			);
 		}
 
 		/**
 		 * Filter for languages list transient. Returns locally available translations
-		 * to avoid request into wp.org translation api
+		 * to avoid request into wp.org translation API.
 		 *
-		 * @param mixed $translations   translation data returned from transient api
+		 * @param mixed $translations  Translation data returned from transient API.
 		 *
-		 * @return array				list of available languages
+		 * @return array                List of available languages.
 		 */
 		public function available_translations( $translations ) {
 
@@ -920,10 +921,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			/**
-			 * If transient still contains list of languages just use those
-			 * Otherwise fallback to mimicked data which we create here
+			 * If transient still contains list of languages just use those.
+			 * Otherwise fallback to mimicked data which we create here.
 			 */
-			if ( $translations && ! empty($translations) ) {
+			if ( $translations && ! empty( $translations ) ) {
 				return $translations;
 			} else {
 				$installed_languages = get_available_languages();
@@ -932,139 +933,143 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Returns list of languages installed locally with full mimicked meta data
+		 * Returns list of languages installed locally with full mimicked meta data.
 		 *
-		 * @param $installed_languages	 list of locally available languages
+		 * @param array $installed_languages  List of locally available languages.
 		 *
-		 * @return array	 list of available languages in offline mode
+		 * @return array                List of available languages in offline mode.
 		 */
 		private function get_offline_languages( $installed_languages ) {
 
-			// This is list of languages which are available from translations api
+			// This is list of languages which are available from translations API.
 			$offline_languages = $this->get_offline_translation_information();
 
 			// Call the global WP version.
 			global $wp_version;
 
-			// Tell WordPress that all translations are recent even though they can be old
+			// Tell WordPress that all translations are recent even though they can be old.
 			$date = date_i18n( 'Y-m-d H:is' , time() );
 
+			// Set an empty array of the available languages.
 			$available_languages = array();
 
+			// Loop through our installed languages.
 			foreach ( $installed_languages as $lang ) {
 
-				// Try to mimick the data that WordPress puts into 'available_translations' transient
+				// Try to mimick the data that WordPress puts into 'available_translations' transient.
 				$settings = array(
-					'language' => $lang,
-					'iso' => array( $lang ),
-					'version' => $wp_version,
-					'updated' => $date,
-					'strings' => array(
-						'continue' => __('Continue'),
+					'language'  => $lang,
+					'iso'       => array( $lang ),
+					'version'   => $wp_version,
+					'updated'   => $date,
+					'strings'   => array(
+						'continue' => __( 'Continue' ),
 					),
-					'package' => "https://downloads.wordpress.org/translation/core/{$wp_version}/{$lang}.zip"
+					'package'   => "https://downloads.wordpress.org/translation/core/{$wp_version}/{$lang}.zip",
 				);
 
-				// Combine the mimicked data with data we have stored in $offline_languages to give realistic output
-				$available_languages[$lang] = array_merge( $settings, $offline_languages[$lang] );
+				// Combine the mimicked data with data we have stored in $offline_languages to give realistic output.
+				$available_languages[ $lang ] = array_merge( $settings, $offline_languages[ $lang ] );
 			}
 
+			// And return our language sets.
 			return $available_languages;
 		}
 
 		/**
 		 * We can't use wp_get_available_translations() offine.
-		 * This function tries to return something similiar
+		 * This function tries to return something similiar.
 		 *
-		 * @return array	 list of wordpress language meta data
+		 * @return array     List of wordpress language meta data.
 		 */
 		private function get_offline_translation_information() {
 
-			$languages = array(
-				'ar'				=> array( 'english_name' => 'Arabic', 'native_name' => 'العربية' ),
-				'ary'				=> array( 'english_name' => 'Moroccan Arabic', 'native_name' =>  'العربية المغربية' ),
-				'az'				=> array( 'english_name' => 'Azerbaijani', 'native_name' => 'Azərbaycan dili' ),
-				'azb'				=> array( 'english_name' => 'South Azerbaijani', 'native_name' =>  'گؤنئی آذربایجان' ),
-				'bg_BG'				=> array( 'english_name' => 'Bulgarian', 'native_name' => 'Български' ),
-				'bn_BD'				=> array( 'english_name' => 'Bengali', 'native_name' => 'বাংলা' ),
-				'bs_BA'				=> array( 'english_name' => 'Bosnian', 'native_name' => 'Bosanski' ),
-				'ca'				=> array( 'english_name' => 'Catalan', 'native_name' => 'Català' ),
-				'ceb'				=> array( 'english_name' => 'Cebuano', 'native_name' => 'Cebuano' ),
-				'cs_CZ'				=> array( 'english_name' => 'Czech', 'native_name' => 'Čeština‎' ),
-				'cy'				=> array( 'english_name' => 'Welsh', 'native_name' => 'Cymraeg' ),
-				'da_DK'				=> array( 'english_name' => 'Danish', 'native_name' => 'Dansk' ),
-				'de_DE_formal'			=> array( 'english_name' => 'German (Formal)', 'native_name' =>  'Deutsch (Sie)' ),
-				'de_DE'				=> array( 'english_name' => 'German', 'native_name' => 'Deutsch' ),
-				'de_CH_informal'		=> array( 'english_name' => '(Switzerland, Informal)', 'native_name' => 'Deutsch (Schweiz, Du)' ),
-				'de_CH'				=> array( 'english_name' => 'German (Switzerland)', 'native_name' =>  'Deutsch (Schweiz)' ),
-				'el'				=> array( 'english_name' => 'Greek', 'native_name' => 'Ελληνικά' ),
-				'en_CA'				=> array( 'english_name' => 'English (Canada)', 'native_name' =>  'English (Canada)' ),
-				'en_ZA'				=> array( 'english_name' => 'English (South Africa)', 'native_name' =>  'English (South Africa)' ),
-				'en_AU'				=> array( 'english_name' => 'English (Australia)', 'native_name' =>  'English (Australia)' ),
-				'en_NZ'				=> array( 'english_name' => 'English (New Zealand)', 'native_name' =>  'English (New Zealand)' ),
-				'en_GB'				=> array( 'english_name' => 'English (UK)', 'native_name' =>  'English (UK)' ),
-				'eo'				=> array( 'english_name' => 'Esperanto', 'native_name' => 'Esperanto' ),
-				'es_CL'				=> array( 'english_name' => 'Spanish (Chile)', 'native_name' =>  'Español de Chile' ),
-				'es_AR'				=> array( 'english_name' => 'Spanish (Argentina)', 'native_name' =>  'Español de Argentina' ),
-				'es_PE'				=> array( 'english_name' => 'Spanish (Peru)', 'native_name' =>  'Español de Perú' ),
-				'es_MX'				=> array( 'english_name' => 'Spanish (Mexico)', 'native_name' =>  'Español de México' ),
-				'es_CO'				=> array( 'english_name' => 'Spanish (Colombia)', 'native_name' =>  'Español de Colombia' ),
-				'es_ES'				=> array( 'english_name' => 'Spanish (Spain)', 'native_name' =>  'Español' ),
-				'es_VE'				=> array( 'english_name' => 'Spanish (Venezuela)', 'native_name' =>  'Español de Venezuela' ),
-				'es_GT'				=> array( 'english_name' => 'Spanish (Guatemala)', 'native_name' =>  'Español de Guatemala' ),
-				'et'				=> array( 'english_name' => 'Estonian', 'native_name' => 'Eesti' ),
-				'eu'				=> array( 'english_name' => 'Basque', 'native_name' => 'Euskara' ),
-				'fa_IR'				=> array( 'english_name' => 'Persian', 'native_name' => 'فارسی' ),
-				'fi'				=> array( 'english_name' => 'Finnish', 'native_name' => 'Suomi' ),
-				'fr_BE'				=> array( 'english_name' => 'French (Belgium)', 'native_name' =>  'Français de Belgique' ),
-				'fr_FR'				=> array( 'english_name' => 'French (France)', 'native_name' =>  'Français' ),
-				'fr_CA'				=> array( 'english_name' => 'French (Canada)', 'native_name' =>  'Français du Canada' ),
-				'gd'				=> array( 'english_name' => 'Scottish Gaelic', 'native_name' =>  'Gàidhlig' ),
-				'gl_ES'				=> array( 'english_name' => 'Galician', 'native_name' => 'Galego' ),
-				'haz'				=> array( 'english_name' => 'Hazaragi', 'native_name' => 'هزاره گی' ),
-				'he_IL'				=> array( 'english_name' => 'Hebrew', 'native_name' => 'עִבְרִית' ),
-				'hi_IN'				=> array( 'english_name' => 'Hindi', 'native_name' => 'हिन्दी' ),
-				'hr'				=> array( 'english_name' => 'Croatian', 'native_name' => 'Hrvatski' ),
-				'hu_HU'				=> array( 'english_name' => 'Hungarian', 'native_name' => 'Magyar' ),
-				'hy'				=> array( 'english_name' => 'Armenian', 'native_name' => 'Հայերեն' ),
-				'id_ID'				=> array( 'english_name' => 'Indonesian', 'native_name' => 'Bahasa Indonesia' ),
-				'is_IS'				=> array( 'english_name' => 'Icelandic', 'native_name' => 'Íslenska' ),
-				'it_IT'				=> array( 'english_name' => 'Italian', 'native_name' => 'Italiano' ),
-				'ja'				=> array( 'english_name' => 'Japanese', 'native_name' => '日本語' ),
-				'ka_GE'				=> array( 'english_name' => 'Georgian', 'native_name' => 'ქართული' ),
-				'ko_KR'				=> array( 'english_name' => 'Korean', 'native_name' => '한국어' ),
-				'lt_LT'				=> array( 'english_name' => 'Lithuanian', 'native_name' => 'Lietuvių kalba' ),
-				'mk_MK'				=> array( 'english_name' => 'Macedonian', 'native_name' => 'Македонски јазик' ),
-				'mr'				=> array( 'english_name' => 'Marathi', 'native_name' => 'मराठी' ),
-				'ms_MY'				=> array( 'english_name' => 'Malay', 'native_name' => 'Bahasa Melayu' ),
-				'my_MM'				=> array( 'english_name' => 'Myanmar (Burmese)', 'native_name' =>  'ဗမာစာ' ),
-				'nb_NO'				=> array( 'english_name' => 'Norwegian (Bokmål)', 'native_name' =>  'Norsk bokmål' ),
-				'nl_NL'				=> array( 'english_name' => 'Dutch', 'native_name' => 'Nederlands' ),
-				'nl_NL_formal'			=> array( 'english_name' => 'Dutch (Formal)', 'native_name' =>  'Nederlands (Formeel)' ),
-				'nn_NO'				=> array( 'english_name' => 'Norwegian (Nynorsk)', 'native_name' =>  'Norsk nynorsk' ),
-				'oci'				=> array( 'english_name' => 'Occitan', 'native_name' => 'Occitan' ),
-				'pl_PL'				=> array( 'english_name' => 'Polish', 'native_name' => 'Polski' ),
-				'ps'				=> array( 'english_name' => 'Pashto', 'native_name' => 'پښتو' ),
-				'pt_BR'				=> array( 'english_name' => 'Portuguese (Brazil)', 'native_name' =>  'Português do Brasil' ),
-				'pt_PT'				=> array( 'english_name' => 'Portuguese (Portugal)', 'native_name' =>  'Português' ),
-				'ro_RO'				=> array( 'english_name' => 'Romanian', 'native_name' => 'Română' ),
-				'ru_RU'				=> array( 'english_name' => 'Russian', 'native_name' => 'Русский' ),
-				'sk_SK'				=> array( 'english_name' => 'Slovak', 'native_name' => 'Slovenčina' ),
-				'sl_SI'				=> array( 'english_name' => 'Slovenian', 'native_name' => 'Slovenščina' ),
-				'sq'				=> array( 'english_name' => 'Albanian', 'native_name' => 'Shqip' ),
-				'sr_RS'				=> array( 'english_name' => 'Serbian', 'native_name' => 'Српски језик' ),
-				'sv_SE'				=> array( 'english_name' => 'Swedish', 'native_name' => 'Svenska' ),
-				'th'				=> array( 'english_name' => 'Thai', 'native_name' => 'ไทย' ),
-				'tl'				=> array( 'english_name' => 'Tagalog', 'native_name' => 'Tagalog' ),
-				'tr_TR'				=> array( 'english_name' => 'Turkish', 'native_name' => 'Türkçe' ),
-				'ug_CN'				=> array( 'english_name' => 'Uighur', 'native_name' => 'Uyƣurqə' ),
-				'uk'				=> array( 'english_name' => 'Ukrainian', 'native_name' => 'Українська' ),
-				'vi'				=> array( 'english_name' => 'Vietnamese', 'native_name' => 'Tiếng Việt' ),
-				'zh_CN'				=> array( 'english_name' => 'Chinese (China)', 'native_name' =>  '简体中文' ),
-				'zh_TW'				=> array( 'english_name' => 'Chinese (Taiwan)', 'native_name' =>  '繁體中文' )
+			// Build out the list of languages to use.
+			$languages  = array(
+				'ar'                => array( 'english_name' => 'Arabic', 'native_name' => 'العربية' ),
+				'ary'               => array( 'english_name' => 'Moroccan Arabic', 'native_name' => 'العربية المغربية' ),
+				'az'                => array( 'english_name' => 'Azerbaijani', 'native_name' => 'Azərbaycan dili' ),
+				'azb'               => array( 'english_name' => 'South Azerbaijani', 'native_name' => 'گؤنئی آذربایجان' ),
+				'bg_BG'             => array( 'english_name' => 'Bulgarian', 'native_name' => 'Български' ),
+				'bn_BD'             => array( 'english_name' => 'Bengali', 'native_name' => 'বাংলা' ),
+				'bs_BA'             => array( 'english_name' => 'Bosnian', 'native_name' => 'Bosanski' ),
+				'ca'                => array( 'english_name' => 'Catalan', 'native_name' => 'Català' ),
+				'ceb'               => array( 'english_name' => 'Cebuano', 'native_name' => 'Cebuano' ),
+				'cs_CZ'             => array( 'english_name' => 'Czech', 'native_name' => 'Čeština‎' ),
+				'cy'                => array( 'english_name' => 'Welsh', 'native_name' => 'Cymraeg' ),
+				'da_DK'             => array( 'english_name' => 'Danish', 'native_name' => 'Dansk' ),
+				'de_DE_formal'      => array( 'english_name' => 'German (Formal)', 'native_name' => 'Deutsch (Sie)' ),
+				'de_DE'             => array( 'english_name' => 'German', 'native_name' => 'Deutsch' ),
+				'de_CH_informal'    => array( 'english_name' => '(Switzerland, Informal)', 'native_name' => 'Deutsch (Schweiz, Du)' ),
+				'de_CH'             => array( 'english_name' => 'German (Switzerland)', 'native_name' => 'Deutsch (Schweiz)' ),
+				'el'                => array( 'english_name' => 'Greek', 'native_name' => 'Ελληνικά' ),
+				'en_CA'             => array( 'english_name' => 'English (Canada)', 'native_name' => 'English (Canada)' ),
+				'en_ZA'             => array( 'english_name' => 'English (South Africa)', 'native_name' => 'English (South Africa)' ),
+				'en_AU'             => array( 'english_name' => 'English (Australia)', 'native_name' => 'English (Australia)' ),
+				'en_NZ'             => array( 'english_name' => 'English (New Zealand)', 'native_name' => 'English (New Zealand)' ),
+				'en_GB'             => array( 'english_name' => 'English (UK)', 'native_name' => 'English (UK)' ),
+				'eo'                => array( 'english_name' => 'Esperanto', 'native_name' => 'Esperanto' ),
+				'es_CL'             => array( 'english_name' => 'Spanish (Chile)', 'native_name' => 'Español de Chile' ),
+				'es_AR'             => array( 'english_name' => 'Spanish (Argentina)', 'native_name' => 'Español de Argentina' ),
+				'es_PE'             => array( 'english_name' => 'Spanish (Peru)', 'native_name' => 'Español de Perú' ),
+				'es_MX'             => array( 'english_name' => 'Spanish (Mexico)', 'native_name' => 'Español de México' ),
+				'es_CO'             => array( 'english_name' => 'Spanish (Colombia)', 'native_name' => 'Español de Colombia' ),
+				'es_ES'             => array( 'english_name' => 'Spanish (Spain)', 'native_name' => 'Español' ),
+				'es_VE'             => array( 'english_name' => 'Spanish (Venezuela)', 'native_name' => 'Español de Venezuela' ),
+				'es_GT'             => array( 'english_name' => 'Spanish (Guatemala)', 'native_name' => 'Español de Guatemala' ),
+				'et'                => array( 'english_name' => 'Estonian', 'native_name' => 'Eesti' ),
+				'eu'                => array( 'english_name' => 'Basque', 'native_name' => 'Euskara' ),
+				'fa_IR'             => array( 'english_name' => 'Persian', 'native_name' => 'فارسی' ),
+				'fi'                => array( 'english_name' => 'Finnish', 'native_name' => 'Suomi' ),
+				'fr_BE'             => array( 'english_name' => 'French (Belgium)', 'native_name' => 'Français de Belgique' ),
+				'fr_FR'             => array( 'english_name' => 'French (France)', 'native_name' => 'Français' ),
+				'fr_CA'             => array( 'english_name' => 'French (Canada)', 'native_name' => 'Français du Canada' ),
+				'gd'                => array( 'english_name' => 'Scottish Gaelic', 'native_name' => 'Gàidhlig' ),
+				'gl_ES'             => array( 'english_name' => 'Galician', 'native_name' => 'Galego' ),
+				'haz'               => array( 'english_name' => 'Hazaragi', 'native_name' => 'هزاره گی' ),
+				'he_IL'             => array( 'english_name' => 'Hebrew', 'native_name' => 'עִבְרִית' ),
+				'hi_IN'             => array( 'english_name' => 'Hindi', 'native_name' => 'हिन्दी' ),
+				'hr'                => array( 'english_name' => 'Croatian', 'native_name' => 'Hrvatski' ),
+				'hu_HU'             => array( 'english_name' => 'Hungarian', 'native_name' => 'Magyar' ),
+				'hy'                => array( 'english_name' => 'Armenian', 'native_name' => 'Հայերեն' ),
+				'id_ID'             => array( 'english_name' => 'Indonesian', 'native_name' => 'Bahasa Indonesia' ),
+				'is_IS'             => array( 'english_name' => 'Icelandic', 'native_name' => 'Íslenska' ),
+				'it_IT'             => array( 'english_name' => 'Italian', 'native_name' => 'Italiano' ),
+				'ja'                => array( 'english_name' => 'Japanese', 'native_name' => '日本語' ),
+				'ka_GE'             => array( 'english_name' => 'Georgian', 'native_name' => 'ქართული' ),
+				'ko_KR'             => array( 'english_name' => 'Korean', 'native_name' => '한국어' ),
+				'lt_LT'             => array( 'english_name' => 'Lithuanian', 'native_name' => 'Lietuvių kalba' ),
+				'mk_MK'             => array( 'english_name' => 'Macedonian', 'native_name' => 'Македонски јазик' ),
+				'mr'                => array( 'english_name' => 'Marathi', 'native_name' => 'मराठी' ),
+				'ms_MY'             => array( 'english_name' => 'Malay', 'native_name' => 'Bahasa Melayu' ),
+				'my_MM'             => array( 'english_name' => 'Myanmar (Burmese)', 'native_name' => 'ဗမာစာ' ),
+				'nb_NO'             => array( 'english_name' => 'Norwegian (Bokmål)', 'native_name' => 'Norsk bokmål' ),
+				'nl_NL'             => array( 'english_name' => 'Dutch', 'native_name' => 'Nederlands' ),
+				'nl_NL_formal'      => array( 'english_name' => 'Dutch (Formal)', 'native_name' => 'Nederlands (Formeel)' ),
+				'nn_NO'             => array( 'english_name' => 'Norwegian (Nynorsk)', 'native_name' => 'Norsk nynorsk' ),
+				'oci'               => array( 'english_name' => 'Occitan', 'native_name' => 'Occitan' ),
+				'pl_PL'             => array( 'english_name' => 'Polish', 'native_name' => 'Polski' ),
+				'ps'                => array( 'english_name' => 'Pashto', 'native_name' => 'پښتو' ),
+				'pt_BR'             => array( 'english_name' => 'Portuguese (Brazil)', 'native_name' => 'Português do Brasil' ),
+				'pt_PT'             => array( 'english_name' => 'Portuguese (Portugal)', 'native_name' => 'Português' ),
+				'ro_RO'             => array( 'english_name' => 'Romanian', 'native_name' => 'Română' ),
+				'ru_RU'             => array( 'english_name' => 'Russian', 'native_name' => 'Русский' ),
+				'sk_SK'             => array( 'english_name' => 'Slovak', 'native_name' => 'Slovenčina' ),
+				'sl_SI'             => array( 'english_name' => 'Slovenian', 'native_name' => 'Slovenščina' ),
+				'sq'                => array( 'english_name' => 'Albanian', 'native_name' => 'Shqip' ),
+				'sr_RS'             => array( 'english_name' => 'Serbian', 'native_name' => 'Српски језик' ),
+				'sv_SE'             => array( 'english_name' => 'Swedish', 'native_name' => 'Svenska' ),
+				'th'                => array( 'english_name' => 'Thai', 'native_name' => 'ไทย' ),
+				'tl'                => array( 'english_name' => 'Tagalog', 'native_name' => 'Tagalog' ),
+				'tr_TR'             => array( 'english_name' => 'Turkish', 'native_name' => 'Türkçe' ),
+				'ug_CN'             => array( 'english_name' => 'Uighur', 'native_name' => 'Uyƣurqə' ),
+				'uk'                => array( 'english_name' => 'Ukrainian', 'native_name' => 'Українська' ),
+				'vi'                => array( 'english_name' => 'Vietnamese', 'native_name' => 'Tiếng Việt' ),
+				'zh_CN'             => array( 'english_name' => 'Chinese (China)', 'native_name' => '简体中文' ),
+				'zh_TW'             => array( 'english_name' => 'Chinese (Taiwan)', 'native_name' => '繁體中文' ),
 			);
 
-			// Allow adding or removing languages
+			// Allow adding or removing languages.
 			return apply_filters( 'airplane_mode_offline_languages', $languages );
 		}
 

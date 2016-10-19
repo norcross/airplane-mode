@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.6
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.1 - 2016/10/19
+* Fix settings page language drowdown when used offline. props @onnimonni
 
 = 0.2.0 - 2016/08/26
 * modify CSS loading for front-end, removed loading for login page. props @barryceelen
