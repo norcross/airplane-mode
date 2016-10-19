@@ -88,8 +88,34 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
             // Remove admin news dashboard widget
             add_action( 'admin_init',                           array( __CLASS__, 'remove_dashboards'       )           );
 
-            // Remove cronjobs which check for updates
-            add_filter( 'option_cron',                      array( __CLASS__, 'remove_cron_updates'     )           );
+            // Removes update check wp-cron
+            remove_action( 'init',                  'wp_schedule_update_checks' );
+
+            // Disable overall core updates.
+            add_filter( 'auto_update_core',                     '__return_false' );
+            add_filter( 'wp_auto_update_core',                  '__return_false' );
+
+            // Disable automatic plugin and theme updates (used by WP to force push security fixes).
+            add_filter( 'auto_update_plugin',                   '__return_false' );
+            add_filter( 'auto_update_theme',                    '__return_false' );
+
+            // Tell WordPress we are on a version control system to add additional blocks.
+            add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
+
+            // Disable translation updates.
+            add_filter( 'auto_update_translation',              '__return_false' );
+
+            // Disable minor core updates.
+            add_filter( 'allow_minor_auto_core_updates',        '__return_false' );
+
+            // Disable major core updates.
+            add_filter( 'allow_major_auto_core_updates',        '__return_false' );
+
+            // Disable dev core updates.
+            add_filter( 'allow_dev_auto_core_updates',          '__return_false' );
+
+            // Disable automatic updater updates.
+            add_filter( 'automatic_updater_disabled',           '__return_true' );
 
             // Run various hooks if the plugin should be enabled
             if ( self::enabled() ) {
@@ -100,34 +126,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
                 // Prevent BuddyPress from falling back to Gravatar avatars.
                 add_filter( 'bp_core_fetch_avatar_no_grav',         '__return_true' );
 
-                // Disable automatic updater updates.
-                add_filter( 'automatic_updater_disabled',           '__return_true' );
-
                 // Hijack the themes api setup to bypass the API call.
                 add_filter( 'themes_api',                           '__return_true' );
-
-                // Tell WordPress we are on a version control system to add additional blocks.
-                add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
-
-                // Disable translation updates.
-                add_filter( 'auto_update_translation',              '__return_false' );
-
-                // Disable minor core updates.
-                add_filter( 'allow_minor_auto_core_updates',        '__return_false' );
-
-                // Disable major core updates.
-                add_filter( 'allow_major_auto_core_updates',        '__return_false' );
-
-                // Disable dev core updates.
-                add_filter( 'allow_dev_auto_core_updates',          '__return_false' );
-
-                // Disable overall core updates.
-                add_filter( 'auto_update_core',                     '__return_false' );
-                add_filter( 'wp_auto_update_core',                  '__return_false' );
-
-                // Disable automatic plugin and theme updates (used by WP to force push security fixes).
-                add_filter( 'auto_update_plugin',                   '__return_false' );
-                add_filter( 'auto_update_theme',                    '__return_false' );
 
                 // Disable debug emails (used by core for rollback alerts in automatic update deployment).
                 add_filter( 'automatic_updates_send_debug_email',   '__return_false' );
@@ -148,7 +148,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
                 remove_action( 'admin_init',            'wp_plugin_update_rows' );
                 remove_action( 'admin_init',            'wp_theme_update_rows' );
                 remove_action( 'admin_notices',         'maintenance_nag' );
-                remove_action( 'init',                  'wp_schedule_update_checks' );
 
                 // Add back the upload tab.
                 add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
@@ -196,34 +195,6 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
          */
         static function remove_dashboards() {
             remove_meta_box( 'dashboard_primary', 'dashboard', 'normal' );
-        }
-
-        /**
-         * Filter core/theme/plugin update cron events from cron list
-         */
-        static function remove_cron_updates($cron_events) {
-
-            // quick bailout
-            if ( empty($cron_events) ) {
-                return $cron_events;
-            }
-
-            foreach($cron_events as &$time) {
-
-                if( isset($time['wp_version_check']) ) {
-                    unset($time['wp_version_check']);
-                }
-
-                if( isset($time['wp_update_plugins']) ) {
-                    unset($time['wp_update_plugins']);
-                }
-
-                if( isset($time['wp_update_themes']) ) {
-                    unset($time['wp_update_themes']);
-                }
-            }
-
-            return $cron_events;
         }
 
         /**
