@@ -1,19 +1,31 @@
 Airplane Mode
 ========================
 
+## Contributors
+* [Andrew Norcross](https://github.com/norcross)
+* [John Blackbourn](https://github.com/johnbillion)
+* [Andy Fragen](https://github.com/afragen)
+* [Viktor Szépe](https://github.com/szepeviktor)
+* [Chris Christoff](https://github.com/chriscct7)
+* [Mark Jaquith](https://github.com/markjaquith)
+
 ## About
-Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
+Control loading of external files when developing locally. WP loads certain external files (fonts, Gravatar, etc.) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes/unhooks those actions to reduce load time and avoid errors due to missing files.
 
 ## Current Actions
-* sets the src for Open Sans CSS font file to null due to dependency issues ( see [related Trac ticket](https://core.trac.wordpress.org/ticket/28478) )
+* removes external JS and CSS files from loading
 * replaces all instances of Gravatar with a local image to remove external call
 * removes all HTTP requests
+* disables all WP update checks for core, languages, themes, and plugins
 * includes toggle in admin bar for quick enable / disable
+
+## Changelog
+
+See [CHANGES.md](CHANGES.md).
 
 ## Roadmap
 * fine tune HTTP request removal
 * find other calls from core
 * add other requests from popular plugins
 
-
-#### pull requests are very much welcome and encouraged
+#### [Pull requests](https://github.com/norcross/airplane-mode/pulls) are very much welcome and encouraged.
