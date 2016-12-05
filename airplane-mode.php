@@ -529,6 +529,38 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/' . $file, __FILE__ ), array(), $vers, 'all' );
 		}
 
+		public function set_mode( $mode = 'on' ) {
+			if ( ! in_array( $mode, array( 'on', 'off' ) ) ) {
+				$mode = 'on';
+			}
+
+			// Update the setting.
+			$return = update_site_option( 'airplane-mode', $mode );
+
+			// Fire action to allow for functions to run on status change.
+			do_action( 'airplane_mode_status_change', $mode );
+
+			return $return;
+		}
+
+		/**
+		 * Enables airplane mode
+		 *
+		 * @return bool Whether the setting changed
+		 */
+		public function enable() {
+			return self::set_mode( 'on' );
+		}
+
+		/**
+		 * Disables airplane mode
+		 *
+		 * @return bool Whether the setting changed
+		 */
+		public function disable() {
+			return self::set_mode( 'off' );
+		}
+
 		/**
 		 * Check the user action from the toggle switch to set the option
 		 * to 'on' or 'off'.
@@ -559,11 +591,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Delete old per-site option.
 			delete_option( 'airplane-mode' );
 
-			// Update the setting.
-			update_site_option( 'airplane-mode', sanitize_key( $_REQUEST['airplane-mode'] ) );
-
-			// Fire action to allow for functions to run on status change.
-			do_action( 'airplane_mode_status_change', $switch );
+			self::set_mode( $switch );
 
 			// And go about our business.
 			wp_redirect( self::get_redirect() );
