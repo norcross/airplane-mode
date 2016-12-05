@@ -52,6 +52,10 @@ if ( ! defined( 'AIRMDE_VER' ) ) {
 	define( 'AIRMDE_VER', '0.2.1' );
 }
 
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once dirname( __FILE__ ) . '/inc/wp-cli.php';
+}
+
 // Ensure the class has not already been loaded.
 if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
@@ -529,6 +533,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/' . $file, __FILE__ ), array(), $vers, 'all' );
 		}
 
+		/**
+		 * Sets the mode
+		 *
+		 * @param string $mode Desired mode ('on' or 'off')
+		 * @return bool Whether the setting changed
+		 */
 		public function set_mode( $mode = 'on' ) {
 			if ( ! in_array( $mode, array( 'on', 'off' ) ) ) {
 				$mode = 'on';
