@@ -1,3 +1,6 @@
+#### Version 0.2.2 - 2016/12/07
+* Adding WP-CLI support. props @markjaquith
+
 #### Version 0.2.1 - 2016/10/19
 * Fix settings page language drowdown when used offline. props @onnimonni
 

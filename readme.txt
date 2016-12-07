@@ -4,8 +4,8 @@ Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
-Tested up to: 4.6
-Stable tag: 0.2.1
+Tested up to: 4.7
+Stable tag: 0.2.2
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -42,6 +42,9 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.2 - 2016/12/07
+* Adding WP-CLI support. props @markjaquith
 
 = 0.2.1 - 2016/10/19
 * Fix settings page language drowdown when used offline. props @onnimonni

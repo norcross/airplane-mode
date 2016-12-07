@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://andrewnorcross.com/
- * Version: 0.2.1
+ * Version: 0.2.2
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
@@ -49,9 +49,10 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.2.1' );
+	define( 'AIRMDE_VER', '0.2.2' );
 }
 
+// Load our WP-CLI helper if that is defined and available.
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once dirname( __FILE__ ) . '/inc/wp-cli.php';
 }
@@ -534,10 +535,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Sets the mode
+		 * Sets the mode.
 		 *
-		 * @param string $mode Desired mode ('on' or 'off')
-		 * @return bool Whether the setting changed
+		 * @param  string $mode Desired mode ('on' or 'off').
+		 *
+		 * @return bool Whether the setting changed.
 		 */
 		public function set_mode( $mode = 'on' ) {
 			if ( ! in_array( $mode, array( 'on', 'off' ) ) ) {
@@ -554,18 +556,18 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * Enables airplane mode
+		 * Enables airplane mode.
 		 *
-		 * @return bool Whether the setting changed
+		 * @return bool Whether the setting changed.
 		 */
 		public function enable() {
 			return self::set_mode( 'on' );
 		}
 
 		/**
-		 * Disables airplane mode
+		 * Disables airplane mode.
 		 *
-		 * @return bool Whether the setting changed
+		 * @return bool Whether the setting changed.
 		 */
 		public function disable() {
 			return self::set_mode( 'off' );
@@ -575,7 +577,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * Check the user action from the toggle switch to set the option
 		 * to 'on' or 'off'.
 		 *
-		 * @return void if any of the sanity checks fail and we bail early.
+		 * @return void If any of the sanity checks fail and we bail early.
 		 */
 		public function toggle_check() {
 
