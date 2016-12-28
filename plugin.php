@@ -83,7 +83,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
             add_filter( 'pre_site_transient_update_plugins',    array( __CLASS__, 'last_checked_plugins'    )           );
             add_filter( 'pre_site_transient_update_core',       array( __CLASS__, 'last_checked_core'       )           );
             add_filter( 'site_transient_update_themes',         array( __CLASS__, 'remove_update_array'     )           );
-            add_filter( 'site_transient_update_plugins',        array( __CLASS__, 'remove_update_array'     )           );
+            add_filter( 'site_transient_update_plugins',        array( __CLASS__, 'remove_plugin_updates'   )           );
 
             // Remove admin news dashboard widget
             add_action( 'admin_init',                           array( __CLASS__, 'remove_dashboards'       )           );
@@ -538,6 +538,28 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
          */
         static public function remove_update_array( $items ) {
             return ! self::enabled() ? $items : array();
+        }
+
+        /**
+         * Returns list of plugins which tells that there's no updates
+         *
+         * @param array $current    Empty array
+         *
+         * @return array            Lookalike data which is stored in site transient 'update_plugins'
+         */
+        static public function remove_plugin_updates( $current ) {
+            if ( ! $current ) {
+                $current = new stdClass;
+                $current->last_checked = time();
+                $current->translations = array();
+
+                $plugins = get_plugins();
+                foreach ( $plugins as $file => $p ) {
+                    $current->checked[ $file ] = strval($p['Version']);
+                }
+                $current->response = array();
+            }
+            return $current;
         }
 
         /**
