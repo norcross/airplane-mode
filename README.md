@@ -46,3 +46,5 @@ See [CHANGES.md](CHANGES.md).
 ## Maintainers
 [@onnimonni](https://github.com/onnimonni)
 
+[@villepietarinen](https://github.com/villepietarinen)
+
