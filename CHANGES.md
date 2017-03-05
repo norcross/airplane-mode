@@ -1,3 +1,7 @@
+#### Version 0.2.3 - 2017/03/05
+* Adding option to force transient purge
+* Adding `clean` action to WP-CLI functions
+
 #### Version 0.2.2 - 2016/12/07
 * Adding WP-CLI support. props @markjaquith
 

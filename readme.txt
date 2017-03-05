@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.7
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -44,6 +44,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.3 - 2017/03/05
+* Adding option to force transient purge
+* Adding `clean` action to WP-CLI functions
 
 = 0.2.2 - 2016/12/07
 * Adding WP-CLI support. props @markjaquith

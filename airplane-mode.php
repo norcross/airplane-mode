@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://andrewnorcross.com/
- * Version: 0.2.2
+ * Version: 0.2.3
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
@@ -49,7 +49,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.2.2' );
+	define( 'AIRMDE_VER', '0.2.3' );
 }
 
 // Load our WP-CLI helper if that is defined and available.
@@ -542,6 +542,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * @return bool Whether the setting changed.
 		 */
 		public function set_mode( $mode = 'on' ) {
+
+			// Check what mode we're currently in, with "on" as a fallback.
 			if ( ! in_array( $mode, array( 'on', 'off' ) ) ) {
 				$mode = 'on';
 			}
@@ -552,6 +554,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Fire action to allow for functions to run on status change.
 			do_action( 'airplane_mode_status_change', $mode );
 
+			// And return the status we just set.
 			return $return;
 		}
 
@@ -728,19 +731,21 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 		/**
 		 * Check the new status after airplane mode has been enabled or
-		 * disabled and purge related transients
+		 * disabled and purge related transients.
+		 *
+		 * @param boolean $force  Whether to force the purge.
 		 *
 		 * @return void
 		 */
-		public function purge_transients() {
+		public function purge_transients( $force = false ) {
 
 			// First check for the filter to avoid this action overall.
-			if ( false === $clear = apply_filters( 'airplane_mode_purge_transients', true ) ) {
+			if ( empty( $force ) && false === $clear = apply_filters( 'airplane_mode_purge_transients', true ) ) {
 				return;
 			}
 
-			// Purge the transients related to updates when disabled.
-			if ( ! $this->enabled() ) {
+			// Purge the transients related to updates when disabled or the force is called.
+			if ( ! $this->enabled() || ! empty( $force ) ) {
 				delete_site_transient( 'update_core' );
 				delete_site_transient( 'update_plugins' );
 				delete_site_transient( 'update_themes' );
@@ -1193,17 +1198,26 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		// End class.
 	}
 
-} //end class_exists
+} // End class_exists.
 
 if ( ! class_exists( 'Airplane_Mode_WP_Error' ) ) {
 
+	/**
+	 * Extend the WP_Error class to include our own.
+	 */
 	class Airplane_Mode_WP_Error extends WP_Error {
 
+		/**
+		 * Get our error data and return it.
+		 *
+		 * @return string
+		 */
 		public function __tostring() {
 			$data = $this->get_error_data();
 			return $data['return'];
 		}
 
+		// End class.
 	}
 
 }
