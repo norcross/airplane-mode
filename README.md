@@ -23,6 +23,9 @@ Control loading of external files when developing locally. WP loads certain exte
 
 See [CHANGES.md](CHANGES.md).
 
+## Notes
+If you need offline activation, see [this script](https://gist.github.com/solepixel/e1d03f4dcd1b9e86552b3cc6937325bf) written by [Brian DiChiara](https://github.com/solepixel)
+
 ## Roadmap
 * fine tune HTTP request removal
 * find other calls from core

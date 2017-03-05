@@ -31,6 +31,8 @@ This section describes how to install the plugin and get it working.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Toggle users as needed
 
+If you need offline activation, see [this script](https://gist.github.com/solepixel/e1d03f4dcd1b9e86552b3cc6937325bf) written by [Brian DiChiara](https://github.com/solepixel)
+
 == Frequently Asked Questions ==
 
 = Why do I need this? =
