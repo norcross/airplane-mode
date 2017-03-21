@@ -1014,7 +1014,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				);
 
 				// Combine the mimicked data with data we have stored in $offline_languages to give realistic output.
-				$available_languages[ $lang ] = array_merge( $settings, $offline_languages[ $lang ] );
+				if ( isset( $offline_languages[ $lang ] ) ) {
+					$available_languages[ $lang ] = array_merge( $settings, $offline_languages[ $lang ] );
+				}
 			}
 
 			// And return our language sets.
