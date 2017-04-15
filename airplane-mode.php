@@ -1052,7 +1052,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				'da_DK'             => array( 'english_name' => 'Danish', 'native_name' => 'Dansk' ),
 				'de_DE_formal'      => array( 'english_name' => 'German (Formal)', 'native_name' => 'Deutsch (Sie)' ),
 				'de_DE'             => array( 'english_name' => 'German', 'native_name' => 'Deutsch' ),
-				'de_CH_informal'    => array( 'english_name' => '(Switzerland, Informal)', 'native_name' => 'Deutsch (Schweiz, Du)' ),
+				'de_CH_informal'    => array( 'english_name' => 'German (Switzerland, Informal)', 'native_name' => 'Deutsch (Schweiz, Du)' ),
 				'de_CH'             => array( 'english_name' => 'German (Switzerland)', 'native_name' => 'Deutsch (Schweiz)' ),
 				'dzo'               => array( 'english_name' => 'Dzongkha', 'native_name' => 'རྫོང་ཁ' ),
 				'el'                => array( 'english_name' => 'Greek', 'native_name' => 'Ελληνικά' ),
