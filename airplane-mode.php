@@ -282,6 +282,20 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
+		 * Check if a host asset URLs should be blocked
+		 *
+		 * @param $host
+		 *
+		 * @return bool
+		 */
+		public function should_block_host_assets( $host ) {
+			return ! (
+				( $host === 'localhost' && apply_filters( 'airplane_mode_allow_local_bypass', true ) ) ||
+				apply_filters( 'airplane_mode_allow_host_assets', false !== strpos( home_url(), $host ), $host )
+			);
+		}
+
+		/**
 		 * Check the URL of a stylesheet and remove any that are not on the local URL.
 		 *
 		 * @param  string $source  The source URL of the CSS sheet.
@@ -304,7 +318,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
-			return isset( $parsed ) && false === strpos( home_url(), $parsed )
+			return isset( $parsed ) && $this->should_block_host_assets( $parsed )
 				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked style', 'airplane-mode' ), array(
 					'return' => '',
 					'src'    => $source,
@@ -335,7 +349,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
-			return isset( $parsed ) && false === strpos( home_url(), $parsed )
+			return isset( $parsed ) && $this->should_block_host_assets( $parsed )
 				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked script', 'airplane-mode' ), array(
 					'return' => '',
 					'src'    => $source,
