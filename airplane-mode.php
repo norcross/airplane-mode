@@ -290,7 +290,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function should_block_host_assets( $host ) {
 			return ! (
-				( $host === 'localhost' && apply_filters( 'airplane_mode_allow_local_bypass', true ) ) ||
+				( in_array( $host, array( 'localhost', '127.0.0.1' ), true ) && apply_filters( 'airplane_mode_allow_local_bypass', true ) ) ||
 				apply_filters( 'airplane_mode_allow_host_assets', false !== strpos( home_url(), $host ), $host )
 			);
 		}
