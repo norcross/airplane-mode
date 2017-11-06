@@ -4,8 +4,8 @@ Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 0.2.3
+Tested up to: 4.9
+Stable tag: 0.2.4-dev
 License: MIT
 License URI: http://norcross.mit-license.org/
 

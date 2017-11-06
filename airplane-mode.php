@@ -5,7 +5,7 @@
  * Description: Control loading of external files when developing locally
  * Author: Andrew Norcross
  * Author URI: http://andrewnorcross.com/
- * Version: 0.2.3
+ * Version: 0.2.4-dev
  * Text Domain: airplane-mode
  * Requires WP: 4.4
  * Domain Path: languages
@@ -49,7 +49,7 @@ if ( ! defined( 'AIRMDE_DIR' ) ) {
 
 // Set our version if not already defined.
 if ( ! defined( 'AIRMDE_VER' ) ) {
-	define( 'AIRMDE_VER', '0.2.3' );
+	define( 'AIRMDE_VER', '0.2.4-dev' );
 }
 
 // Load our WP-CLI helper if that is defined and available.
@@ -140,6 +140,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Disable fetching languages from online
 			add_filter( 'site_transient_available_translations', array( $this, 'available_translations' ), 9999, 1  );
+
+			// Use our own filters for scripts and stylesheets to allow local.
+			add_filter( 'airplane_mode_parse_style',             array( $this, 'bypass_asset_block'     ),  10, 2   );
+			add_filter( 'airplane_mode_parse_script',            array( $this, 'bypass_asset_block'     ),  10, 2   );
 
 			// Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                 array( $this, 'create_setting'          )           );
@@ -341,6 +345,28 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 					'src'    => $source,
 				) )
 				: $source;
+		}
+
+		/**
+		 * Use our existing filter to check for local assets.
+		 *
+		 * @param  boolean $block   Whether to block the specific asset. Defaults to 'true'.
+		 * @param  array   $parsed  The URL of the asset, parsed.
+		 *
+		 * @return boolean
+		 */
+		public function bypass_asset_block( $block, $parsed ) {
+
+			// Create an array of the approved local domains.
+			$local  = apply_filters( 'airplane_mode_local_hosts', array( 'localhost', '127.0.0.1' ) );
+
+			// If our parsed URL host is in that array, return false.
+			if ( in_array( $parsed, $local ) ) {
+				return false;
+			}
+
+			// And return our blocking choice.
+			return $block;
 		}
 
 		/**
