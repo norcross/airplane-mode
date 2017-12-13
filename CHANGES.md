@@ -1,3 +1,9 @@
+#### Version 0.2.4 - 2017/12/13
+* Added localhost bypass for loading CSS and JS files when hot reloading. props @shadyvb
+* Added additional hook removals for new automated updates and language packs.
+* Removed outdated `create_function` call for PHP 7.2 compatibility. props @geminorum
+* General cleanup
+
 #### Version 0.2.3 - 2017/03/05
 * Adding option to force transient purge
 * Adding `clean` action to WP-CLI functions

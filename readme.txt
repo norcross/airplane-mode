@@ -5,7 +5,7 @@ Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
 Tested up to: 4.9
-Stable tag: 0.2.4-dev
+Stable tag: 0.2.4
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -44,6 +44,12 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.4 - 2017/12/13
+* Added localhost bypass for loading CSS and JS files when hot reloading. props @shadyvb
+* Added additional hook removals for new automated updates and language packs.
+* Removed outdated `create_function` call for PHP 7.2 compatibility. props @geminorum
+* General cleanup
 
 = 0.2.3 - 2017/03/05
 * Adding option to force transient purge
