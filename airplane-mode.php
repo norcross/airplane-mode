@@ -537,7 +537,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Disable the http requests if enabled.
-			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
+			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled.', 'airplane-mode' ) );
 		}
 
 		/**

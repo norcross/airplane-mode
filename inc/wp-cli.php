@@ -15,7 +15,7 @@ class Airplane_Mode_Command extends WP_CLI_Command {
 	 */
 	function enable() {
 		Airplane_Mode_Core::getInstance()->enable();
-		WP_CLI::success( __( 'Airplane mode was enabled', 'airplane-mode' ) );
+		WP_CLI::success( __( 'Airplane Mode is enabled.', 'airplane-mode' ) );
 	}
 
 	/**
@@ -31,7 +31,7 @@ class Airplane_Mode_Command extends WP_CLI_Command {
 	 */
 	function disable() {
 		Airplane_Mode_Core::getInstance()->disable();
-		WP_CLI::success( __( 'Airplane mode was disabled', 'airplane-mode' ) );
+		WP_CLI::success( __( 'Airplane Mode is disabled.', 'airplane-mode' ) );
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Airplane_Mode_Command extends WP_CLI_Command {
 	 */
 	function status() {
 		$on = 'on' === get_site_option( 'airplane-mode' );
-		WP_CLI::success( $on ? __( 'Airplane mode is enabled', 'airplane-mode' ) : __( 'Airplane mode is disabled', 'airplane-mode' ) );
+		WP_CLI::success( $on ? __( 'Airplane Mode is enabled.', 'airplane-mode' ) : __( 'Airplane Mode is disabled.', 'airplane-mode' ) );
 	}
 
 	/**
