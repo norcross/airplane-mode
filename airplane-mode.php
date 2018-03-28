@@ -531,6 +531,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				}
 			}
 
+			// Allow certain HTTP API requests to pass through via a filter.
+			if ( apply_filters( 'airplane_mode_allow_http_api_request', false, $url, $args, $url_host ) ) {
+				return $status;
+			}
+
 			// Disable the http requests if enabled.
 			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
 		}
