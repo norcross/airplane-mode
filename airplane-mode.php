@@ -785,8 +785,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			remove_action( 'admin_init', '_maybe_update_plugins' );
 
 			// Disable Core updates
-			// @@ TODO figure out how to do this without a create_function.
-			add_action( 'init', create_function( '', 'remove_action( \'init\', \'wp_version_check\' );' ), 2 );
+			add_action( 'init', array( $this, 'remove_wp_version_check' ), 2 );
 
 			// Don't look for WordPress updates. Seriously!
 			remove_action( 'wp_version_check', 'wp_version_check' );
@@ -796,6 +795,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			remove_action( 'wp_maybe_auto_update', 'wp_maybe_auto_update' );
 			remove_action( 'admin_init', 'wp_maybe_auto_update' );
 			remove_action( 'admin_init', 'wp_auto_update_core' );
+		}
+
+		public function remove_wp_version_check() {
+			remove_action( 'init', 'wp_version_check' );
 		}
 
 		/**
