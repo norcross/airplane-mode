@@ -88,10 +88,13 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'script_loader_src',                     array( $this, 'block_script_load'       ),  100     );
 			add_action( 'admin_init',                            array( $this, 'remove_update_crons'     )           );
 			add_action( 'admin_init',                            array( $this, 'remove_schedule_hook'    )           );
-
 			add_filter( 'embed_oembed_html',                     array( $this, 'block_oembed_html'       ),  1,  4   );
 			add_filter( 'get_avatar',                            array( $this, 'replace_gravatar'        ),  1,  5   );
-			add_filter( 'map_meta_cap',                          array( $this, 'prevent_auto_updates'    ),  10, 2   );
+            add_filter( 'wp_get_attachment_url',                 array( $this, 'get_local_image_url'     ), 10, 1 );
+            add_filter( 'the_content',                           array( $this, 'filter_content_images'   ), 10, 1 );
+
+
+            add_filter( 'map_meta_cap',                          array( $this, 'prevent_auto_updates'    ),  10, 2   );
 			add_filter( 'default_avatar_select',                 array( $this, 'default_avatar'          )           );
 
 			// Kill all the http requests.
@@ -144,12 +147,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Use our own filters for scripts and stylesheets to allow local.
 			add_filter( 'airplane_mode_parse_style',             array( $this, 'bypass_asset_block'     ),  10, 2   );
 			add_filter( 'airplane_mode_parse_script',            array( $this, 'bypass_asset_block'     ),  10, 2   );
-
-            // Filter Attachment Url
-            add_filter( 'wp_get_attachment_url',                 array( $this, 'get_local_image_url'    ), 10, 1 );
-
-            // Filter Avatar Image Src
-            add_filter( 'get_avatar',                            array( $this, 'filter_avatars'         ), 10, 1 );
 
             // Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                  array( $this, 'create_setting'          )           );
@@ -478,7 +475,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Swap out the file for a base64 encoded image.
-			$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+			$image  = self::get_local_image_url();
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
 			// Return the avatar.
@@ -1273,7 +1270,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
             return plugin_dir_url( plugin_basename( __FILE__ ) ) . 'lib/img/airplane.svg';
         }
 
+        /**
+         * @param $avatar
+         * @return string
+         */
         public static function replace_image_src( $avatar ) {
+            wp_die( var_dump( $avatar ) );
             return sprintf('src="%s"', self::get_local_image_url() );
         }
 
@@ -1283,8 +1285,26 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
          * @param $avatar
          * @return null|string|string[]
          */
-        public function filter_avatars($avatar ) {
-            return \preg_replace_callback('~ src=([^"]+) ~', array( $this, 'replace_image_src' ), $avatar );
+        public function filter_avatars( $avatar ) {
+            return \preg_replace_callback('~src="([^"]*)~', array( $this, 'replace_image_src' ), $avatar );
+        }
+
+        /**
+         * Filters for instance of an image tag in the content, and replaces with local image.
+         *
+         * @param string $content the post content.
+         * @return mixed
+         */
+        public function filter_content_images($content ) {
+            if ( \preg_match_all('#<img([^>]*)>#i', $content, $matches ) ) {
+                foreach ( $matches[0] as $match ) {
+                    if ( \preg_match_all('#<img([^>]*)src="([^"]*)#i', $match, $image_url ) ) {
+                        preg_match_all('#<img([^>]*)sizes="([^"]*)(max-width: (\d+)px)#i', $match, $image_size );
+                        $content = \str_replace($image_url[2], sprintf('%s" width="%spx', self::get_local_image_url(), $image_size[4][0] ), $content );
+                    }
+                }
+            }
+            return $content;
         }
 
 		// End class.
