@@ -145,6 +145,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_filter( 'airplane_mode_parse_style',             array( $this, 'bypass_asset_block'     ),  10, 2   );
 			add_filter( 'airplane_mode_parse_script',            array( $this, 'bypass_asset_block'     ),  10, 2   );
 
+            // Filter Attachment Url
+            add_filter( 'wp_get_attachment_url',                 array( $this, 'get_local_image_url'    ), 10, 1 );
+
 			// Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                  array( $this, 'create_setting'          )           );
 			register_deactivation_hook( __FILE__,                array( $this, 'remove_setting'          )           );
@@ -211,7 +214,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				// Add back the upload tab.
 				add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
-				// Define core contants for more protection.
+                // Define core contants for more protection.
 				if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
 					define( 'AUTOMATIC_UPDATER_DISABLED', true );
 				}
@@ -1256,6 +1259,16 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function count_http_requests() {
 			$this->http_count++;
 		}
+
+        /**
+         * Generates a url to a locally stored image.
+         * Note: The actual SVG needs to be replaced with something licensed for distribution.
+         *
+         * @return string url to the airplane svg image.
+         */
+        public function get_local_image_url() {
+            return plugin_dir_url( plugin_basename( __FILE__ ) ) . 'lib/img/airplane.svg';
+        }
 
 		// End class.
 	}
