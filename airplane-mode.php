@@ -148,7 +148,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
             // Filter Attachment Url
             add_filter( 'wp_get_attachment_url',                 array( $this, 'get_local_image_url'    ), 10, 1 );
 
-			// Our activation / deactivation triggers.
+            // Filter Avatar Image Src
+            add_filter( 'get_avatar',                            array( $this, 'filter_avatars'         ), 10, 1 );
+
+            // Our activation / deactivation triggers.
 			register_activation_hook( __FILE__,                  array( $this, 'create_setting'          )           );
 			register_deactivation_hook( __FILE__,                array( $this, 'remove_setting'          )           );
 
@@ -1266,8 +1269,22 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
          *
          * @return string url to the airplane svg image.
          */
-        public function get_local_image_url() {
+        public static function get_local_image_url() {
             return plugin_dir_url( plugin_basename( __FILE__ ) ) . 'lib/img/airplane.svg';
+        }
+
+        public static function replace_image_src( $avatar ) {
+            return sprintf('src="%s"', self::get_local_image_url() );
+        }
+
+        /**
+         * Filter to replace the avatar image url src with a local image.
+         *
+         * @param $avatar
+         * @return null|string|string[]
+         */
+        public function filter_avatars($avatar ) {
+            return \preg_replace_callback('~ src=([^"]+) ~', array( $this, 'replace_image_src' ), $avatar );
         }
 
 		// End class.
