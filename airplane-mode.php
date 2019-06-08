@@ -1271,25 +1271,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
         }
 
         /**
-         * @param $avatar
-         * @return string
-         */
-        public static function replace_image_src( $avatar ) {
-            wp_die( var_dump( $avatar ) );
-            return sprintf('src="%s"', self::get_local_image_url() );
-        }
-
-        /**
-         * Filter to replace the avatar image url src with a local image.
-         *
-         * @param $avatar
-         * @return null|string|string[]
-         */
-        public function filter_avatars( $avatar ) {
-            return \preg_replace_callback('~src="([^"]*)~', array( $this, 'replace_image_src' ), $avatar );
-        }
-
-        /**
          * Filters for instance of an image tag in the content, and replaces with local image.
          *
          * @param string $content the post content.
