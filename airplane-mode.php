@@ -91,6 +91,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			add_filter( 'embed_oembed_html',                     array( $this, 'block_oembed_html'       ),  1,  4   );
 			add_filter( 'get_avatar',                            array( $this, 'replace_gravatar'        ),  1,  5   );
+			add_filter( 'the_content',                           array( $this, 'replace_remote_images'   ),  99, 1   );
 			add_filter( 'map_meta_cap',                          array( $this, 'prevent_auto_updates'    ),  10, 2   );
 			add_filter( 'default_avatar_select',                 array( $this, 'default_avatar'          )           );
 
@@ -286,6 +287,20 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
+		 * Set our filtered image to replace remote images.
+		 *
+		 * @return string
+		 */
+		public static function get_local_image_url() {
+
+			// Set our default image.
+			$default_image  = plugin_dir_url( AIRMDE_BASE ) . 'lib/img/airplane.svg';
+
+			// Return the image, filtered.
+			return apply_filters( 'airplane_mode_local_image', $default_image );
+		}
+
+		/**
 		 * Check the URL of a stylesheet and remove any that are not on the local URL.
 		 *
 		 * @param  string $source  The source URL of the CSS sheet.
@@ -472,11 +487,123 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Swap out the file for a base64 encoded image.
-			$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+			$image  = self::get_local_image_url();
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
 			// Return the avatar.
 			return $avatar;
+		}
+
+		/**
+		 * Filter the content being rendered and check for remote images.
+		 *
+		 * @param  mixed $content  The existing content.
+		 *
+		 * @return mixed
+		 */
+		public function replace_remote_images( $content ) {
+
+			// Bail if disabled.
+			if ( ! $this->enabled() ) {
+				return $content;
+			}
+
+			// Run the check for remote images.
+			$remote_images  = $this->maybe_has_remote_images( $content );
+
+			// If no remote images exist, return the content.
+			if ( ! $remote_images ) {
+				return $content;
+			}
+
+			echo '<textarea>';
+			echo print_r( $content, 1 );
+			echo '</textarea>';
+
+			die();
+
+			/*
+			if ( \preg_match_all('#<img([^>]*)>#i', $content, $matches ) ) {
+
+				foreach ( $matches[0] as $match ) {
+
+					if ( \preg_match_all('#<img([^>]*)src="([^"]*)#i', $match, $image_url ) ) {
+
+						preg_match_all('#<img([^>]*)sizes="([^"]*)(max-width: (\d+)px)#i', $match, $image_size );
+
+						$content = \str_replace($image_url[2], sprintf('%s" width="%spx', self::get_local_image_url(), $image_size[4][0] ), $content );
+
+					}
+
+				}
+			}
+			*/
+			return $content;
+		}
+
+		/**
+		 * Check the content to see if remote images exist.
+		 *
+		 * @param  mixed $content  The existing content.
+		 *
+		 * @return mixed
+		 */
+		private function maybe_has_remote_images( $content ) {
+
+			// Bail and false without content being passed.
+			if ( empty( $content ) ) {
+				return false;
+			}
+
+			// Let's load up our Dom Document.
+			$domdoc = new domDocument;
+			$domdoc->loadHTML( $content );
+			$domdoc->preserveWhiteSpace = false;
+
+			// Check for image tags.
+			$image_tags = $domdoc->getElementsByTagName( 'img' );
+
+			// If no image tags exist at all, bail.
+			if ( ! $image_tags ) {
+				return false;
+			}
+
+			// Now set our empty array.
+			$content_images = array();
+
+			// Loop through and fetch the source and alt tag
+			foreach ( $image_tags as $image_tag ) {
+
+				// Grab the image source.
+				$image_src  = $image_tag->getAttribute( 'src' );
+
+				// Skip if there is no source.
+				if ( empty( $image_src ) ) {
+					continue;
+				}
+
+				// Now add to the data array.
+				$content_images[] = $image_src;
+
+				// Nothing left to check inside the loop.
+			}
+
+			// If no images at all found, bail.
+			if ( empty( $content_images ) ) {
+				return false;
+			}
+
+			// Loop through each one and check against the site URL.
+			foreach ( $content_images as $index_key => $image_source ) {
+
+				// Now run check against the site URL.
+				if ( false !== strpos( $image_source, home_url() ) ) {
+					unset( $content_images[ $index_key ] );
+				}
+			}
+
+			// Return the boolean based on whether any are left.
+			return empty( $content_images ) ? false : array_unique( $content_images );
 		}
 
 		/**
