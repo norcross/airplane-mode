@@ -77,7 +77,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Core_Blocker' ) ) {
 
             // Theme update API for different calls.
             add_filter( 'themes_api_args',                      array( __CLASS__, 'bypass_theme_api'        ),  10, 2   );
-            add_filter( 'themes_api',                           array( __CLASS__, '__return_false'          ),  10, 2   );
+            add_filter( 'themes_api',                           '__return_false'                             ,  10, 2   );
 
             // Time based transient checks.
             add_filter( 'pre_site_transient_update_themes',     array( __CLASS__, 'last_checked_themes'     )           );

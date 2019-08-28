@@ -1,3 +1,6 @@
+#### Version 0.2.4 - 2019/08/28
+* Fix the `__return_false` callback for the `themes_api` hook.
+
 #### Version 0.2.3 - 2016/08/26
 * Disable core from downloading the full language list in options-general.php page.
 
