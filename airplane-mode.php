@@ -725,7 +725,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$link = wp_nonce_url( add_query_arg( 'airplane-mode', $toggle ), 'airmde_nonce', 'airmde_nonce' );
 
 			// Now add the admin bar link.
-			$wp_admin_bar->add_menu(
+			$wp_admin_bar->add_node(
 				array(
 					'id'        => 'airplane-mode-toggle',
 					'title'     => '<span class="ab-icon"></span>' . $label,
