@@ -1,3 +1,6 @@
+#### Version 0.2.5 - 2019/11/15
+* Remove usage of method that's been deprecated in WordPress trunk. props @johnbillion
+
 #### Version 0.2.4 - 2017/12/13
 * Added localhost bypass for loading CSS and JS files when hot reloading. props @shadyvb
 * Added additional hook removals for new automated updates and language packs.
