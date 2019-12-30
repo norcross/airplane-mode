@@ -334,7 +334,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$parsed = parse_url( $source, PHP_URL_HOST );
 
 			// First run the filter to allow a source host to get through.
-			if ( false === apply_filters( 'airplane_mode_parse_script', true, $parsed ) ) {
+			if ( false === apply_filters( 'airplane_mode_parse_script', true, $parsed ) || false === $parsed ) {
 				return $source;
 			}
 
