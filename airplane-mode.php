@@ -1262,6 +1262,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 } // End class_exists.
 
+// Only load the new error class if it hasn't already.
 if ( ! class_exists( 'Airplane_Mode_WP_Error' ) ) {
 
 	/**
