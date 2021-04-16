@@ -1,3 +1,6 @@
+#### Version 0.2.6 - ####/##/##
+* Update inconsistent strings for internationalization. props @pedro-mendonca
+
 #### Version 0.2.5 - 2019/11/15
 * Remove usage of method that's been deprecated in WordPress trunk. props @johnbillion
 
