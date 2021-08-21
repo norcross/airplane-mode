@@ -154,8 +154,26 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 				// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
 				if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
-					// Keep jetpack from attempting external requests.
-					add_filter( 'jetpack_development_mode',         '__return_true', 9999 );
+					
+					if ( ! function_exists( 'get_plugin_data' ) ) {
+						require_once ABSPATH . 'wp-admin/includes/plugin.php';
+					}
+					
+					if ( is_plugin_active( 'jetpack/jetpack.php' ) ) {
+						$jetpack_plugin = get_plugin_data( trailingslashit( WP_PLUGIN_DIR ) . 'jetpack/jetpack.php' );
+						
+						if ( version_compare( '8.8.0', $jetpack_plugin['Version'], '<=' ) ) {
+							
+							// Keep jetpack 8.8.0+ from attempting external requests.
+							add_filter( 'jetpack_offline_mode', '__return_true', 9999 );
+							
+						} else {
+							
+							// Keep jetpack <8.8.0 from attempting external requests.
+							add_filter( 'jetpack_development_mode', '__return_true', 9999 );
+							
+						}
+					}
 				}
 
 				// Prevent BuddyPress from falling back to Gravatar avatars.
