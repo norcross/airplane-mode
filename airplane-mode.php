@@ -306,14 +306,19 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		/**
 		 * Check the URL of a stylesheet and remove any that are not on the local URL.
 		 *
-		 * @param  string $source  The source URL of the CSS sheet.
+		 * @param  string|false $source  The source URL of the CSS sheet, or false if there isn't one.
 		 *
-		 * @return string $source  The same URL, or null.
+		 * @return string|false|Airplane_Mode_WP_Error $source  The same URL, or an error object.
 		 */
 		public function block_style_load( $source ) {
 
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
+				return $source;
+			}
+
+			// Plugins can set this to a messed up value that we don't want to pass to `parse_url()`.
+			if ( empty( $source ) ) {
 				return $source;
 			}
 
@@ -325,7 +330,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				return $source;
 			}
 
-			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
+			// If we don't share the same URL as the site itself, return an error object. Otherwise return the URL.
 			return isset( $parsed ) && false === strpos( home_url(), $parsed )
 				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked style', 'airplane-mode' ), array(
 					'return' => '',
@@ -337,14 +342,19 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		/**
 		 * Check the URL of a JS file and remove any that are not on the local URL.
 		 *
-		 * @param  string $source  The source URL of the JS file.
+		 * @param  string|false $source  The source URL of the JS file, or false if there isn't one.
 		 *
-		 * @return string $source  The same URL, or null.
+		 * @return string|false|Airplane_Mode_WP_Error $source  The same URL, or an error object.
 		 */
 		public function block_script_load( $source ) {
 
 			// Bail if disabled.
 			if ( ! $this->enabled() ) {
+				return $source;
+			}
+
+			// Plugins can set this to a messed up value that we don't want to pass to `parse_url()`.
+			if ( empty( $source ) ) {
 				return $source;
 			}
 
@@ -356,7 +366,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				return $source;
 			}
 
-			// If we don't share the same URL as the site itself, return null. Otherwise return the URL.
+			// If we don't share the same URL as the site itself, return an error object. Otherwise return the URL.
 			return isset( $parsed ) && false === strpos( home_url(), $parsed )
 				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked script', 'airplane-mode' ), array(
 					'return' => '',
