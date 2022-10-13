@@ -1,3 +1,7 @@
+#### Version 0.2.6 - 2022/10/13
+* Remove usage of 'jetpack_development_mode' that's been deprecated. props @crstauf
+* Gracefully handle empty values for script and stylesheet URLs. props @johnbillion
+
 #### Version 0.2.5 - 2019/11/15
 * Remove usage of method that's been deprecated in WordPress trunk. props @johnbillion
 

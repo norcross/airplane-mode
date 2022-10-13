@@ -4,8 +4,8 @@ Website Link: https://github.com/norcross/airplane-mode
 Donate link: https://andrewnorcross.com/donate
 Tags: external calls, HTTP
 Requires at least: 4.4
-Tested up to: 5.3
-Stable tag: 0.2.5
+Tested up to: 6.0
+Stable tag: 0.2.6
 License: MIT
 License URI: http://norcross.mit-license.org/
 
@@ -44,6 +44,10 @@ Because you are a jet set developer who needs to work without internet.
 
 
 == Changelog ==
+
+= 0.2.6 - 2022/10/13
+* Remove usage of 'jetpack_development_mode' that's been deprecated. props @crstauf
+* Gracefully handle empty values for script and stylesheet URLs. props @johnbillion
 
 = 0.2.5 - 2019/11/15
 * Remove usage of method that's been deprecated in WordPress trunk. props @johnbillion
