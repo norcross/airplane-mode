@@ -508,7 +508,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$mem = fopen( 'php://memory', 'rb+' );
 			imagepng( $im, $mem );
 			rewind( $mem );
-			$image_data = ;
 			imagedestroy( $im );
 			$image = 'data:image/png;base64,' . base64_encode( stream_get_contents( $mem ) );
 			fclose( $mem );
