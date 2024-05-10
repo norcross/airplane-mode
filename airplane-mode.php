@@ -495,7 +495,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function replace_gravatar( $avatar, $id_or_email, $size, $default, $alt ) {
 
 			// Bail if disabled.
-			if ( ! $this->enabled() ) {
+			if ( ! $this->enabled() || false === strpos( $avatar, 'gravatar.com' ) ) {
 				return $avatar;
 			}
 
