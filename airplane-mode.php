@@ -499,8 +499,20 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				return $avatar;
 			}
 
-			// Swap out the file for a base64 encoded image.
-			$image  = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+			// Swap out the file for a base64 encoded image generated based on the $id_or_email.
+			$hash = md5( strtolower( trim( $id_or_email ) ) );
+			$im = imagecreatetruecolor( 1, 1 );
+			$rgb = sscanf( $hash, '%2x%2x%2x' );
+			$color = imagecolorallocate( $im, $rgb[0], $rgb[1], $rgb[2] );
+			imagesetpixel( $im, 0, 0, $color );
+			$mem = fopen( 'php://memory', 'rb+' );
+			imagepng( $im, $mem );
+			rewind( $mem );
+			$image_data = ;
+			imagedestroy( $im );
+			$image = 'data:image/png;base64,' . base64_encode( stream_get_contents( $mem ) );
+			fclose( $mem );
+			
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
 			// Return the avatar.
