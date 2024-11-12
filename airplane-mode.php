@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/norcross/airplane-mode
  * Description: Control loading of external files when developing locally.
  * Author: Andrew Norcross
- * Author URI: http://andrewnorcross.com/
+ * Author URI: https://andrewnorcross.com/
  * Version: 0.2.7
  * Text Domain: airplane-mode
  * Requires WP: 4.4
