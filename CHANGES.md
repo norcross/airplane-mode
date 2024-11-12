@@ -1,3 +1,6 @@
+#### Version 0.2.7 - 2024/11/12
+* Replacing dull monotone avatars with color ones. props @akirk
+
 #### Version 0.2.6 - 2022/10/13
 * Remove usage of 'jetpack_development_mode' that's been deprecated. props @crstauf
 * Gracefully handle empty values for script and stylesheet URLs. props @johnbillion
