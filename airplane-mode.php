@@ -500,6 +500,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Swap out the file for a base64 encoded image generated based on the $id_or_email.
+			$image = $this->generate_color_avatar( $id_or_email );
+
+			/*
 			$hash = md5( strtolower( trim( $id_or_email ) ) );
 			$im = imagecreatetruecolor( 1, 1 );
 			$rgb = sscanf( $hash, '%2x%2x%2x' );
@@ -511,6 +514,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			imagedestroy( $im );
 			$image = 'data:image/png;base64,' . base64_encode( stream_get_contents( $mem ) );
 			fclose( $mem );
+			*/
 			
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
@@ -1294,6 +1298,56 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function count_http_requests() {
 			$this->http_count++;
+		}
+
+		/**
+		 * Generate a color avatar because it looks nice.
+		 *
+		 * @param  int|object|string $id_or_email  A user ID, email address, or comment object.
+		 *
+		 * @return string
+		 */
+		public function generate_color_avatar( $id_or_email ) {
+
+			// Set the user string we are gonna use for the hash.
+			// If it's an object, then it's from comments, so parse it out.
+			$define_user_sr = is_object( $id_or_email ) ? $id_or_email->comment_author_email : $id_or_email;
+
+			// Swap out the file for a base64 encoded image generated based on the $id_or_email.
+			$generate_hash  = md5( strtolower( trim( $id_or_email ) ) );
+
+			// Set a color image.
+			$color_image    = imagecreatetruecolor( 1, 1 );
+
+			// Set up the RGB base.
+			$base_rgb_array = sscanf( $generate_hash, '%2x%2x%2x' );
+
+			// Now generate the color itself.
+			$generate_color = imagecolorallocate( $color_image, $base_rgb_array[0], $base_rgb_array[1], $base_rgb_array[2] );
+
+			// Set pixels for the image.
+			imagesetpixel( $color_image, 0, 0, $generate_color );
+
+			// Begin generating the image.
+			$generate_image = fopen( 'php://memory', 'rb+' );
+
+			// Create the PNG.
+			imagepng( $color_image, $generate_image );
+
+			// Be Kind.
+			rewind( $generate_image );
+
+			// Finish up.
+			imagedestroy( $color_image );
+
+			// Set the data up.
+			$set_image_data = 'data:image/png;base64,' . base64_encode( stream_get_contents( $generate_image ) );
+
+			// Close the access.
+			fclose( $generate_image );
+
+			// And return the resulting image.
+			return $set_image_data;
 		}
 
 		// End class.
