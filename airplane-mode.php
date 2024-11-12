@@ -502,20 +502,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Swap out the file for a base64 encoded image generated based on the $id_or_email.
 			$image = $this->generate_color_avatar( $id_or_email );
 
-			/*
-			$hash = md5( strtolower( trim( $id_or_email ) ) );
-			$im = imagecreatetruecolor( 1, 1 );
-			$rgb = sscanf( $hash, '%2x%2x%2x' );
-			$color = imagecolorallocate( $im, $rgb[0], $rgb[1], $rgb[2] );
-			imagesetpixel( $im, 0, 0, $color );
-			$mem = fopen( 'php://memory', 'rb+' );
-			imagepng( $im, $mem );
-			rewind( $mem );
-			imagedestroy( $im );
-			$image = 'data:image/png;base64,' . base64_encode( stream_get_contents( $mem ) );
-			fclose( $mem );
-			*/
-			
+			// Build the image string.
 			$avatar = "<img alt='{$alt}' src='{$image}' class='avatar avatar-{$size} photo' height='{$size}' width='{$size}' style='background:#eee;' />";
 
 			// Return the avatar.
@@ -1314,7 +1301,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$define_user_sr = is_object( $id_or_email ) ? $id_or_email->comment_author_email : $id_or_email;
 
 			// Swap out the file for a base64 encoded image generated based on the $id_or_email.
-			$generate_hash  = md5( strtolower( trim( $id_or_email ) ) );
+			$generate_hash  = md5( strtolower( trim( $define_user_sr ) ) );
 
 			// Set a color image.
 			$color_image    = imagecreatetruecolor( 1, 1 );
