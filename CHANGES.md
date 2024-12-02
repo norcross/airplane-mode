@@ -1,3 +1,6 @@
+#### Version 0.2.8 - 2024/12/02
+* Confirming `get_plugin_data` or `is_plugin_active` is checked properly. props @swissspidy
+
 #### Version 0.2.7 - 2024/11/12
 * Replacing dull monotone avatars with color ones. props @akirk
 
