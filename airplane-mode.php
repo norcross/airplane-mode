@@ -155,7 +155,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
 				if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
 					
-					if ( ! function_exists( 'get_plugin_data' ) ) {
+					if ( ! function_exists( 'get_plugin_data' ) || ! function_exists( 'is_plugin_active' ) ) {
 						require_once ABSPATH . 'wp-admin/includes/plugin.php';
 					}
 					
