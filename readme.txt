@@ -13,7 +13,7 @@ Control loading of external files when developing locally
 
 == Description ==
 
-Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an evironment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
+Control loading of external files when developing locally. WP loads certain external files (fonts, gravatar, etc) and makes external HTTP calls. This isn't usually an issue, unless you're working in an environment without a web connection. This plugin removes / unhooks those actions to reduce load time and avoid errors due to missing files.
 
 Features
 
