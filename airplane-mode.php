@@ -1087,7 +1087,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * We can't use wp_get_available_translations() offine.
+		 * We can't use wp_get_available_translations() offline.
 		 * This function tries to return something similar.
 		 *
 		 * @return array     List of wordpress language meta data.
