@@ -127,6 +127,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			add_action( 'network_admin_menu',                    array( $this, 'ms_admin_menu_items'     ),  9999    );
 			add_filter( 'install_plugins_tabs',                  array( $this, 'plugin_add_tabs'         )           );
 
+			// Admin dashboard stuff.
+			add_action( 'wp_network_dashboard_setup',            array( $this, 'remove_dashboard_widget' ),  9999    );
+			add_action( 'wp_user_dashboard_setup',               array( $this, 'remove_dashboard_widget' ),  9999    );
+			add_action( 'wp_dashboard_setup',                    array( $this, 'remove_dashboard_widget' ),  9999    );
+
 			// Theme update API for different calls.
 			add_filter( 'themes_api',                            array( $this, 'bypass_theme_api_call'   ),  10, 3   );
 			add_filter( 'themes_api_result',                     array( $this, 'bypass_theme_api_result' ),  10, 3   );
@@ -1598,6 +1603,22 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Return the tabs.
 			return $nonmenu_tabs;
+		}
+
+		/**
+		 * Remove the dashboard widget for news and local events.
+		 *
+		 * @return void
+		 */
+		public function remove_dashboard_widget() {
+
+			// Bail if disabled.
+			if ( ! $this->enabled() ) {
+				return;
+			}
+
+			// Now remove the metabox.
+			remove_meta_box( 'dashboard_primary', 'dashboard','side' );
 		}
 
 		/**
