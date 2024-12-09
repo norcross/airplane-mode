@@ -230,7 +230,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Add back the upload tab.
 			add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
-			// Define core contants for more protection.
+			// Define core constants for more protection.
 			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
 				define( 'AUTOMATIC_UPDATER_DISABLED', true );
 			}
@@ -887,7 +887,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 *                                      'feature_list', or 'query_themes'.
 		 * @param object             $args      Arguments used to query for installer pages from the Themes API.
 		 *
-		 * @return bool                         True if enabled, otherwise the existng value.
+		 * @return bool                         True if enabled, otherwise the existing value.
 		 */
 		public function bypass_theme_api_call( $override, $action, $args ) {
 
@@ -908,7 +908,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 *                                       'feature_list', or 'query_themes'.
 		 * @param object                $args    Arguments used to query for installer pages from the WordPress.org Themes API.
 		 *
-		 * @return bool                          An empty array if enabled, otherwise the existng result.
+		 * @return bool                          An empty array if enabled, otherwise the existing result.
 		 */
 		public function bypass_theme_api_result( $res, $action, $args ) {
 
@@ -1064,7 +1064,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Loop through our installed languages.
 			foreach ( $installed_languages as $lang ) {
 
-				// Try to mimick the data that WordPress puts into 'available_translations' transient.
+				// Try to mimic the data that WordPress puts into 'available_translations' transient.
 				$settings = array(
 					'language'  => $lang,
 					'iso'       => array( $lang ),
@@ -1087,8 +1087,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		}
 
 		/**
-		 * We can't use wp_get_available_translations() offine.
-		 * This function tries to return something similiar.
+		 * We can't use wp_get_available_translations() offline.
+		 * This function tries to return something similar.
 		 *
 		 * @return array     List of wordpress language meta data.
 		 */
