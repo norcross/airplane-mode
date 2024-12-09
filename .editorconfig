@@ -1,0 +1,17 @@
+# https://EditorConfig.org
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+eclint_block_comment_start = /*
+eclint_block_comment = *
+eclint_block_comment_end = */
+
+[*.{php,css}]
+indent_style = tab

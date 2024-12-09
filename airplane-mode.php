@@ -172,7 +172,6 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 						
 						// Keep jetpack <8.8.0 from attempting external requests.
 						add_filter( 'jetpack_development_mode', '__return_true', 9999 );
-						
 					}
 				}
 			}
