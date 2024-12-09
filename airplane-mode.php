@@ -149,93 +149,93 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			register_activation_hook( __FILE__,                  array( $this, 'create_setting'          )           );
 			register_deactivation_hook( __FILE__,                array( $this, 'remove_setting'          )           );
 
-			// All our various filter checks.
-			if ( $this->enabled() ) {
+			if ( ! $this->enabled() ) {
+				return;
+			}
 
-				// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
-				if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
+			// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
+			if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
+				
+				if ( ! function_exists( 'get_plugin_data' ) || ! function_exists( 'is_plugin_active' ) ) {
+					require_once ABSPATH . 'wp-admin/includes/plugin.php';
+				}
+				
+				if ( is_plugin_active( 'jetpack/jetpack.php' ) ) {
+					$jetpack_plugin = get_plugin_data( trailingslashit( WP_PLUGIN_DIR ) . 'jetpack/jetpack.php' );
 					
-					if ( ! function_exists( 'get_plugin_data' ) || ! function_exists( 'is_plugin_active' ) ) {
-						require_once ABSPATH . 'wp-admin/includes/plugin.php';
-					}
-					
-					if ( is_plugin_active( 'jetpack/jetpack.php' ) ) {
-						$jetpack_plugin = get_plugin_data( trailingslashit( WP_PLUGIN_DIR ) . 'jetpack/jetpack.php' );
+					if ( version_compare( '8.8.0', $jetpack_plugin['Version'], '<=' ) ) {
 						
-						if ( version_compare( '8.8.0', $jetpack_plugin['Version'], '<=' ) ) {
-							
-							// Keep jetpack 8.8.0+ from attempting external requests.
-							add_filter( 'jetpack_offline_mode', '__return_true', 9999 );
-							
-						} else {
-							
-							// Keep jetpack <8.8.0 from attempting external requests.
-							add_filter( 'jetpack_development_mode', '__return_true', 9999 );
-							
-						}
+						// Keep jetpack 8.8.0+ from attempting external requests.
+						add_filter( 'jetpack_offline_mode', '__return_true', 9999 );
+						
+					} else {
+						
+						// Keep jetpack <8.8.0 from attempting external requests.
+						add_filter( 'jetpack_development_mode', '__return_true', 9999 );
+						
 					}
 				}
+			}
 
-				// Prevent BuddyPress from falling back to Gravatar avatars.
-				add_filter( 'bp_core_fetch_avatar_no_grav',         '__return_true' );
+			// Prevent BuddyPress from falling back to Gravatar avatars.
+			add_filter( 'bp_core_fetch_avatar_no_grav',         '__return_true' );
 
-				// Disable automatic updater updates.
-				add_filter( 'automatic_updater_disabled',           '__return_true' );
+			// Disable automatic updater updates.
+			add_filter( 'automatic_updater_disabled',           '__return_true' );
 
-				// Tell WordPress we are on a version control system to add additional blocks.
-				add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
+			// Tell WordPress we are on a version control system to add additional blocks.
+			add_filter( 'automatic_updates_is_vcs_checkout',    '__return_true' );
 
-				// Disable translation updates.
-				add_filter( 'auto_update_translation',              '__return_false' );
+			// Disable translation updates.
+			add_filter( 'auto_update_translation',              '__return_false' );
 
-				// Disable minor core updates.
-				add_filter( 'allow_minor_auto_core_updates',        '__return_false' );
+			// Disable minor core updates.
+			add_filter( 'allow_minor_auto_core_updates',        '__return_false' );
 
-				// Disable major core updates.
-				add_filter( 'allow_major_auto_core_updates',        '__return_false' );
+			// Disable major core updates.
+			add_filter( 'allow_major_auto_core_updates',        '__return_false' );
 
-				// Disable dev core updates.
-				add_filter( 'allow_dev_auto_core_updates',          '__return_false' );
+			// Disable dev core updates.
+			add_filter( 'allow_dev_auto_core_updates',          '__return_false' );
 
-				// Disable overall core updates.
-				add_filter( 'auto_update_core',                     '__return_false' );
-				add_filter( 'wp_auto_update_core',                  '__return_false' );
+			// Disable overall core updates.
+			add_filter( 'auto_update_core',                     '__return_false' );
+			add_filter( 'wp_auto_update_core',                  '__return_false' );
 
-				// Disable automatic plugin and theme updates (used by WP to force push security fixes).
-				add_filter( 'auto_update_plugin',                   '__return_false' );
-				add_filter( 'auto_update_theme',                    '__return_false' );
+			// Disable automatic plugin and theme updates (used by WP to force push security fixes).
+			add_filter( 'auto_update_plugin',                   '__return_false' );
+			add_filter( 'auto_update_theme',                    '__return_false' );
 
-				// Disable debug emails (used by core for rollback alerts in automatic update deployment).
-				add_filter( 'automatic_updates_send_debug_email',   '__return_false' );
+			// Disable debug emails (used by core for rollback alerts in automatic update deployment).
+			add_filter( 'automatic_updates_send_debug_email',   '__return_false' );
 
-				// Disable update emails (for when we push the new WordPress versions manually) as well
-				// as the notification there is a new version emails.
-				add_filter( 'auto_core_update_send_email',          '__return_false' );
-				add_filter( 'send_core_update_notification_email',  '__return_false' );
-				add_filter( 'automatic_updates_send_debug_email ',  '__return_false', 1 );
+			// Disable update emails (for when we push the new WordPress versions manually) as well
+			// as the notification there is a new version emails.
+			add_filter( 'auto_core_update_send_email',          '__return_false' );
+			add_filter( 'send_core_update_notification_email',  '__return_false' );
+			add_filter( 'automatic_updates_send_debug_email ',  '__return_false', 1 );
 
-				// Get rid of the version number in the footer.
-				add_filter( 'update_footer',                        '__return_empty_string', 11 );
+			// Get rid of the version number in the footer.
+			add_filter( 'update_footer',                        '__return_empty_string', 11 );
 
-				// Filter out the pre core option.
-				add_filter( 'pre_option_update_core',               '__return_null' );
+			// Filter out the pre core option.
+			add_filter( 'pre_option_update_core',               '__return_null' );
 
-				// Remove some actions.
-				remove_action( 'admin_init',            'wp_plugin_update_rows' );
-				remove_action( 'admin_init',            'wp_theme_update_rows' );
-				remove_action( 'admin_notices',         'maintenance_nag' );
-				remove_action( 'init',                  'wp_schedule_update_checks' );
+			// Remove some actions.
+			remove_action( 'admin_init',            'wp_plugin_update_rows' );
+			remove_action( 'admin_init',            'wp_theme_update_rows' );
+			remove_action( 'admin_notices',         'maintenance_nag' );
+			remove_action( 'init',                  'wp_schedule_update_checks' );
 
-				// Add back the upload tab.
-				add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
+			// Add back the upload tab.
+			add_action( 'install_themes_upload',    'install_themes_upload', 10, 0 );
 
-				// Define core constants for more protection.
-				if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
-					define( 'AUTOMATIC_UPDATER_DISABLED', true );
-				}
-				if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) {
-					define( 'WP_AUTO_UPDATE_CORE', false );
-				}
+			// Define core constants for more protection.
+			if ( ! defined( 'AUTOMATIC_UPDATER_DISABLED' ) ) {
+				define( 'AUTOMATIC_UPDATER_DISABLED', true );
+			}
+			if ( ! defined( 'WP_AUTO_UPDATE_CORE' ) ) {
+				define( 'WP_AUTO_UPDATE_CORE', false );
 			}
 		}
 
