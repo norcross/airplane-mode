@@ -149,6 +149,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			register_activation_hook( __FILE__,                  array( $this, 'create_setting'          )           );
 			register_deactivation_hook( __FILE__,                array( $this, 'remove_setting'          )           );
 
+			// Don't bother with the remainer if this isn't on.
 			if ( ! $this->enabled() ) {
 				return;
 			}
@@ -156,10 +157,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Allows locally defined JETPACK_DEV_DEBUG constant to override filter.
 			if ( ! defined( 'JETPACK_DEV_DEBUG' ) ) {
 				
+				// Make sure we have the functions to get our plugin data.
 				if ( ! function_exists( 'get_plugin_data' ) || ! function_exists( 'is_plugin_active' ) ) {
 					require_once ABSPATH . 'wp-admin/includes/plugin.php';
 				}
 				
+				// Run the checks on Jetpack if it exists.
 				if ( is_plugin_active( 'jetpack/jetpack.php' ) ) {
 					$jetpack_plugin = get_plugin_data( trailingslashit( WP_PLUGIN_DIR ) . 'jetpack/jetpack.php' );
 					
@@ -266,7 +269,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function create_setting() {
 			add_site_option( 'airplane-mode', 'on' );
-			set_transient( 'wporg_theme_feature_list', array(), 999999999999 );
+			set_transient( 'wporg_theme_feature_list', [], 999999999999 );
 		}
 
 		/**
@@ -331,10 +334,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// If we don't share the same URL as the site itself, return an error object. Otherwise return the URL.
 			return isset( $parsed ) && false === strpos( home_url(), $parsed )
-				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked style', 'airplane-mode' ), array(
+				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked style', 'airplane-mode' ), [
 					'return' => '',
 					'src'    => $source,
-				) )
+				] )
 				: $source;
 		}
 
@@ -347,13 +350,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 */
 		public function block_script_load( $source ) {
 
-			// Bail if disabled.
-			if ( ! $this->enabled() ) {
-				return $source;
-			}
-
-			// Plugins can set this to a messed up value that we don't want to pass to `parse_url()`.
-			if ( empty( $source ) ) {
+			// Bail if disabled, or if by chance a plugin han set this
+			// to a messed up value that we don't want to pass to `parse_url()`.
+			if ( ! $this->enabled() || empty( $source ) ) {
 				return $source;
 			}
 
@@ -367,10 +366,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// If we don't share the same URL as the site itself, return an error object. Otherwise return the URL.
 			return isset( $parsed ) && false === strpos( home_url(), $parsed )
-				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked script', 'airplane-mode' ), array(
+				? new Airplane_Mode_WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode blocked script', 'airplane-mode' ), [
 					'return' => '',
 					'src'    => $source,
-				) )
+				] )
 				: $source;
 		}
 
@@ -385,10 +384,10 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function bypass_asset_block( $block, $parsed ) {
 
 			// Create an array of the approved local domains.
-			$local  = apply_filters( 'airplane_mode_local_hosts', array( 'localhost', '127.0.0.1' ) );
+			$local  = apply_filters( 'airplane_mode_local_hosts', ['localhost', '127.0.0.1'] );
 
 			// If our parsed URL host is in that array, return false. Otherwise, return our blocking choice.
-			return ! empty( $local ) && in_array( $parsed, $local ) ? false : $block;
+			return ! empty( $local ) && in_array( $parsed, $local, true ) ? false : $block;
 		}
 
 		/**
@@ -540,7 +539,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 *
 		 * @return bool|array|WP_Error          A WP_Error object if Airplane Mode is enabled. Original $status if not.
 		 */
-		public function disable_http_reqs( $status = false, $args = array(), $url = '' ) {
+		public function disable_http_reqs( $status = false, $args = [], $url = '' ) {
 
 			// Pass our data to the action to allow a bypass.
 			do_action( 'airplane_mode_http_args', $status, $args, $url );
@@ -586,7 +585,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$vers   = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? time() : AIRMDE_VER;
 
 			// Load the CSS file itself.
-			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/' . $file, __FILE__ ), array(), $vers, 'all' );
+			wp_enqueue_style( 'airplane-mode', plugins_url( '/lib/css/' . $file, __FILE__ ), [], $vers, 'all' );
 		}
 
 		/**
@@ -599,7 +598,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function set_mode( $mode = 'on' ) {
 
 			// Check what mode we're currently in, with "on" as a fallback.
-			if ( ! in_array( $mode, array( 'on', 'off' ) ) ) {
+			if ( ! in_array( $mode, ['on', 'off'], true ) ) {
 				$mode = 'on';
 			}
 
@@ -654,7 +653,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Now check for our query string.
-			if ( empty( $switch ) || ! in_array( $switch, array( 'on', 'off' ) ) ) {
+			if ( empty( $switch ) || ! in_array( $switch, ['on', 'off'], true ) ) {
 				return;
 			}
 
@@ -677,7 +676,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		protected static function get_redirect() {
 
 			// Return the args for the actual redirect.
-			$redirect = remove_query_arg( array(
+			$redirect = remove_query_arg( [
 				'airplane-mode',
 				'airmde_nonce',
 				'user_switched',
@@ -699,7 +698,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				'trashed',
 				'untrashed',
 				'force-check',
-			) );
+			] );
 
 			// Redirect away from the update core page.
 			$redirect = str_replace( 'update-core.php', '', $redirect );
@@ -743,7 +742,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				$count_label = sprintf( _n( 'There was %s HTTP request.', 'There were %s HTTP requests.', $count, 'airplane-mode' ), $count );
 
 				// Build the markup for my label.
-				$label = '<span class="ab-label" aria-hidden="true">' . absint( $count ) . '</span>';
+				$label .= '<span class="ab-label" aria-hidden="true">' . absint( $count ) . '</span>';
 				$label .= '<span class="screen-reader-text">' . esc_html( $count_label ) . '</span>';
 
 				// Amend the tooltip title with the count.
@@ -755,15 +754,15 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 
 			// Now add the admin bar link.
 			$wp_admin_bar->add_node(
-				array(
+				[
 					'id'        => 'airplane-mode-toggle',
 					'title'     => '<span class="ab-icon"></span>' . $label,
 					'href'      => esc_url( $link ),
 					'position'  => 0,
-					'meta'      => array(
+					'meta'      => [
 						'title' => $title,
-					),
-				)
+					],
+				]
 			);
 		}
 
@@ -778,7 +777,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		public function prevent_auto_updates( $caps, $cap ) {
 
 			// Check for being enabled and look for specific cap requirements.
-			if ( $this->enabled() && in_array( $cap, array( 'update_plugins', 'update_themes', 'update_core' ) ) ) {
+			if ( $this->enabled() && in_array( $cap, ['update_plugins', 'update_themes', 'update_core'], true ) ) {
 				$caps[] = 'do_not_allow';
 			}
 
@@ -853,7 +852,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			remove_action( 'admin_init', 'wp_auto_update_core' );
 
 			// Don't forget when the language packs do it.
-			remove_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
+			remove_action( 'upgrader_process_complete', ['Language_Pack_Upgrader', 'async_upgrade'], 20 );
 			remove_action( 'upgrader_process_complete', 'wp_version_check' );
 			remove_action( 'upgrader_process_complete', 'wp_update_plugins' );
 			remove_action( 'upgrader_process_complete', 'wp_update_themes' );
@@ -917,7 +916,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Return false on feature list to avoid the API call.
-			return ! empty( $action ) && in_array( $action, array( 'feature_list', 'query_themes' ) ) ? array() : $res;
+			return ! empty( $action ) && in_array( $action,['feature_list', 'query_themes'], true ) ? [] : $res;
 		}
 
 		/**
@@ -936,11 +935,11 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			global $wp_version;
 
 			// Return our object.
-			return (object) array(
+			return (object) [
 				'last_checked'      => time(),
-				'updates'           => array(),
+				'updates'           => [],
 				'version_checked'   => $wp_version,
-			);
+			];
 		}
 
 		/**
@@ -959,7 +958,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			global $wp_version;
 
 			// Set a blank data array.
-			$data = array();
+			$data = [];
 
 			// Build my theme data array.
 			foreach ( wp_get_themes() as $theme ) {
@@ -967,12 +966,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Return our object.
-			return (object) array(
+			return (object) [
 				'last_checked'      => time(),
-				'updates'           => array(),
+				'updates'           => [],
 				'version_checked'   => $wp_version,
 				'checked'           => $data,
-			);
+			];
 		}
 
 		/**
@@ -991,7 +990,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			global $wp_version;
 
 			// Set a blank data array.
-			$data = array();
+			$data = [];
 
 			// Add our plugin file if we don't have it.
 			if ( ! function_exists( 'get_plugins' ) ) {
@@ -1004,12 +1003,12 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Return our object.
-			return (object) array(
+			return (object) [
 				'last_checked'      => time(),
-				'updates'           => array(),
+				'updates'           => [],
 				'version_checked'   => $wp_version,
 				'checked'           => $data,
-			);
+			];
 		}
 
 		/**
@@ -1058,22 +1057,22 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			$date = date_i18n( 'Y-m-d H:is' , time() );
 
 			// Set an empty array of the available languages.
-			$available_languages = array();
+			$available_languages = [];
 
 			// Loop through our installed languages.
 			foreach ( $installed_languages as $lang ) {
 
 				// Try to mimic the data that WordPress puts into 'available_translations' transient.
-				$settings = array(
+				$settings = [
 					'language'  => $lang,
-					'iso'       => array( $lang ),
+					'iso'       => [ $lang ],
 					'version'   => $wp_version,
 					'updated'   => $date,
-					'strings'   => array(
+					'strings'   => [
 						'continue' => __( 'Continue' ),
-					),
+					],
 					'package'   => "https://downloads.wordpress.org/translation/core/{$wp_version}/{$lang}.zip",
-				);
+				];
 
 				// Combine the mimicked data with data we have stored in $offline_languages to give realistic output.
 				if ( isset( $offline_languages[ $lang ] ) ) {
@@ -1094,116 +1093,440 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		private function get_offline_translation_information() {
 
 			// Build out the list of languages to use.
-			$languages  = array(
-				'af'                => array( 'english_name' => 'Afrikaans', 'native_name' => 'Afrikaans' ),
-				'ar'                => array( 'english_name' => 'Arabic', 'native_name' => 'العربية' ),
-				'ary'               => array( 'english_name' => 'Moroccan Arabic', 'native_name' => 'العربية المغربية' ),
-				'as'                => array( 'english_name' => 'Assamese', 'native_name' => 'অসমীয়া' ),
-				'az'                => array( 'english_name' => 'Azerbaijani', 'native_name' => 'Azərbaycan dili' ),
-				'azb'               => array( 'english_name' => 'South Azerbaijani', 'native_name' => 'گؤنئی آذربایجان' ),
-				'bel'               => array( 'english_name' => 'Belarusian', 'native_name' => 'Беларуская мова' ),
-				'bg_BG'             => array( 'english_name' => 'Bulgarian', 'native_name' => 'Български' ),
-				'bn_BD'             => array( 'english_name' => 'Bengali', 'native_name' => 'বাংলা' ),
-				'bo'                => array( 'english_name' => 'Tibetan', 'native_name' => 'བོད་ཡིག' ),
-				'bs_BA'             => array( 'english_name' => 'Bosnian', 'native_name' => 'Bosanski' ),
-				'ca'                => array( 'english_name' => 'Catalan', 'native_name' => 'Català' ),
-				'ceb'               => array( 'english_name' => 'Cebuano', 'native_name' => 'Cebuano' ),
-				'ckb'               => array( 'english_name' => 'Kurdish (Sorani)', 'native_name' => 'كوردی‎' ),
-				'cs_CZ'             => array( 'english_name' => 'Czech', 'native_name' => 'Čeština‎' ),
-				'cy'                => array( 'english_name' => 'Welsh', 'native_name' => 'Cymraeg' ),
-				'da_DK'             => array( 'english_name' => 'Danish', 'native_name' => 'Dansk' ),
-				'de_DE_formal'      => array( 'english_name' => 'German (Formal)', 'native_name' => 'Deutsch (Sie)' ),
-				'de_DE'             => array( 'english_name' => 'German', 'native_name' => 'Deutsch' ),
-				'de_CH_informal'    => array( 'english_name' => 'German (Switzerland, Informal)', 'native_name' => 'Deutsch (Schweiz, Du)' ),
-				'de_CH'             => array( 'english_name' => 'German (Switzerland)', 'native_name' => 'Deutsch (Schweiz)' ),
-				'dzo'               => array( 'english_name' => 'Dzongkha', 'native_name' => 'རྫོང་ཁ' ),
-				'el'                => array( 'english_name' => 'Greek', 'native_name' => 'Ελληνικά' ),
-				'en_CA'             => array( 'english_name' => 'English (Canada)', 'native_name' => 'English (Canada)' ),
-				'en_ZA'             => array( 'english_name' => 'English (South Africa)', 'native_name' => 'English (South Africa)' ),
-				'en_AU'             => array( 'english_name' => 'English (Australia)', 'native_name' => 'English (Australia)' ),
-				'en_NZ'             => array( 'english_name' => 'English (New Zealand)', 'native_name' => 'English (New Zealand)' ),
-				'en_GB'             => array( 'english_name' => 'English (UK)', 'native_name' => 'English (UK)' ),
-				'eo'                => array( 'english_name' => 'Esperanto', 'native_name' => 'Esperanto' ),
-				'es_CL'             => array( 'english_name' => 'Spanish (Chile)', 'native_name' => 'Español de Chile' ),
-				'es_AR'             => array( 'english_name' => 'Spanish (Argentina)', 'native_name' => 'Español de Argentina' ),
-				'es_PE'             => array( 'english_name' => 'Spanish (Peru)', 'native_name' => 'Español de Perú' ),
-				'es_MX'             => array( 'english_name' => 'Spanish (Mexico)', 'native_name' => 'Español de México' ),
-				'es_CO'             => array( 'english_name' => 'Spanish (Colombia)', 'native_name' => 'Español de Colombia' ),
-				'es_ES'             => array( 'english_name' => 'Spanish (Spain)', 'native_name' => 'Español' ),
-				'es_VE'             => array( 'english_name' => 'Spanish (Venezuela)', 'native_name' => 'Español de Venezuela' ),
-				'es_GT'             => array( 'english_name' => 'Spanish (Guatemala)', 'native_name' => 'Español de Guatemala' ),
-				'et'                => array( 'english_name' => 'Estonian', 'native_name' => 'Eesti' ),
-				'eu'                => array( 'english_name' => 'Basque', 'native_name' => 'Euskara' ),
-				'fa_IR'             => array( 'english_name' => 'Persian', 'native_name' => 'فارسی' ),
-				'fi'                => array( 'english_name' => 'Finnish', 'native_name' => 'Suomi' ),
-				'fr_BE'             => array( 'english_name' => 'French (Belgium)', 'native_name' => 'Français de Belgique' ),
-				'fr_FR'             => array( 'english_name' => 'French (France)', 'native_name' => 'Français' ),
-				'fr_CA'             => array( 'english_name' => 'French (Canada)', 'native_name' => 'Français du Canada' ),
-				'gd'                => array( 'english_name' => 'Scottish Gaelic', 'native_name' => 'Gàidhlig' ),
-				'gl_ES'             => array( 'english_name' => 'Galician', 'native_name' => 'Galego' ),
-				'gu'                => array( 'english_name' => 'Gujarati', 'native_name' => 'ગુજરાતી' ),
-				'haz'               => array( 'english_name' => 'Hazaragi', 'native_name' => 'هزاره گی' ),
-				'he_IL'             => array( 'english_name' => 'Hebrew', 'native_name' => 'עִבְרִית' ),
-				'hi_IN'             => array( 'english_name' => 'Hindi', 'native_name' => 'हिन्दी' ),
-				'hr'                => array( 'english_name' => 'Croatian', 'native_name' => 'Hrvatski' ),
-				'hu_HU'             => array( 'english_name' => 'Hungarian', 'native_name' => 'Magyar' ),
-				'hy'                => array( 'english_name' => 'Armenian', 'native_name' => 'Հայերեն' ),
-				'id_ID'             => array( 'english_name' => 'Indonesian', 'native_name' => 'Bahasa Indonesia' ),
-				'is_IS'             => array( 'english_name' => 'Icelandic', 'native_name' => 'Íslenska' ),
-				'it_IT'             => array( 'english_name' => 'Italian', 'native_name' => 'Italiano' ),
-				'ja'                => array( 'english_name' => 'Japanese', 'native_name' => '日本語' ),
-				'ka_GE'             => array( 'english_name' => 'Georgian', 'native_name' => 'ქართული' ),
-				'kab'               => array( 'english_name' => 'Kabyle', 'native_name' => 'Taqbaylit' ),
-				'km'                => array( 'english_name' => 'Khmer', 'native_name' => 'ភាសាខ្មែរ' ),
-				'ko_KR'             => array( 'english_name' => 'Korean', 'native_name' => '한국어' ),
-				'lo'                => array( 'english_name' => 'Lao', 'native_name' => 'ພາສາລາວ' ),
-				'lt_LT'             => array( 'english_name' => 'Lithuanian', 'native_name' => 'Lietuvių kalba' ),
-				'lv'                => array( 'english_name' => 'Latvian', 'native_name' => 'Latviešu valoda' ),
-				'mk_MK'             => array( 'english_name' => 'Macedonian', 'native_name' => 'Македонски јазик' ),
-				'ml_IN'             => array( 'english_name' => 'Malayalam', 'native_name' => 'മലയാളം' ),
-				'mn'                => array( 'english_name' => 'Mongolian', 'native_name' => 'Монгол' ),
-				'mr'                => array( 'english_name' => 'Marathi', 'native_name' => 'मराठी' ),
-				'ms_MY'             => array( 'english_name' => 'Malay', 'native_name' => 'Bahasa Melayu' ),
-				'my_MM'             => array( 'english_name' => 'Myanmar (Burmese)', 'native_name' => 'ဗမာစာ' ),
-				'nb_NO'             => array( 'english_name' => 'Norwegian (Bokmål)', 'native_name' => 'Norsk bokmål' ),
-				'ne_NP'             => array( 'english_name' => 'Nepali', 'native_name' => 'नेपाली' ),
-				'nl_BE'             => array( 'english_name' => 'Dutch (Belgium)', 'native_name' => 'Nederlands (België)' ),
-				'nl_NL'             => array( 'english_name' => 'Dutch', 'native_name' => 'Nederlands' ),
-				'nl_NL_formal'      => array( 'english_name' => 'Dutch (Formal)', 'native_name' => 'Nederlands (Formeel)' ),
-				'nn_NO'             => array( 'english_name' => 'Norwegian (Nynorsk)', 'native_name' => 'Norsk nynorsk' ),
-				'oci'               => array( 'english_name' => 'Occitan', 'native_name' => 'Occitan' ),
-				'pa_IN'             => array( 'english_name' => 'Punjabi', 'native_name' => 'ਪੰਜਾਬੀ' ),
-				'pl_PL'             => array( 'english_name' => 'Polish', 'native_name' => 'Polski' ),
-				'ps'                => array( 'english_name' => 'Pashto', 'native_name' => 'پښتو' ),
-				'pt_BR'             => array( 'english_name' => 'Portuguese (Brazil)', 'native_name' => 'Português do Brasil' ),
-				'pt_PT'             => array( 'english_name' => 'Portuguese (Portugal)', 'native_name' => 'Português' ),
-				'rhg'               => array( 'english_name' => 'Rohingya', 'native_name' => 'Ruáinga' ),
-				'ro_RO'             => array( 'english_name' => 'Romanian', 'native_name' => 'Română' ),
-				'ru_RU'             => array( 'english_name' => 'Russian', 'native_name' => 'Русский' ),
-				'sah'               => array( 'english_name' => 'Sakha', 'native_name' => 'Сахалыы' ),
-				'si_LK'             => array( 'english_name' => 'Sinhala', 'native_name' => 'සිංහල' ),
-				'sk_SK'             => array( 'english_name' => 'Slovak', 'native_name' => 'Slovenčina' ),
-				'sl_SI'             => array( 'english_name' => 'Slovenian', 'native_name' => 'Slovenščina' ),
-				'sq'                => array( 'english_name' => 'Albanian', 'native_name' => 'Shqip' ),
-				'sr_RS'             => array( 'english_name' => 'Serbian', 'native_name' => 'Српски језик' ),
-				'sv_SE'             => array( 'english_name' => 'Swedish', 'native_name' => 'Svenska' ),
-				'szl'               => array( 'english_name' => 'Silesian', 'native_name' => 'Ślōnskŏ gŏdka' ),
-				'ta_IN'             => array( 'english_name' => 'Tamil', 'native_name' => 'தமிழ்' ),
-				'tah'               => array( 'english_name' => 'Tahitian', 'native_name' => 'Reo Tahiti' ),
-				'te'                => array( 'english_name' => 'Telugu', 'native_name' => 'తెలుగు' ),
-				'th'                => array( 'english_name' => 'Thai', 'native_name' => 'ไทย' ),
-				'tl'                => array( 'english_name' => 'Tagalog', 'native_name' => 'Tagalog' ),
-				'tr_TR'             => array( 'english_name' => 'Turkish', 'native_name' => 'Türkçe' ),
-				'tt_RU'             => array( 'english_name' => 'Tatar', 'native_name' => 'Татар теле' ),
-				'ug_CN'             => array( 'english_name' => 'Uighur', 'native_name' => 'Uyƣurqə' ),
-				'uk'                => array( 'english_name' => 'Ukrainian', 'native_name' => 'Українська' ),
-				'ur'                => array( 'english_name' => 'Urdu', 'native_name' => 'اردو' ),
-				'uz_UZ'             => array( 'english_name' => 'Uzbek', 'native_name' => 'O‘zbekcha' ),
-				'vi'                => array( 'english_name' => 'Vietnamese', 'native_name' => 'Tiếng Việt' ),
-				'zh_CN'             => array( 'english_name' => 'Chinese (China)', 'native_name' => '简体中文' ),
-				'zh_HK'             => array( 'english_name' => 'Chinese (Hong Kong)', 'native_name' => '香港中文版' ),
-				'zh_TW'             => array( 'english_name' => 'Chinese (Taiwan)', 'native_name' => '繁體中文' ),
-			);
+			$languages  = [
+				'af' => [
+					'english_name' => 'Afrikaans',
+					'native_name'  => 'Afrikaans'
+				],
+				'ar' => [
+					'english_name' => 'Arabic',
+					'native_name'  => 'العربية'
+				],
+				'ary' => [
+					'english_name' => 'Moroccan Arabic',
+					'native_name'  => 'العربية المغربية'
+				],
+				'as' => [
+					'english_name' => 'Assamese',
+					'native_name'  => 'অসমীয়া'
+				],
+				'az' => [
+					'english_name' => 'Azerbaijani',
+					'native_name'  => 'Azərbaycan dili'
+				],
+				'azb' => [
+					'english_name' => 'South Azerbaijani',
+					'native_name'  => 'گؤنئی آذربایجان'
+				],
+				'bel' => [
+					'english_name' => 'Belarusian',
+					'native_name'  => 'Беларуская мова'
+				],
+				'bg_BG' => [
+					'english_name' => 'Bulgarian',
+					'native_name'  => 'Български'
+				],
+				'bn_BD' => [
+					'english_name' => 'Bengali',
+					'native_name'  => 'বাংলা'
+				],
+				'bo' => [
+					'english_name' => 'Tibetan',
+					'native_name'  => 'བོད་ཡིག'
+				],
+				'bs_BA' => [
+					'english_name' => 'Bosnian',
+					'native_name'  => 'Bosanski'
+				],
+				'ca' => [
+					'english_name' => 'Catalan',
+					'native_name'  => 'Català'
+				],
+				'ceb' => [
+					'english_name' => 'Cebuano',
+					'native_name'  => 'Cebuano'
+				],
+				'ckb' => [
+					'english_name' => 'Kurdish (Sorani)',
+					'native_name'  => 'كوردی'
+				],
+				'cs_CZ' => [
+					'english_name' => 'Czech',
+					'native_name'  => 'Čeština'
+				],
+				'cy' => [
+					'english_name' => 'Welsh',
+					'native_name'  => 'Cymraeg'
+				],
+				'da_DK' => [
+					'english_name' => 'Danish',
+					'native_name'  => 'Dansk'
+				],
+				'de_DE_formal' => [
+					'english_name' => 'German (Formal)',
+					'native_name'  => 'Deutsch (Sie)'
+				],
+				'de_DE' => [
+					'english_name' => 'German',
+					'native_name'  => 'Deutsch'
+				],
+				'de_CH_informal' => [
+					'english_name' => 'German (Switzerland, Informal)',
+					'native_name'  => 'Deutsch (Schweiz, Du)'
+				],
+				'de_CH' => [
+					'english_name' => 'German (Switzerland)',
+					'native_name'  => 'Deutsch (Schweiz)'
+				],
+				'dzo' => [
+					'english_name' => 'Dzongkha',
+					'native_name'  => 'རྫོང་ཁ'
+				],
+				'el' => [
+					'english_name' => 'Greek',
+					'native_name'  => 'Ελληνικά'
+				],
+				'en_CA' => [
+					'english_name' => 'English (Canada)',
+					'native_name'  => 'English (Canada)'
+				],
+				'en_ZA' => [
+					'english_name' => 'English (South Africa)',
+					'native_name'  => 'English (South Africa)'
+				],
+				'en_AU' => [
+					'english_name' => 'English (Australia)',
+					'native_name'  => 'English (Australia)'
+				],
+				'en_NZ' => [
+					'english_name' => 'English (New Zealand)',
+					'native_name'  => 'English (New Zealand)'
+				],
+				'en_GB' => [
+					'english_name' => 'English (UK)',
+					'native_name'  => 'English (UK)'
+				],
+				'eo' => [
+					'english_name' => 'Esperanto',
+					'native_name'  => 'Esperanto'
+				],
+				'es_CL' => [
+					'english_name' => 'Spanish (Chile)',
+					'native_name'  => 'Español de Chile'
+				],
+				'es_AR' => [
+					'english_name' => 'Spanish (Argentina)',
+					'native_name'  => 'Español de Argentina'
+				],
+				'es_PE' => [
+					'english_name' => 'Spanish (Peru)',
+					'native_name'  => 'Español de Perú'
+				],
+				'es_MX' => [
+					'english_name' => 'Spanish (Mexico)',
+					'native_name'  => 'Español de México'
+				],
+				'es_CO' => [
+					'english_name' => 'Spanish (Colombia)',
+					'native_name'  => 'Español de Colombia'
+				],
+				'es_ES' => [
+					'english_name' => 'Spanish (Spain)',
+					'native_name'  => 'Español'
+				],
+				'es_VE' => [
+					'english_name' => 'Spanish (Venezuela)',
+					'native_name'  => 'Español de Venezuela'
+				],
+				'es_GT' => [
+					'english_name' => 'Spanish (Guatemala)',
+					'native_name'  => 'Español de Guatemala'
+				],
+				'et' => [
+					'english_name' => 'Estonian',
+					'native_name'  => 'Eesti'
+				],
+				'eu' => [
+					'english_name' => 'Basque',
+					'native_name'  => 'Euskara'
+				],
+				'fa_IR' => [
+					'english_name' => 'Persian',
+					'native_name'  => 'فارسی'
+				],
+				'fi' => [
+					'english_name' => 'Finnish',
+					'native_name'  => 'Suomi'
+				],
+				'fr_BE' => [
+					'english_name' => 'French (Belgium)',
+					'native_name'  => 'Français de Belgique'
+				],
+				'fr_FR' => [
+					'english_name' => 'French (France)',
+					'native_name'  => 'Français'
+				],
+				'fr_CA' => [
+					'english_name' => 'French (Canada)',
+					'native_name'  => 'Français du Canada'
+				],
+				'gd' => [
+					'english_name' => 'Scottish Gaelic',
+					'native_name'  => 'Gàidhlig'
+				],
+				'gl_ES' => [
+					'english_name' => 'Galician',
+					'native_name'  => 'Galego'
+				],
+				'gu' => [
+					'english_name' => 'Gujarati',
+					'native_name'  => 'ગુજરાતી'
+				],
+				'haz' => [
+					'english_name' => 'Hazaragi',
+					'native_name'  => 'هزاره گی'
+				],
+				'he_IL' => [
+					'english_name' => 'Hebrew',
+					'native_name'  => 'עִבְרִית'
+				],
+				'hi_IN' => [
+					'english_name' => 'Hindi',
+					'native_name'  => 'हिन्दी'
+				],
+				'hr' => [
+					'english_name' => 'Croatian',
+					'native_name'  => 'Hrvatski'
+				],
+				'hu_HU' => [
+					'english_name' => 'Hungarian',
+					'native_name'  => 'Magyar'
+				],
+				'hy' => [
+					'english_name' => 'Armenian',
+					'native_name'  => 'Հայերեն'
+				],
+				'id_ID' => [
+					'english_name' => 'Indonesian',
+					'native_name'  => 'Bahasa Indonesia'
+				],
+				'is_IS' => [
+					'english_name' => 'Icelandic',
+					'native_name'  => 'Íslenska'
+				],
+				'it_IT' => [
+					'english_name' => 'Italian',
+					'native_name'  => 'Italiano'
+				],
+				'ja' => [
+					'english_name' => 'Japanese',
+					'native_name'  => '日本語'
+				],
+				'ka_GE' => [
+					'english_name' => 'Georgian',
+					'native_name'  => 'ქართული'
+				],
+				'kab' => [
+					'english_name' => 'Kabyle',
+					'native_name'  => 'Taqbaylit'
+				],
+				'km' => [
+					'english_name' => 'Khmer',
+					'native_name'  => 'ភាសាខ្មែរ'
+				],
+				'ko_KR' => [
+					'english_name' => 'Korean',
+					'native_name'  => '한국어'
+				],
+				'lo' => [
+					'english_name' => 'Lao',
+					'native_name'  => 'ພາສາລາວ'
+				],
+				'lt_LT' => [
+					'english_name' => 'Lithuanian',
+					'native_name'  => 'Lietuvių kalba'
+				],
+				'lv' => [
+					'english_name' => 'Latvian',
+					'native_name'  => 'Latviešu valoda'
+				],
+				'mk_MK' => [
+					'english_name' => 'Macedonian',
+					'native_name'  => 'Македонски јазик'
+				],
+				'ml_IN' => [
+					'english_name' => 'Malayalam',
+					'native_name'  => 'മലയാളം'
+				],
+				'mn' => [
+					'english_name' => 'Mongolian',
+					'native_name'  => 'Монгол'
+				],
+				'mr' => [
+					'english_name' => 'Marathi',
+					'native_name'  => 'मराठी'
+				],
+				'ms_MY' => [
+					'english_name' => 'Malay',
+					'native_name'  => 'Bahasa Melayu'
+				],
+				'my_MM' => [
+					'english_name' => 'Myanmar (Burmese)',
+					'native_name'  => 'ဗမာစာ'
+				],
+				'nb_NO' => [
+					'english_name' => 'Norwegian (Bokmål)',
+					'native_name'  => 'Norsk bokmål'
+				],
+				'ne_NP' => [
+					'english_name' => 'Nepali',
+					'native_name'  => 'नेपाली'
+				],
+				'nl_BE' => [
+					'english_name' => 'Dutch (Belgium)',
+					'native_name'  => 'Nederlands (België)'
+				],
+				'nl_NL' => [
+					'english_name' => 'Dutch',
+					'native_name'  => 'Nederlands'
+				],
+				'nl_NL_formal' => [
+					'english_name' => 'Dutch (Formal)',
+					'native_name'  => 'Nederlands (Formeel)'
+				],
+				'nn_NO' => [
+					'english_name' => 'Norwegian (Nynorsk)',
+					'native_name'  => 'Norsk nynorsk'
+				],
+				'oci' => [
+					'english_name' => 'Occitan',
+					'native_name'  => 'Occitan'
+				],
+				'pa_IN' => [
+					'english_name' => 'Punjabi',
+					'native_name'  => 'ਪੰਜਾਬੀ'
+				],
+				'pl_PL' => [
+					'english_name' => 'Polish',
+					'native_name'  => 'Polski'
+				],
+				'ps' => [
+					'english_name' => 'Pashto',
+					'native_name'  => 'پښتو'
+				],
+				'pt_BR' => [
+					'english_name' => 'Portuguese (Brazil)',
+					'native_name'  => 'Português do Brasil'
+				],
+				'pt_PT' => [
+					'english_name' => 'Portuguese (Portugal)',
+					'native_name'  => 'Português'
+				],
+				'rhg' => [
+					'english_name' => 'Rohingya',
+					'native_name'  => 'Ruáinga'
+				],
+				'ro_RO' => [
+					'english_name' => 'Romanian',
+					'native_name'  => 'Română'
+				],
+				'ru_RU' => [
+					'english_name' => 'Russian',
+					'native_name'  => 'Русский'
+				],
+				'sah' => [
+					'english_name' => 'Sakha',
+					'native_name'  => 'Сахалыы'
+				],
+				'si_LK' => [
+					'english_name' => 'Sinhala',
+					'native_name'  => 'සිංහල'
+				],
+				'sk_SK' => [
+					'english_name' => 'Slovak',
+					'native_name'  => 'Slovenčina'
+				],
+				'sl_SI' => [
+					'english_name' => 'Slovenian',
+					'native_name'  => 'Slovenščina'
+				],
+				'sq' => [
+					'english_name' => 'Albanian',
+					'native_name'  => 'Shqip'
+				],
+				'sr_RS' => [
+					'english_name' => 'Serbian',
+					'native_name'  => 'Српски језик'
+				],
+				'sv_SE' => [
+					'english_name' => 'Swedish',
+					'native_name'  => 'Svenska'
+				],
+				'szl' => [
+					'english_name' => 'Silesian',
+					'native_name'  => 'Ślōnskŏ gŏdka'
+				],
+				'ta_IN' => [
+					'english_name' => 'Tamil',
+					'native_name'  => 'தமிழ்'
+				],
+				'tah' => [
+					'english_name' => 'Tahitian',
+					'native_name'  => 'Reo Tahiti'
+				],
+				'te' => [
+					'english_name' => 'Telugu',
+					'native_name'  => 'తెలుగు'
+				],
+				'th' => [
+					'english_name' => 'Thai',
+					'native_name'  => 'ไทย'
+				],
+				'tl' => [
+					'english_name' => 'Tagalog',
+					'native_name'  => 'Tagalog'
+				],
+				'tr_TR' => [
+					'english_name' => 'Turkish',
+					'native_name'  => 'Türkçe'
+				],
+				'tt_RU' => [
+					'english_name' => 'Tatar',
+					'native_name'  => 'Татар теле'
+				],
+				'ug_CN' => [
+					'english_name' => 'Uighur',
+					'native_name'  => 'Uyƣurqə'
+				],
+				'uk' => [
+					'english_name' => 'Ukrainian',
+					'native_name'  => 'Українська'
+				],
+				'ur' => [
+					'english_name' => 'Urdu',
+					'native_name'  => 'اردو'
+				],
+				'uz_UZ' => [
+					'english_name' => 'Uzbek',
+					'native_name'  => 'O‘zbekcha'
+				],
+				'vi' => [
+					'english_name' => 'Vietnamese',
+					'native_name'  => 'Tiếng Việt'
+				],
+				'zh_CN' => [
+					'english_name' => 'Chinese (China)',
+					'native_name'  => '简体中文'
+				],
+				'zh_HK' => [
+					'english_name' => 'Chinese (Hong Kong)',
+					'native_name'  => '香港中文版'
+				],
+				'zh_TW' => [
+					'english_name' => 'Chinese (Taiwan)',
+					'native_name'  => '繁體中文'
+				],
+			];
 
 			// Allow adding or removing languages.
 			return apply_filters( 'airplane_mode_offline_languages', $languages );
@@ -1217,7 +1540,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 		 * @return array         An empty array, or the original items if not enabled.
 		 */
 		public function remove_update_array( $items ) {
-			return ! $this->enabled() ? $items : array();
+			return ! $this->enabled() ? $items : [];
 		}
 
 		/**
@@ -1236,7 +1559,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Set an array of items to be removed with optional filter.
-			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'update-selected', 'update', 'upgrade' ) ) ) {
+			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', ['update-selected', 'update', 'upgrade'] ) ) {
 				return $actions;
 			}
 
@@ -1264,7 +1587,7 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Set an array of tabs to be removed with optional filter.
-			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', array( 'featured', 'popular', 'recommended', 'favorites', 'beta' ) ) ) {
+			if ( false === $remove = apply_filters( 'airplane_mode_bulk_items', ['featured', 'popular', 'recommended', 'favorites', 'beta'] ) ) {
 				return $nonmenu_tabs;
 			}
 
