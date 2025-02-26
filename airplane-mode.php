@@ -97,6 +97,9 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			// Kill all the http requests.
 			add_filter( 'pre_http_request',                      array( $this, 'disable_http_reqs'       ),  10, 3   );
 
+			// Kill all the email requests.
+			add_filter( 'pre_wp_mail',                           array( $this, 'disable_email_reqs'      ),  10, 2   );
+
 			// Check for our query string and handle accordingly.
 			add_action( 'init',                                  array( $this, 'toggle_check'            )           );
 
@@ -570,6 +573,34 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 			}
 
 			// Disable the http requests if enabled.
+			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
+		}
+
+		/**
+		 * Disable all the attempts at using wp_mail with the action
+		 * happening before the status check so others can allow certain
+		 * items as desired.
+		 *
+		 * @param  null|bool $return  Short-circuit return value.
+		 * @param  array     $atts    Array of the wp_mail() arguments.
+		 *
+		 * @return bool
+		 */
+		public function disable_email_reqs( $return, $atts ) {
+
+			// Pass our data to the action to allow a bypass.
+			do_action( 'airplane_mode_email_args', $return, $atts );
+
+			if ( ! $this->enabled() ) {
+				return $return;
+			}
+
+			// Allow certain email requests to pass through via a filter.
+			if ( apply_filters( 'airplane_mode_allow_email_request', false, $atts ) ) {
+				return $return;
+			}
+
+			// Disable the email requests if enabled.
 			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
 		}
 
