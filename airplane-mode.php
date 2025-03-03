@@ -600,8 +600,8 @@ if ( ! class_exists( 'Airplane_Mode_Core' ) ) {
 				return $return;
 			}
 
-			// Disable the email requests if enabled.
-			return new WP_Error( 'airplane_mode_enabled', __( 'Airplane Mode is enabled', 'airplane-mode' ) );
+			// Return false to disable any wp_mail call.
+			return false;
 		}
 
 		/**
